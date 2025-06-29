@@ -1,0 +1,74 @@
+# Model Configuration
+# Copy this to models.yaml and adjust paths for your local setup
+
+models:
+  # Llama 3 models
+  llama-3-8b-instruct:
+    name: "Llama 3 8B Instruct"
+    path: "models/llama-3-8b-instruct.gguf"
+    context_length: 8192
+    quantization: "q4_k_m"
+    inference_engine: "llama_cpp"
+    template: "llama3"
+    parameters:
+      max_tokens: 2048
+      stop_tokens: ["<|eot_id|>", "<|end_of_text|>"]
+      
+  llama-3-8b-base:
+    name: "Llama 3 8B Base"
+    path: "models/llama-3-8b.gguf"
+    context_length: 8192
+    quantization: "q4_k_m"
+    inference_engine: "llama_cpp"
+    template: "base"
+    parameters:
+      max_tokens: 2048
+      stop_tokens: ["<|endoftext|>"]
+
+  # Mistral models
+  mistral-7b-instruct:
+    name: "Mistral 7B Instruct"
+    path: "models/mistral-7b-instruct-v0.2.gguf"
+    context_length: 8192
+    quantization: "q4_k_m"
+    inference_engine: "llama_cpp"
+    template: "mistral"
+    parameters:
+      max_tokens: 2048
+      stop_tokens: ["</s>"]
+      
+  # Qwen models
+  qwen-7b-chat:
+    name: "Qwen 7B Chat"
+    path: "models/qwen-7b-chat.gguf"
+    context_length: 8192
+    quantization: "q4_k_m"
+    inference_engine: "llama_cpp"
+    template: "qwen"
+    parameters:
+      max_tokens: 2048
+      stop_tokens: ["<|endoftext|>", "<|im_end|>"]
+
+# Quantization options
+quantization_presets:
+  q4_k_m:
+    description: "4-bit quantization, medium quality"
+    memory_usage: "~4.5GB"
+    recommended_gpu: "RTX 3060 8GB+"
+    
+  q5_k_m:
+    description: "5-bit quantization, high quality"
+    memory_usage: "~5.5GB"
+    recommended_gpu: "RTX 3070 8GB+"
+    
+  q8_0:
+    description: "8-bit quantization, very high quality"
+    memory_usage: "~8.5GB"
+    recommended_gpu: "RTX 4070 12GB+"
+
+# Model download sources
+download_sources:
+  huggingface:
+    llama-3-8b-instruct: "bartowski/Meta-Llama-3-8B-Instruct-GGUF"
+    mistral-7b-instruct: "bartowski/Mistral-7B-Instruct-v0.2-GGUF"
+    qwen-7b-chat: "Qwen/Qwen-7B-Chat-GGML" 
