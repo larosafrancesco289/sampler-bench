@@ -1,69 +1,106 @@
-# Creative Writing Sampling Presets
-# Optimized configurations for story generation, dialogue, and creative content
+# Creative Writing Sampling Presets - Rigorous Testing Framework
+# Systematically evaluating different sampling strategies for creative writing
 
-# Core sampling presets for creative writing
+# Core sampling presets for creative writing research
 presets:
-  # Focused, coherent writing
-  focused:
-    description: "Focused, coherent writing with minimal repetition"
+  # Model provider default (Llama 3.1 recommended)
+  llama_default:
+    description: "Default Llama 3.1 provider-recommended settings"
     sampler: "top_p"
     parameters:
-      temperature: 0.7
+      temperature: 0.6
       top_p: 0.9
-      repeat_penalty: 1.1
       max_tokens: 512
       
-  # Balanced creativity and coherence  
-  balanced:
-    description: "Balanced creativity and coherence for most creative tasks"
-    sampler: "top_p"
-    parameters:
-      temperature: 0.8
-      top_p: 0.95
-      repeat_penalty: 1.1
-      max_tokens: 512
-      
-  # High creativity for brainstorming
-  creative:
-    description: "High creativity and diversity for brainstorming and exploration"
-    sampler: "top_p"
-    parameters:
-      temperature: 1.0
-      top_p: 0.99
-      repeat_penalty: 1.05
-      max_tokens: 512
-      
-  # Experimental min-p for natural flow
-  natural:
-    description: "Natural flow using min-p sampling for organic text generation"
+  # Min-p sampling configurations
+  standard_minp:
+    description: "Standard creative writing with min_p sampling"
     sampler: "min_p"
     parameters:
-      temperature: 0.8
-      min_p: 0.05
-      repeat_penalty: 1.1
+      temperature: 0.7
+      min_p: 0.2
+      max_tokens: 512
+      
+  creative_minp:
+    description: "Creative plus writing with min_p sampling"
+    sampler: "min_p"
+    parameters:
+      temperature: 1.0
+      min_p: 0.2
+      max_tokens: 512
+      
+  ultra_minp:
+    description: "Creative ultra writing with min_p sampling"
+    sampler: "min_p"
+    parameters:
+      temperature: 1.5
+      min_p: 0.2
+      max_tokens: 512
+      
+  # Top-n-sigma sampling configurations  
+  balanced_sigma:
+    description: "Balanced creative writing with sigma sampling"
+    sampler: "top_n_sigma"
+    parameters:
+      temperature: 1.0
+      top_n_sigma: 1.5
+      max_tokens: 512
+      
+  creative_sigma:
+    description: "Creative writing with high-temp sigma sampling"
+    sampler: "top_n_sigma"
+    parameters:
+      temperature: 1.5
+      top_n_sigma: 1.0
+      max_tokens: 512
+      
+  ultra_sigma:
+    description: "Ultra creative writing with max-temp sigma sampling"
+    sampler: "top_n_sigma"
+    parameters:
+      temperature: 2.0
+      top_n_sigma: 1.0
       max_tokens: 512
 
-# Creative writing task configurations
+# Creative writing task configurations for rigorous testing
 tasks:
-  story_writing:
-    description: "Long-form narrative writing"
-    recommended_presets: ["balanced", "creative"]
+  short_story:
+    description: "Short narrative fiction (500-1000 words)"
+    test_presets: ["llama_default", "standard_minp", "creative_minp", "ultra_minp"]
     context_length: 2048
     
-  dialogue:
-    description: "Character dialogue and conversation"
-    recommended_presets: ["focused", "balanced"]
+  character_dialogue:
+    description: "Character interaction and conversation"
+    test_presets: ["llama_default", "standard_minp", "balanced_sigma"]
     context_length: 1024
     
-  brainstorming:
-    description: "Idea generation and creative exploration"
-    recommended_presets: ["creative", "natural"]
-    context_length: 1024
-    
-  world_building:
-    description: "Setting and world description"
-    recommended_presets: ["balanced", "creative"]
+  creative_exploration:
+    description: "High-creativity narrative experiments"
+    test_presets: ["creative_minp", "ultra_minp", "creative_sigma", "ultra_sigma"]
     context_length: 2048
+    
+  experimental_writing:
+    description: "Testing extreme creativity with sigma sampling"
+    test_presets: ["balanced_sigma", "creative_sigma", "ultra_sigma"]
+    context_length: 2048
+
+# Test configuration for systematic evaluation
+test_framework:
+  primary_task: "short_story"
+  evaluation_criteria:
+    - "narrative_coherence"
+    - "character_development" 
+    - "creative_originality"
+    - "stylistic_consistency"
+    - "engagement_factor"
+  
+  sample_size_per_preset: 5
+  test_prompts:
+    - "Write a short story about discovering a hidden room in an old library"
+    - "Create a story where the protagonist can hear other people's thoughts"
+    - "Tell a tale about a world where colors have started disappearing"
+    - "Write about someone who wakes up with a completely different personality"
+    - "Create a story about a cafe that exists in multiple dimensions"
 
 # Quality guidelines for creative writing
 guidelines:
@@ -85,7 +122,6 @@ samplers:
       top_p: [0.85, 0.9, 0.95, 0.99]
       top_k: -1  # disabled
       min_p: 0.0
-      repeat_penalty: 1.1
     
   # Top-k sampling
   top_k:
@@ -96,7 +132,6 @@ samplers:
       top_k: [10, 20, 40, 80]
       top_p: 1.0  # disabled
       min_p: 0.0
-      repeat_penalty: 1.1
       
   # Min-p sampling
   min_p:
@@ -107,19 +142,17 @@ samplers:
       min_p: [0.01, 0.02, 0.05, 0.1]
       top_p: 1.0  # disabled
       top_k: -1   # disabled
-      repeat_penalty: 1.1
       
   # Top-n-sigma sampling (novel method)
   top_n_sigma:
     name: "Top-n-sigma"
     description: "Standard deviation based sampling"
     parameters:
-      temperature: [0.7, 0.8, 0.9, 1.0]
-      n_sigma: [1.0, 1.5, 2.0, 2.5]
+      temperature: [0.7, 1.0, 1.5, 2.0]
+      top_n_sigma: [1.0, 1.5, 2.0, 2.5]  # Updated parameter name for consistency
       top_p: 1.0  # disabled
       top_k: -1   # disabled
       min_p: 0.0
-      repeat_penalty: 1.1
       
   # Temperature-only sampling
   temperature:
@@ -130,7 +163,6 @@ samplers:
       top_p: 1.0   # disabled
       top_k: -1    # disabled
       min_p: 0.0
-      repeat_penalty: 1.0
 
 # Sampling method implementations
 implementations:
