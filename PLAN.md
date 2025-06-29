@@ -1,12 +1,140 @@
-# Sampler Bench – Enhanced Project Plan
+# Sampler Bench - Project Plan
+
+## Vision
+
+**Sampler Bench** is a model testing and benchmarking platform that automatically finds the optimal sampling strategies for any LLM across different tasks. 
+
+**Core Workflow:**
+1. Download/configure a model
+2. Run comprehensive benchmarks across sampling strategies  
+3. Web dashboard shows performance scores for each sampling combination
+4. Get model-specific recommendations (respecting HuggingFace defaults, etc.)
+5. Identify best samplers for each task: creative writing, reasoning, coding, etc.
+
+**MVP Scope:** Creative writing task only, with KoboldCpp backend and Vercel frontend.
+
+## Current Status
+
+**Completed (MVP):**
+- KoboldCpp inference engine with GPU acceleration (40+ tokens/sec)
+- Creative writing sampling presets and benchmarking
+- Model configuration system
+- Performance testing framework
+
+**Next Phase:**
+- Frontend dashboard for results visualization (Vercel deployment)
+- Model-specific baseline detection (HuggingFace metadata parsing)
+- Expanded task types (reasoning, coding)
+- Automated model downloading/setup
+
+## Architecture
+
+### Backend (Python)
+- **Inference**: KoboldCpp integration for GPU-accelerated generation
+- **Benchmarking**: Systematic testing across sampling parameter grids
+- **Configuration**: Model and task-specific settings management
+- **Results**: JSON output for frontend consumption
+
+### Frontend (Next.js/Vercel)
+- **Dashboard**: Interactive results visualization
+- **Model Comparison**: Performance across different models and tasks
+- **Sampling Explorer**: Parameter space visualization
+- **Recommendations**: Best settings for each use case
+
+### Data Flow
+```
+Model Config -> Benchmark Runner -> Results Database -> Web Dashboard
+     ^                                                        |
+     |-- Model Recommendations (HuggingFace metadata) -------|
+```
+
+## MVP Implementation Plan
+
+### Phase 1: Core Benchmarking (CURRENT)
+- [x] KoboldCpp integration
+- [x] Creative writing presets
+- [x] Performance measurement
+- [x] JSON results export
+
+### Phase 2: Frontend Dashboard (NEXT)
+- [ ] Next.js project setup
+- [ ] Results visualization components
+- [ ] Vercel deployment configuration
+- [ ] Model performance comparison views
+
+### Phase 3: Enhanced Testing
+- [ ] HuggingFace metadata integration
+- [ ] Model-specific baseline detection
+- [ ] Expanded sampling parameter grids
+- [ ] Quality scoring metrics
+
+### Phase 4: Multi-Task Support
+- [ ] Reasoning task benchmarks
+- [ ] Code generation testing
+- [ ] Task-specific evaluation metrics
+- [ ] Cross-task performance analysis
+
+## Technical Details
+
+### Current Tech Stack
+- **Backend**: Python, KoboldCpp API, YAML configuration
+- **Testing**: Custom benchmarking framework
+- **Output**: JSON results for frontend consumption
+
+### Planned Additions
+- **Frontend**: Next.js, React, Tailwind CSS
+- **Deployment**: Vercel (frontend), self-hosted (backend)
+- **Database**: JSON files (simple), PostgreSQL (future)
+- **APIs**: HuggingFace Hub integration
+
+### File Structure
+```
+sampler-bench/
+├── backend/                 # Python benchmarking engine
+│   ├── config/             # Model and task configurations
+│   ├── inference/          # KoboldCpp integration
+│   └── utils/              # Shared utilities
+├── frontend/               # Next.js dashboard (planned)
+├── data/                   # Results and datasets
+└── test_creative_writing.py # Current MVP test script
+```
+
+## Success Metrics
+
+**MVP Success:**
+- Reliable creative writing benchmarks
+- 40+ tokens/sec performance
+- Web dashboard showing results
+- Deployable to Vercel
+
+**Full Platform Success:**
+- Support for 5+ model families
+- 3+ task types (creative, reasoning, coding)
+- Automated optimal setting discovery
+- Community adoption for model evaluation
+
+## Development Priorities
+
+1. **Stability**: Reliable benchmarking with consistent results
+2. **Performance**: GPU acceleration and fast testing cycles  
+3. **Usability**: Web interface for easy model evaluation
+4. **Extensibility**: Easy addition of new models and tasks
+
+## Future Enhancements
+
+- Automated model downloading (HuggingFace Hub)
+- Multi-GPU distributed testing
+- Community leaderboards
+- Model fine-tuning recommendations
+- API for programmatic access
+
+# 🧪 Sampler Bench - Comprehensive Project Plan
 
 ## 🚀 Executive Summary
 
 **Sampler Bench** is a research-grade benchmarking and visualization suite for evaluating LLM sampling strategies across different model families and tasks. It combines rigorous quantitative benchmarks with interactive visualizations to help researchers and developers understand how decoding strategies affect performance across domains.
 
 **Key Innovation**: Beyond traditional sampling comparisons, this project introduces comprehensive quality-diversity trade-off analysis and real-time sampling behavior visualization.
-
----
 
 ## 🎯 Objectives & Success Criteria
 
@@ -32,8 +160,6 @@
 - [ ] **Quality**: >90% valid samples passing basic quality checks
 - [ ] **Reproducibility**: All results reproducible within 5% variance
 - [ ] **Usability**: Interactive dashboard with <2s response time
-
----
 
 ## 🧱 Enhanced Architecture
 
@@ -90,8 +216,6 @@ data/
 ├── visualizations/     # Pre-computed visualization data
 └── metadata/           # Experiment metadata and logs
 ```
-
----
 
 ## 🗺️ Detailed Roadmap
 
@@ -212,8 +336,6 @@ data/
   - Engage with sampling research community
   - Collect feedback for future improvements
 
----
-
 ## 🔧 Enhanced Tech Stack
 
 ### Backend Technologies
@@ -237,8 +359,6 @@ data/
 - **CI/CD**: GitHub Actions for testing and deployment
 - **Containerization**: Docker for reproducible environments
 
----
-
 ## 🚨 Risk Assessment & Mitigation
 
 ### Technical Risks
@@ -256,8 +376,6 @@ data/
 | **Scope Creep** | High | Medium | Strict feature lockdown per phase, regular scope reviews |
 | **Data Quality Issues** | Medium | High | Comprehensive validation pipelines, manual spot checks |
 | **Reproducibility Failures** | Low | High | Extensive seed control, configuration versioning, validation runs |
-
----
 
 ## 📊 Evaluation Metrics & Methodology
 
@@ -279,8 +397,6 @@ data/
 - **Confidence Intervals**: Bootstrap sampling for uncertainty quantification
 - **Effect Size**: Cohen's d for practical significance
 
----
-
 ## 📋 Data Management Strategy
 
 ### Dataset Preparation
@@ -301,8 +417,6 @@ data/
 - **Anonymization**: Remove any personal information from samples
 - **Transparency**: Open data and methods for reproducibility
 
----
-
 ## 🎯 Updated Milestones
 
 | Week | Milestone | Deliverables | Success Criteria |
@@ -317,8 +431,6 @@ data/
 - **Wednesday**: Technical deep-dive and problem-solving
 - **Friday**: Weekly wrap-up and next week planning
 
----
-
 ## 🤝 Collaboration & Community
 
 ### Academic Engagement
@@ -331,8 +443,6 @@ data/
 - **Documentation**: Comprehensive guides for researchers and developers
 - **Community Building**: Engage with sampling research community
 - **Feature Requests**: Structured process for community contributions
-
----
 
 ## 📚 References & Resources
 
@@ -351,8 +461,6 @@ data/
 - **Distill.pub**: Interactive ML explanations
 - **Observable**: Data visualization notebooks
 - **Streamlit**: ML dashboard examples
-
----
 
 *Last Updated: [Current Date]*
 *Version: 2.0*

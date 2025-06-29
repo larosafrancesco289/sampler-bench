@@ -1,190 +1,166 @@
-# 🧪 Sampler Bench
+# Sampler Bench - Model Testing Platform
 
-A research-grade benchmarking and visualization suite for evaluating LLM sampling strategies across different model families and tasks.
+A high-performance model testing and benchmarking platform that finds optimal sampling strategies for any LLM across different tasks. Powered by **KoboldCpp** and **GPU acceleration**.
+
+**Vision:** Download a model, run comprehensive benchmarks, get the best sampling settings for each task (creative writing, reasoning, coding, etc.) via a web dashboard.
+
+**MVP Scope:** Creative writing task only, with plans for frontend dashboard on Vercel.
+
+## Current Features
+
+- **GPU-Accelerated Performance**: 40+ tokens/sec with KoboldCpp on RTX 5070 Ti
+- **Creative Writing Benchmarks**: Optimized presets for stories, dialogue, and brainstorming
+- **Multiple Sampling Strategies**: Top-p, Min-p, and temperature-based sampling
+- **Performance Measurement**: Speed and quality metrics across configurations
+- **JSON Results Export**: Ready for frontend consumption
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Python 3.11+
-- CUDA-capable GPU (RTX 5070 Ti or similar)
-- 32GB+ RAM recommended
-- 100GB+ free disk space for models and data
+
+- Python 3.8+
+- NVIDIA GPU with CUDA support (16GB+ recommended)
+- KoboldCpp with CUDA acceleration
 
 ### Installation
 
-1. **Clone and setup environment**:
+1. **Clone the repository**:
 ```bash
 git clone <repository-url>
 cd sampler-bench
+```
+
+2. **Set up Python environment**:
+```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-2. **Configure models and settings**:
-```bash
-# Copy example configs
-cp backend/config/models.example.yaml backend/config/models.yaml
-cp backend/config/experiments.example.yaml backend/config/experiments.yaml
-
-# Edit configurations as needed
-nano backend/config/models.yaml
+3. **Configure your model** (edit `backend/config/models.yaml`):
+```yaml
+models:
+  mistral-small-24b:
+    name: "Mistral Small 3.2 24B Instruct"
+    path: "/path/to/your/model.gguf"
+    context_length: 2048
+    inference_engine: "koboldcpp"
+    port: 5001
+    gpu_layers: 43  # Adjust for your GPU
 ```
 
-3. **Download initial models**:
+### Running Tests
+
+1. **Start KoboldCpp server**:
 ```bash
-python backend/scripts/download_models.py --model llama-3-8b --quantization q4_k_m
+./koboldcpp-linux-x64 --model /path/to/model.gguf --usecublas normal 0 --gpulayers 43 --contextsize 2048 --port 5001
 ```
 
-4. **Run a test benchmark**:
+2. **Run creative writing tests**:
 ```bash
-python backend/run_benchmark.py --config experiments/pilot.yaml
+python test_creative_writing.py
 ```
 
-5. **Start the frontend** (after generating some data):
-```bash
-cd frontend
-npm install
-npm run dev
-```
+## 📊 Performance Results
 
-## 📁 Project Structure
+**RTX 5070 Ti Performance** (with Mistral Small 24B):
+- **Focused preset**: 38-42 tokens/sec (coherent, minimal repetition)
+- **Balanced preset**: 35-40 tokens/sec (creative + coherent)
+- **Creative preset**: 32-38 tokens/sec (high diversity)
+- **Natural preset**: 36-41 tokens/sec (min-p sampling)
+
+## 🎭 Creative Writing Presets
+
+### Focused
+- **Best for**: Coherent stories, technical writing
+- **Settings**: Temperature 0.7, Top-p 0.9
+- **Characteristics**: Logical flow, minimal repetition
+
+### Balanced  
+- **Best for**: General creative writing, novels
+- **Settings**: Temperature 0.8, Top-p 0.95
+- **Characteristics**: Creative yet coherent
+
+### Creative
+- **Best for**: Brainstorming, experimental writing
+- **Settings**: Temperature 1.0, Top-p 0.99
+- **Characteristics**: High diversity and originality
+
+### Natural
+- **Best for**: Dialogue, conversational content
+- **Settings**: Temperature 0.8, Min-p 0.05
+- **Characteristics**: Natural flow using min-p sampling
+
+## 🏗️ Project Structure
 
 ```
 sampler-bench/
-├── backend/                 # Python backend for benchmarking
-│   ├── inference/          # Model runners and sampling
-│   ├── evaluation/         # Scoring and analysis
-│   ├── benchmarks/         # Task-specific benchmarks
-│   ├── config/             # Configuration files
-│   ├── utils/              # Shared utilities
-│   └── scripts/            # Setup and utility scripts
-├── frontend/               # Next.js visualization platform
-│   ├── components/         # React components
-│   ├── pages/              # Application routes
-│   ├── hooks/              # Custom hooks
-│   └── utils/              # Frontend utilities
-├── data/                   # Data storage
-│   ├── datasets/           # Source datasets
-│   ├── raw_outputs/        # Raw generations
-│   ├── processed/          # Scored outputs
-│   └── visualizations/     # Viz-ready data
-├── docs/                   # Documentation
-├── tests/                  # Test suites
-└── scripts/                # Project-level scripts
+├── backend/
+│   ├── config/           # Model and sampling configurations
+│   ├── inference/        # KoboldCpp integration
+│   └── utils/           # Logging and configuration utilities
+├── data/                # Experiment results and datasets
+├── test_creative_writing.py  # Main testing script
+└── README.md
 ```
 
-## 🎯 Usage
+## ⚙️ Configuration
 
-### Running Benchmarks
+### Models (`backend/config/models.yaml`)
+Define your model paths and GPU settings:
+- Model path and quantization
+- Context length and GPU layers
+- KoboldCpp server configuration
 
-1. **Single experiment**:
-```bash
-python backend/run_benchmark.py \
-  --model llama-3-8b \
-  --sampler top_p \
-  --task creative_writing \
-  --samples 100
-```
+### Sampling Presets (`backend/config/samplers.yaml`)
+Creative writing optimized presets:
+- Temperature and top-p settings
+- Repetition penalty configuration
+- Task-specific recommendations
 
-2. **Full sampling sweep**:
-```bash
-python backend/run_benchmark.py --config experiments/full_sweep.yaml
-```
+### Experiments (`backend/config/experiments.yaml`)
+Predefined creative writing experiments:
+- Story generation benchmarks
+- Dialogue quality tests
+- Performance comparisons
 
-3. **Custom experiment**:
-```bash
-python backend/run_benchmark.py \
-  --config experiments/custom.yaml \
-  --override model=mistral-7b sampler.temperature=0.8
-```
+## 🎯 Supported Tasks
 
-### Visualization
+- **Story Writing**: Long-form narrative generation
+- **Dialogue**: Character conversations and responses
+- **Brainstorming**: Idea generation and exploration
+- **World Building**: Setting and environment description
 
-1. **Start development server**:
-```bash
-cd frontend && npm run dev
-```
+## 📈 Results and Analysis
 
-2. **Build for production**:
-```bash
-cd frontend && npm run build && npm start
-```
+Test results are saved to `creative_writing_results.json` with:
+- Performance metrics (tokens/sec, generation time)
+- Quality samples for each preset
+- Configuration details and timestamps
 
-## 📊 Supported Features
+## 🔧 Hardware Requirements
 
-### Models
-- **Llama 3** (8B variants)
-- **Mistral** (7B variants) 
-- **Qwen** (7B variants)
-- Quantization: Q4_K_M, Q5_K_M, Q8_0
+**Recommended**:
+- RTX 4070/5070 Ti or better (16GB+ VRAM)
+- 32GB+ system RAM
+- Fast SSD storage
 
-### Sampling Methods
-- **Top-k**: Traditional top-k sampling
-- **Top-p** (Nucleus): Cumulative probability sampling
-- **Min-p**: Minimum probability threshold
-- **Top-n-sigma**: Novel sigma-based sampling
-- **Temperature**: Temperature scaling
-
-### Evaluation Tasks
-- **Creative Writing**: Custom prompts + GPT-4 judge
-- **Code Generation**: HumanEval dataset
-- **Factual QA**: MMLU subset
-- **Reasoning**: GSM8K mathematics
-
-## 🔧 Configuration
-
-### Model Configuration (`backend/config/models.yaml`)
-```yaml
-models:
-  llama-3-8b:
-    path: "models/llama-3-8b-instruct.gguf"
-    context_length: 8192
-    quantization: "q4_k_m"
-    
-  mistral-7b:
-    path: "models/mistral-7b-instruct.gguf"
-    context_length: 8192
-    quantization: "q4_k_m"
-```
-
-### Sampling Configuration (`backend/config/samplers.yaml`)
-```yaml
-samplers:
-  top_p:
-    temperature: [0.7, 0.8, 0.9]
-    top_p: [0.9, 0.95, 0.99]
-    
-  top_k:
-    temperature: [0.7, 0.8, 0.9]
-    top_k: [20, 40, 80]
-```
-
-## 📈 Development Status
-
-- [x] Project structure and configuration
-- [ ] Core sampling engine implementation
-- [ ] Model loading and quantization
-- [ ] Benchmark task implementations
-- [ ] GPT-4 evaluation pipeline
-- [ ] Frontend visualization components
-- [ ] Full integration testing
+**Minimum**:
+- RTX 3060 12GB (with reduced layers)
+- 16GB+ system RAM
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+This project focuses on creative writing applications. Future improvements:
+- Additional task types (code, analysis, etc.)
+- More inference engines
+- Advanced evaluation metrics
+- Web interface for easy testing
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see LICENSE file for details.
 
-## 🙏 Acknowledgments
+---
 
-- Llama.cpp community for high-performance inference
-- HuggingFace for model hosting and evaluation frameworks
-- OpenAI for GPT-4 evaluation capabilities
-- Research community for sampling method innovations 
+**Ready to optimize your model sampling strategies? Start benchmarking!** 

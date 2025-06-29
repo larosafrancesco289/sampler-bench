@@ -1,3 +1,77 @@
+# Creative Writing Sampling Presets
+# Optimized configurations for story generation, dialogue, and creative content
+
+# Core sampling presets for creative writing
+presets:
+  # Focused, coherent writing
+  focused:
+    description: "Focused, coherent writing with minimal repetition"
+    sampler: "top_p"
+    parameters:
+      temperature: 0.7
+      top_p: 0.9
+      repeat_penalty: 1.1
+      max_tokens: 512
+      
+  # Balanced creativity and coherence  
+  balanced:
+    description: "Balanced creativity and coherence for most creative tasks"
+    sampler: "top_p"
+    parameters:
+      temperature: 0.8
+      top_p: 0.95
+      repeat_penalty: 1.1
+      max_tokens: 512
+      
+  # High creativity for brainstorming
+  creative:
+    description: "High creativity and diversity for brainstorming and exploration"
+    sampler: "top_p"
+    parameters:
+      temperature: 1.0
+      top_p: 0.99
+      repeat_penalty: 1.05
+      max_tokens: 512
+      
+  # Experimental min-p for natural flow
+  natural:
+    description: "Natural flow using min-p sampling for organic text generation"
+    sampler: "min_p"
+    parameters:
+      temperature: 0.8
+      min_p: 0.05
+      repeat_penalty: 1.1
+      max_tokens: 512
+
+# Creative writing task configurations
+tasks:
+  story_writing:
+    description: "Long-form narrative writing"
+    recommended_presets: ["balanced", "creative"]
+    context_length: 2048
+    
+  dialogue:
+    description: "Character dialogue and conversation"
+    recommended_presets: ["focused", "balanced"]
+    context_length: 1024
+    
+  brainstorming:
+    description: "Idea generation and creative exploration"
+    recommended_presets: ["creative", "natural"]
+    context_length: 1024
+    
+  world_building:
+    description: "Setting and world description"
+    recommended_presets: ["balanced", "creative"]
+    context_length: 2048
+
+# Quality guidelines for creative writing
+guidelines:
+  coherence: "Maintain logical flow and consistency"
+  creativity: "Balance originality with readability"
+  engagement: "Keep the reader interested and invested"
+  style: "Maintain consistent voice and tone"
+
 # Sampling Strategy Configuration
 # Defines different sampling methods and their parameter ranges
 
@@ -57,40 +131,6 @@ samplers:
       top_k: -1    # disabled
       min_p: 0.0
       repeat_penalty: 1.0
-
-# Preset configurations for quick testing
-presets:
-  conservative:
-    description: "Conservative, focused sampling"
-    sampler: "top_p"
-    parameters:
-      temperature: 0.7
-      top_p: 0.9
-      repeat_penalty: 1.1
-      
-  balanced:
-    description: "Balanced creativity and coherence"
-    sampler: "top_p"
-    parameters:
-      temperature: 0.8
-      top_p: 0.95
-      repeat_penalty: 1.1
-      
-  creative:
-    description: "High creativity and diversity"
-    sampler: "top_p"
-    parameters:
-      temperature: 1.0
-      top_p: 0.99
-      repeat_penalty: 1.05
-      
-  experimental:
-    description: "Experimental min-p sampling"
-    sampler: "min_p"
-    parameters:
-      temperature: 0.8
-      min_p: 0.05
-      repeat_penalty: 1.1
 
 # Sampling method implementations
 implementations:

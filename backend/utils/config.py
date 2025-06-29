@@ -18,6 +18,8 @@ class ModelConfig:
     inference_engine: str
     template: str
     parameters: Dict[str, Any]
+    port: Optional[int] = None  # For KoboldCpp server port
+    gpu_layers: Optional[int] = None  # For GPU acceleration
 
 
 @dataclass
@@ -71,7 +73,9 @@ class ConfigManager:
                     quantization=model_data["quantization"],
                     inference_engine=model_data["inference_engine"],
                     template=model_data["template"],
-                    parameters=model_data.get("parameters", {})
+                    parameters=model_data.get("parameters", {}),
+                    port=model_data.get("port"),
+                    gpu_layers=model_data.get("gpu_layers")
                 )
         
         return self._models_config
