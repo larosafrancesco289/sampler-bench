@@ -2,41 +2,42 @@
 
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Legend } from 'recharts'
 
+// Real data from llama318binstruct_judged_20250630-123120.json
 const data = [
   {
     criterion: 'Narrative Coherence',
-    creative_minp: 7.9,
-    ultra_sigma: 7.2,
-    standard_minp: 7.5,
-    llama_default: 7.2,
+    standard_minp: 7.2,
+    llama_default: 6.5,
+    creative_minp: 6.3,
+    ultra_sigma: 5.8,
   },
   {
     criterion: 'Creativity & Originality',
-    creative_minp: 8.2,
-    ultra_sigma: 8.4,
-    standard_minp: 7.0,
-    llama_default: 6.1,
+    standard_minp: 6.8,
+    llama_default: 6.0,
+    creative_minp: 6.4,
+    ultra_sigma: 5.9,
   },
   {
     criterion: 'Character Development',
-    creative_minp: 7.4,
-    ultra_sigma: 7.1,
-    standard_minp: 7.2,
-    llama_default: 6.9,
+    standard_minp: 6.9,
+    llama_default: 6.2,
+    creative_minp: 6.1,
+    ultra_sigma: 5.5,
   },
   {
     criterion: 'Engagement & Readability',
-    creative_minp: 7.8,
-    ultra_sigma: 7.8,
-    standard_minp: 7.3,
-    llama_default: 7.1,
+    standard_minp: 7.1,
+    llama_default: 6.3,
+    creative_minp: 6.2,
+    ultra_sigma: 5.7,
   },
   {
     criterion: 'Stylistic Quality',
-    creative_minp: 7.7,
-    ultra_sigma: 7.5,
-    standard_minp: 7.0,
-    llama_default: 6.7,
+    standard_minp: 6.7,
+    llama_default: 6.1,
+    creative_minp: 6.1,
+    ultra_sigma: 5.6,
   },
 ]
 
@@ -49,20 +50,6 @@ export function QualityCriteriaChart() {
           <PolarAngleAxis dataKey="criterion" tick={{ fontSize: 12 }} />
           <PolarRadiusAxis domain={[0, 10]} tick={{ fontSize: 10 }} />
           <Radar
-            name="creative_minp"
-            dataKey="creative_minp"
-            stroke="#8b5cf6"
-            fill="#8b5cf6"
-            fillOpacity={0.1}
-          />
-          <Radar
-            name="ultra_sigma"
-            dataKey="ultra_sigma"
-            stroke="#06b6d4"
-            fill="#06b6d4"
-            fillOpacity={0.1}
-          />
-          <Radar
             name="standard_minp"
             dataKey="standard_minp"
             stroke="#10b981"
@@ -74,6 +61,20 @@ export function QualityCriteriaChart() {
             dataKey="llama_default"
             stroke="#f59e0b"
             fill="#f59e0b"
+            fillOpacity={0.1}
+          />
+          <Radar
+            name="creative_minp"
+            dataKey="creative_minp"
+            stroke="#8b5cf6"
+            fill="#8b5cf6"
+            fillOpacity={0.1}
+          />
+          <Radar
+            name="ultra_sigma"
+            dataKey="ultra_sigma"
+            stroke="#06b6d4"
+            fill="#06b6d4"
             fillOpacity={0.1}
           />
           <Legend />

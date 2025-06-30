@@ -109,18 +109,11 @@ def run_benchmark(model_name: str,
             print(f"  {current_sample}/{total_samples} - Prompt {i}")
             print(f"    Prompt: {prompt[:60]}...")
             
-            start_time = time.time()
-            
             # Generate sample
             gen_result = api.generate_single_sample(prompt, sampler_name, max_length, seed=seed)
             
-            generation_time = time.time() - start_time
-            
             if gen_result['success']:
-                # Calculate tokens per second (approximate)
                 word_count = gen_result['word_count']
-                estimated_tokens = int(word_count * 1.3)  # Rough estimate
-                tokens_per_second = estimated_tokens / generation_time if generation_time > 0 else 0
                 
                 sample = {
                     'sample_id': current_sample,
@@ -129,14 +122,12 @@ def run_benchmark(model_name: str,
                     'sampler_config': gen_result['sampler_config'],
                     'generated_text': gen_result['generated_text'],
                     'word_count': word_count,
-                    'generation_time': generation_time,
-                    'tokens_per_second': tokens_per_second,
                     'timestamp': datetime.now().isoformat()
                 }
                 
                 results['samples'].append(sample)
                 
-                print(f"    ✅ Generated {word_count} words in {generation_time:.2f}s ({tokens_per_second:.1f} tok/s)")
+                print(f"    ✅ Generated {word_count} words")
                 
             else:
                 failed_samples += 1
@@ -150,7 +141,6 @@ def run_benchmark(model_name: str,
                     'sampler_config': api.samplers.get(sampler_name, {}).get('parameters', {}),
                     'generated_text': None,
                     'error': gen_result['error'],
-                    'generation_time': generation_time,
                     'timestamp': datetime.now().isoformat()
                 }
                 
@@ -162,14 +152,14 @@ def run_benchmark(model_name: str,
     # Update metadata with final counts
     results['metadata']['completed_samples'] = total_samples - failed_samples
     results['metadata']['failed_samples'] = failed_samples
-    results['metadata']['total_generation_time'] = sum(
-        s.get('generation_time', 0) for s in results['samples']
-    )
     
     # Save results
     Path(output_dir).mkdir(exist_ok=True)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"benchmark_results_{model_name}_{timestamp}.json"
+    
+    # Clean up model name for filename
+    clean_model_name = model_name.replace("-", "").replace(".", "").replace("_", "")
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    filename = f"{clean_model_name}_benchmark_{timestamp}.json"
     filepath = Path(output_dir) / filename
     
     with open(filepath, 'w') as f:

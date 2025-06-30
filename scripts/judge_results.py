@@ -192,11 +192,13 @@ def judge_benchmark_results(results_file: str,
     
     # Save enhanced results
     Path(output_dir).mkdir(exist_ok=True)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     
-    # Generate filename based on original file
-    original_name = Path(results_file).stem
-    enhanced_filename = f"judged_{original_name}_{timestamp}.json"
+    # Extract model name and create clean filename
+    model_name = data.get('model_name', 'unknown')
+    clean_model_name = model_name.replace("-", "").replace(".", "").replace("_", "")
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    
+    enhanced_filename = f"{clean_model_name}_judged_{timestamp}.json"
     enhanced_filepath = Path(output_dir) / enhanced_filename
     
     with open(enhanced_filepath, 'w') as f:

@@ -4,79 +4,16 @@ import { useState, useEffect } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import type { LeaderboardEntry } from "@/types/benchmark"
-
-// Mock data focused on quality only
-const mockData: LeaderboardEntry[] = [
-  {
-    sampler_name: "creative_minp",
-    average_score: 7.8,
-    total_samples: 18,
-    criteria_breakdown: {
-      narrative_coherence: 7.9,
-      creativity_originality: 8.2,
-      character_development: 7.4,
-      engagement_readability: 7.8,
-      stylistic_quality: 7.7
-    },
-    description: "Creative plus writing with min_p sampling",
-    parameters: { temperature: 1.0, min_p: 0.2, max_tokens: 512 },
-    avg_word_count: 421
-  },
-  {
-    sampler_name: "ultra_sigma",
-    average_score: 7.6,
-    total_samples: 18,
-    criteria_breakdown: {
-      narrative_coherence: 7.2,
-      creativity_originality: 8.4,
-      character_development: 7.1,
-      engagement_readability: 7.8,
-      stylistic_quality: 7.5
-    },
-    description: "Ultra creative writing with max-temp sigma sampling",
-    parameters: { temperature: 2.0, top_n_sigma: 1.0, max_tokens: 512 },
-    avg_word_count: 435
-  },
-  {
-    sampler_name: "standard_minp",
-    average_score: 7.2,
-    total_samples: 18,
-    criteria_breakdown: {
-      narrative_coherence: 7.5,
-      creativity_originality: 7.0,
-      character_development: 7.2,
-      engagement_readability: 7.3,
-      stylistic_quality: 7.0
-    },
-    description: "Standard creative writing with min_p sampling",
-    parameters: { temperature: 0.7, min_p: 0.2, max_tokens: 512 },
-    avg_word_count: 415
-  },
-  {
-    sampler_name: "llama_default",
-    average_score: 6.8,
-    total_samples: 18,
-    criteria_breakdown: {
-      narrative_coherence: 7.2,
-      creativity_originality: 6.1,
-      character_development: 6.9,
-      engagement_readability: 7.1,
-      stylistic_quality: 6.7
-    },
-    description: "Default Llama 3.1 provider-recommended settings",
-    parameters: { temperature: 0.6, top_p: 0.9, max_tokens: 512 },
-    avg_word_count: 408
-  }
-]
+import { getMockDataFromRealResults } from "@/lib/data-processor"
 
 export function LeaderboardTable() {
   const [data, setData] = useState<LeaderboardEntry[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Simulate loading
+    // Load real benchmark results data
     setTimeout(() => {
-      setData(mockData.sort((a, b) => b.average_score - a.average_score))
+      setData(getMockDataFromRealResults())
       setLoading(false)
     }, 1000)
   }, [])
@@ -112,7 +49,7 @@ export function LeaderboardTable() {
             </div>
             <div className="text-right">
               <div className="text-2xl font-bold text-blue-600">
-                {entry.average_score.toFixed(1)}
+                {entry.average_score.toFixed(2)}
               </div>
               <div className="text-sm text-gray-500">
                 {entry.total_samples} samples

@@ -16,7 +16,7 @@ export default function Dashboard() {
         </p>
       </div>
 
-      {/* Stats Overview */}
+      {/* Stats Overview - Real Data */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <Card>
           <CardHeader className="pb-3">
@@ -24,7 +24,7 @@ export default function Dashboard() {
             <CardDescription>Evaluated across all strategies</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-blue-600">72</div>
+            <div className="text-3xl font-bold text-blue-600">24</div>
           </CardContent>
         </Card>
         
@@ -44,7 +44,7 @@ export default function Dashboard() {
             <CardDescription>Overall writing quality (1-10)</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-purple-600">7.2</div>
+            <div className="text-3xl font-bold text-purple-600">6.3</div>
           </CardContent>
         </Card>
       </div>
