@@ -29,10 +29,14 @@ sampler-bench/
 │       ├── config.py         # Configuration management
 │       ├── logging.py        # Logging utilities
 │       └── reproducibility.py # Reproducibility helpers
+├── scripts/                   # Main execution scripts
+│   ├── run_benchmark.py      # Generate text samples (decoupled from judging)
+│   ├── judge_results.py      # Evaluate existing results for quality
+│   ├── legacy_judge_existing_results.py  # Legacy judge script
+│   └── README.md             # Scripts usage documentation
 ├── tests/                     # Test files
 │   ├── test_quality_api.py   # API validation tests
 │   ├── test_judge_setup.py   # Judge setup validation
-│   ├── judge_existing_results.py  # Evaluate existing results
 │   └── start_llama_dev.sh    # Development server starter
 ├── archive/                   # Archived results and data
 ├── results/                   # Current benchmark results
@@ -47,6 +51,12 @@ sampler-bench/
 ```
 
 ## Key Components
+
+### Execution Scripts (`scripts/`)
+- **`run_benchmark.py`**: Decoupled benchmark runner using KoboldCpp API
+- **`judge_results.py`**: Standalone results evaluation with LLM-as-a-Judge
+- Designed for independent execution and re-running of either phase
+- Full command-line interfaces with flexible configuration options
 
 ### Backend API (`backend/api/`)
 - **`quality_api.py`**: Main API class providing clean interfaces for frontend integration
@@ -77,7 +87,32 @@ This project prioritizes **quality over speed**. Key metrics:
 3. **Consistency Analysis** (how stable quality is across samples)
 4. **Detailed Reasoning** (why specific scores were given)
 
-## API Usage
+## Script Usage (Recommended)
+
+### Quick Benchmark Run
+```bash
+# Generate samples with default settings
+python scripts/run_benchmark.py
+
+# Judge the results automatically
+python scripts/judge_results.py --auto-find
+```
+
+### Custom Benchmark
+```bash
+# Test specific samplers with custom prompts
+python scripts/run_benchmark.py \
+  --model llama_3_1_8b \
+  --samplers focused balanced creative \
+  --custom-prompts "Write a story about time travel"
+
+# Judge with specific OpenAI model
+python scripts/judge_results.py \
+  --auto-find \
+  --judge-model gpt-4o-mini
+```
+
+## API Usage (For Integration)
 
 ### Basic Setup
 ```python

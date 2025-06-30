@@ -46,7 +46,8 @@ class SamplerBenchAPI:
         
         # Extract the actual models and samplers from nested structure
         self.models = models_data.get('models', {}) if models_data else {}
-        self.samplers = samplers_data.get('samplers', {}) if samplers_data else {}
+        # Use presets from the samplers config (the actual sampler configurations)
+        self.samplers = samplers_data.get('presets', {}) if samplers_data else {}
         
     def _load_yaml(self, filepath: Path) -> Dict[str, Any]:
         """Load YAML configuration file."""
