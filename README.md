@@ -1,166 +1,165 @@
-# Sampler Bench - Model Testing Platform
+# Sampler Bench
 
-A high-performance model testing and benchmarking platform that finds optimal sampling strategies for any LLM across different tasks. Powered by **KoboldCpp** and **GPU acceleration**.
-
-**Vision:** Download a model, run comprehensive benchmarks, get the best sampling settings for each task (creative writing, reasoning, coding, etc.) via a web dashboard.
-
-**MVP Scope:** Creative writing task only, with plans for frontend dashboard on Vercel.
-
-## Current Features
-
-- **GPU-Accelerated Performance**: 40+ tokens/sec with KoboldCpp on RTX 5070 Ti
-- **Creative Writing Benchmarks**: Optimized presets for stories, dialogue, and brainstorming
-- **Multiple Sampling Strategies**: Top-p, Min-p, and temperature-based sampling
-- **Performance Measurement**: Speed and quality metrics across configurations
-- **JSON Results Export**: Ready for frontend consumption
+A professional quality-focused benchmarking platform for evaluating LLM sampling strategies on creative writing tasks.
 
 ## 🚀 Quick Start
 
-### Prerequisites
+1. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-- Python 3.8+
-- NVIDIA GPU with CUDA support (16GB+ recommended)
-- KoboldCpp with CUDA acceleration
+2. **Set up environment:**
+   ```bash
+   cp .env.example .env
+   # Add your OPENAI_API_KEY to .env
+   ```
 
-### Installation
+3. **Start model server:**
+   ```bash
+   ./scripts/start_model_server.sh llama-3.1-8b-instruct
+   ```
 
-1. **Clone the repository**:
+4. **Run benchmark:**
+   ```bash
+   python scripts/run_full_benchmark.py
+   ```
+
+## 📋 Available Scripts
+
+### 🎯 Complete Workflow (Recommended)
 ```bash
-git clone <repository-url>
-cd sampler-bench
+python scripts/run_full_benchmark.py [options]
 ```
+Runs generation + judging in one command.
 
-2. **Set up Python environment**:
+### 🔧 Decoupled Workflow
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
+# 1. Generate samples
+python scripts/run_benchmark.py [options]
+
+# 2. Judge results  
+python scripts/judge_results.py --auto-find
 ```
 
-3. **Configure your model** (edit `backend/config/models.yaml`):
-```yaml
-models:
-  mistral-small-24b:
-    name: "Mistral Small 3.2 24B Instruct"
-    path: "/path/to/your/model.gguf"
-    context_length: 2048
-    inference_engine: "koboldcpp"
-    port: 5001
-    gpu_layers: 43  # Adjust for your GPU
-```
-
-### Running Tests
-
-1. **Start KoboldCpp server**:
+### 🚀 Model Server
 ```bash
-./koboldcpp-linux-x64 --model /path/to/model.gguf --usecublas normal 0 --gpulayers 43 --contextsize 2048 --port 5001
+./scripts/start_model_server.sh [model-name]
 ```
 
-2. **Run creative writing tests**:
+## 🎛️ Configuration
+
+### Models (`backend/config/models.yaml`)
+- `llama-3.1-8b-instruct` - Fast 8B model (port 5002)
+- `mistral-small-24b` - Larger 24B model (port 5001)
+
+### Samplers (`backend/config/samplers.yaml`)
+- `llama_default` - Conservative (temp 0.6, top_p 0.9)
+- `standard_minp` - Min-p sampling (temp 0.7)
+- `creative_minp` - Higher creativity (temp 1.0)
+- `ultra_minp` - Maximum creativity (temp 1.5)
+- `balanced_sigma` - Sigma sampling (temp 1.0)
+- `creative_sigma` - High-temp sigma (temp 1.5)
+- `ultra_sigma` - Max-temp sigma (temp 2.0)
+
+## 💡 Usage Examples
+
+### Basic Benchmark
 ```bash
-python test_creative_writing.py
+python scripts/run_full_benchmark.py \
+  --samplers llama_default creative_minp ultra_sigma
 ```
 
-## 📊 Performance Results
+### Custom Prompts
+```bash
+python scripts/run_full_benchmark.py \
+  --custom-prompts "Write a story about time travel" \
+  --max-length 500
+```
 
-**RTX 5070 Ti Performance** (with Mistral Small 24B):
-- **Focused preset**: 38-42 tokens/sec (coherent, minimal repetition)
-- **Balanced preset**: 35-40 tokens/sec (creative + coherent)
-- **Creative preset**: 32-38 tokens/sec (high diversity)
-- **Natural preset**: 36-41 tokens/sec (min-p sampling)
+### Different Model
+```bash
+./scripts/start_model_server.sh mistral-small-24b
+python scripts/run_full_benchmark.py --model mistral-small-24b
+```
 
-## 🎭 Creative Writing Presets
+### Decoupled Testing
+```bash
+# Generate with multiple samplers
+python scripts/run_benchmark.py \
+  --samplers llama_default standard_minp creative_minp
 
-### Focused
-- **Best for**: Coherent stories, technical writing
-- **Settings**: Temperature 0.7, Top-p 0.9
-- **Characteristics**: Logical flow, minimal repetition
+# Judge results later (when you improve criteria)
+python scripts/judge_results.py --auto-find
+```
 
-### Balanced  
-- **Best for**: General creative writing, novels
-- **Settings**: Temperature 0.8, Top-p 0.95
-- **Characteristics**: Creative yet coherent
+## 📊 Output
 
-### Creative
-- **Best for**: Brainstorming, experimental writing
-- **Settings**: Temperature 1.0, Top-p 0.99
-- **Characteristics**: High diversity and originality
+### Generation Results
+`results/benchmark_results_MODEL_TIMESTAMP.json` contains:
+- Generated text samples
+- Performance metrics (tokens/sec)
+- Sampler configurations
+- Generation metadata
 
-### Natural
-- **Best for**: Dialogue, conversational content
-- **Settings**: Temperature 0.8, Min-p 0.05
-- **Characteristics**: Natural flow using min-p sampling
+### Judged Results  
+`results/judged_*.json` contains:
+- Quality scores (1-10 scale)
+- Detailed criterion breakdowns
+- LLM judge reasoning
+- Quality rankings
 
-## 🏗️ Project Structure
+## 🎭 Quality Evaluation
+
+Uses OpenAI GPT for quality assessment on 5 criteria:
+- **Narrative Coherence** (25%) - Story flow and consistency
+- **Creativity & Originality** (25%) - Unique ideas and expression  
+- **Character Development** (20%) - Character depth and believability
+- **Engagement & Readability** (20%) - Reader interest and accessibility
+- **Stylistic Quality** (10%) - Writing technique and language use
+
+## 🏗️ Architecture
 
 ```
 sampler-bench/
-├── backend/
-│   ├── config/           # Model and sampling configurations
-│   ├── inference/        # KoboldCpp integration
-│   └── utils/           # Logging and configuration utilities
-├── data/                # Experiment results and datasets
-├── test_creative_writing.py  # Main testing script
-└── README.md
+├── scripts/              # Execution scripts
+│   ├── start_model_server.sh    # Start KoboldCpp
+│   ├── run_full_benchmark.py    # Complete pipeline
+│   ├── run_benchmark.py         # Generation only
+│   └── judge_results.py         # Judging only
+├── backend/              # Core system
+│   ├── api/             # API interfaces
+│   ├── config/          # Model & sampler configs
+│   ├── evaluation/      # Quality evaluation
+│   ├── inference/       # Text generation
+│   └── utils/           # Utilities
+├── results/             # Benchmark results
+├── requirements.txt     # Dependencies
+├── .env                 # Environment variables
+└── README.md           # This file
 ```
 
-## ⚙️ Configuration
+## 🔧 Prerequisites
 
-### Models (`backend/config/models.yaml`)
-Define your model paths and GPU settings:
-- Model path and quantization
-- Context length and GPU layers
-- KoboldCpp server configuration
+1. **KoboldCpp Server** - For model inference
+2. **OpenAI API Key** - For quality evaluation
+3. **Python 3.12+** - Runtime environment
 
-### Sampling Presets (`backend/config/samplers.yaml`)
-Creative writing optimized presets:
-- Temperature and top-p settings
-- Repetition penalty configuration
-- Task-specific recommendations
+## 📝 Notes
 
-### Experiments (`backend/config/experiments.yaml`)
-Predefined creative writing experiments:
-- Story generation benchmarks
-- Dialogue quality tests
-- Performance comparisons
+- **Decoupled Design**: Generation and judging are independent
+- **API-Based**: Uses KoboldCpp API to avoid CUDA issues
+- **Quality-Focused**: Prioritizes writing quality over speed
+- **Reproducible**: Full configuration tracking
+- **Flexible**: Easy to add new models/samplers
 
-## 🎯 Supported Tasks
+## 🎯 Results Interpretation
 
-- **Story Writing**: Long-form narrative generation
-- **Dialogue**: Character conversations and responses
-- **Brainstorming**: Idea generation and exploration
-- **World Building**: Setting and environment description
+Higher scores indicate better quality:
+- **9-10**: Exceptional creative writing
+- **7-8**: Good quality with strong elements  
+- **5-6**: Average, adequate quality
+- **3-4**: Below average with issues
+- **1-2**: Poor quality with major problems
 
-## 📈 Results and Analysis
-
-Test results are saved to `creative_writing_results.json` with:
-- Performance metrics (tokens/sec, generation time)
-- Quality samples for each preset
-- Configuration details and timestamps
-
-## 🔧 Hardware Requirements
-
-**Recommended**:
-- RTX 4070/5070 Ti or better (16GB+ VRAM)
-- 32GB+ system RAM
-- Fast SSD storage
-
-**Minimum**:
-- RTX 3060 12GB (with reduced layers)
-- 16GB+ system RAM
-
-## 🤝 Contributing
-
-This project focuses on creative writing applications. Future improvements:
-- Additional task types (code, analysis, etc.)
-- More inference engines
-- Advanced evaluation metrics
-- Web interface for easy testing
-
-## 📄 License
-
-MIT License - see LICENSE file for details.
-
----
-
-**Ready to optimize your model sampling strategies? Start benchmarking!** 
+The system provides both overall scores and detailed criterion breakdowns for comprehensive analysis. 
