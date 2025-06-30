@@ -16,6 +16,7 @@ MODELS_DIR="/home/franc/llms"
 declare -A MODEL_CONFIGS
 MODEL_CONFIGS[llama-3.1-8b-instruct]="Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf:5002:8192:-1"
 MODEL_CONFIGS[mistral-small-24b]="mistralai_Mistral-Small-3.2-24B-Instruct-2506-IQ4_XS.gguf:5001:2048:43"
+MODEL_CONFIGS[ministral-8b-instruct]="Ministral-8B-Instruct-2410-Q4_K_M.gguf:5003:8192:-1"
 
 # Colors for output
 RED='\033[0;31m'

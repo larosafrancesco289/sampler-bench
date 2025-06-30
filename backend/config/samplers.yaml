@@ -12,6 +12,15 @@ presets:
       top_p: 0.9
       max_tokens: 512
       
+  # Ministral 8B recommended settings
+  ministral_recommended:
+    description: "Recommended settings for Ministral 8B (temp 0.3, top_p 1.0)"
+    sampler: "top_p"
+    parameters:
+      temperature: 0.3
+      top_p: 1.0
+      max_tokens: 512
+      
   # Min-p sampling configurations
   standard_minp:
     description: "Standard creative writing with min_p sampling"

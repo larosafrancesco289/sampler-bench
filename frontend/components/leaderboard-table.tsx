@@ -1,31 +1,36 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import type { LeaderboardEntry } from "@/types/benchmark"
-import { getMockDataFromRealResults } from "@/lib/data-processor"
+import { useBenchmarkData } from "@/hooks/use-benchmark-data"
 
 export function LeaderboardTable() {
-  const [data, setData] = useState<LeaderboardEntry[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    // Load real benchmark results data
-    setTimeout(() => {
-      setData(getMockDataFromRealResults())
-      setLoading(false)
-    }, 1000)
-  }, [])
+  const { data, loading, error, refetch } = useBenchmarkData()
 
   if (loading) {
     return (
       <div className="space-y-4">
+        <div className="text-center text-gray-600">Loading benchmark results...</div>
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="animate-pulse">
             <div className="h-16 bg-gray-200 rounded"></div>
           </div>
         ))}
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <div className="text-red-600 font-medium">Error loading results</div>
+        <div className="text-gray-600 mt-2">{error}</div>
+        <button 
+          onClick={refetch} 
+          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Retry
+        </button>
       </div>
     )
   }

@@ -60,4 +60,17 @@ export interface LeaderboardEntry {
   description: string;
   parameters: Record<string, any>;
   avg_word_count: number;
+  model_name?: string;
+}
+
+export interface ApiResponse {
+  leaderboard: LeaderboardEntry[];
+  summary: {
+    total_samples: number;
+    unique_samplers: number;
+    avg_quality_score: number;
+    models_tested: number;
+    last_updated: string;
+  };
+  raw_data: BenchmarkResults[];
 } 

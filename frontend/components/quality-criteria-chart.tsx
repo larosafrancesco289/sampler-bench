@@ -1,82 +1,84 @@
 "use client"
 
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Legend } from 'recharts'
+import { useBenchmarkData } from "@/hooks/use-benchmark-data"
 
-// Real data from llama318binstruct_judged_20250630-123120.json
-const data = [
-  {
-    criterion: 'Narrative Coherence',
-    standard_minp: 7.2,
-    llama_default: 6.5,
-    creative_minp: 6.3,
-    ultra_sigma: 5.8,
-  },
-  {
-    criterion: 'Creativity & Originality',
-    standard_minp: 6.8,
-    llama_default: 6.0,
-    creative_minp: 6.4,
-    ultra_sigma: 5.9,
-  },
-  {
-    criterion: 'Character Development',
-    standard_minp: 6.9,
-    llama_default: 6.2,
-    creative_minp: 6.1,
-    ultra_sigma: 5.5,
-  },
-  {
-    criterion: 'Engagement & Readability',
-    standard_minp: 7.1,
-    llama_default: 6.3,
-    creative_minp: 6.2,
-    ultra_sigma: 5.7,
-  },
-  {
-    criterion: 'Stylistic Quality',
-    standard_minp: 6.7,
-    llama_default: 6.1,
-    creative_minp: 6.1,
-    ultra_sigma: 5.6,
-  },
-]
+const colors = ['#10b981', '#f59e0b', '#8b5cf6', '#06b6d4', '#ef4444', '#f97316', '#84cc16']
 
 export function QualityCriteriaChart() {
+  const { data, loading, error } = useBenchmarkData()
+
+  if (loading) {
+    return (
+      <div className="h-80 flex items-center justify-center">
+        <div className="text-gray-600">Loading chart data...</div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="h-80 flex items-center justify-center">
+        <div className="text-red-600">Error loading chart data</div>
+      </div>
+    )
+  }
+
+  // Get all unique criteria
+  const allCriteria = new Set<string>()
+  data.forEach(entry => {
+    Object.keys(entry.criteria_breakdown).forEach(criterion => {
+      allCriteria.add(criterion)
+    })
+  })
+
+  // Transform criteria names for display
+  const formatCriterionName = (criterion: string) => {
+    return criterion
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+  }
+
+  // Create chart data
+  const chartData = Array.from(allCriteria).map(criterion => {
+    const point: any = {
+      criterion: formatCriterionName(criterion)
+    }
+    
+    data.forEach((entry, index) => {
+      const samplerKey = entry.sampler_name.replace(/[^a-zA-Z0-9]/g, '_')
+      point[samplerKey] = entry.criteria_breakdown[criterion] || 0
+    })
+    
+    return point
+  })
+
   return (
     <div className="h-80">
       <ResponsiveContainer width="100%" height="100%">
-        <RadarChart data={data}>
+        <RadarChart data={chartData}>
           <PolarGrid />
-          <PolarAngleAxis dataKey="criterion" tick={{ fontSize: 12 }} />
-          <PolarRadiusAxis domain={[0, 10]} tick={{ fontSize: 10 }} />
-          <Radar
-            name="standard_minp"
-            dataKey="standard_minp"
-            stroke="#10b981"
-            fill="#10b981"
-            fillOpacity={0.1}
+          <PolarAngleAxis dataKey="criterion" tick={{ fontSize: 10 }} />
+          <PolarRadiusAxis 
+            angle={90} 
+            domain={[0, 10]} 
+            tick={{ fontSize: 8 }}
           />
-          <Radar
-            name="llama_default"
-            dataKey="llama_default"
-            stroke="#f59e0b"
-            fill="#f59e0b"
-            fillOpacity={0.1}
-          />
-          <Radar
-            name="creative_minp"
-            dataKey="creative_minp"
-            stroke="#8b5cf6"
-            fill="#8b5cf6"
-            fillOpacity={0.1}
-          />
-          <Radar
-            name="ultra_sigma"
-            dataKey="ultra_sigma"
-            stroke="#06b6d4"
-            fill="#06b6d4"
-            fillOpacity={0.1}
-          />
+          {data.map((entry, index) => {
+            const samplerKey = entry.sampler_name.replace(/[^a-zA-Z0-9]/g, '_')
+            return (
+              <Radar
+                key={samplerKey}
+                name={entry.sampler_name}
+                dataKey={samplerKey}
+                stroke={colors[index % colors.length]}
+                fill={colors[index % colors.length]}
+                fillOpacity={0.1}
+                strokeWidth={2}
+              />
+            )
+          })}
           <Legend />
         </RadarChart>
       </ResponsiveContainer>
