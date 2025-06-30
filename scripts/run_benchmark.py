@@ -20,43 +20,23 @@ from api.quality_api import SamplerBenchAPI
 
 def load_prompts_from_config() -> List[str]:
     """Load prompts from experiments config or use defaults."""
-    try:
-        import yaml
-        config_path = Path(__file__).parent.parent / "backend/config/experiments.yaml"
-        with open(config_path, 'r') as f:
-            config = yaml.safe_load(f)
-        
-        # Extract prompts from task definitions
-        prompts = []
-        tasks = config.get('tasks', {})
-        story_task = tasks.get('story_writing', {})
-        templates = story_task.get('prompt_templates', [])
-        
-        # Convert templates to actual prompts (simplified)
-        base_prompts = [
-            "Write a short story about a mysterious package that appears on someone's doorstep.",
-            "Write a story about two strangers who meet during a power outage.",
-            "Write a short tale about a character who discovers they can hear other people's thoughts.",
-            "Write a story about someone who finds an old diary that predicts the future.",
-            "Write a short story about a world where colors have been banned."
-        ]
-        
-        return base_prompts
-        
-    except Exception as e:
-        print(f"⚠️ Could not load prompts from config: {e}")
-        # Fallback prompts
-        return [
-            "Write a short story about a mysterious package that appears on someone's doorstep.",
-            "Write a story about two strangers who meet during a power outage.",
-            "Write a short tale about a character who discovers they can hear other people's thoughts.",
-        ]
+    # Fallback prompts
+    return [
+        # Curated high-quality creative writing prompts for reproducible benchmarking
+        "Write a short story about a mysterious package that appears on someone's doorstep one rainy evening.",
+        "Write a story about two strangers who meet during a citywide power outage and discover an unexpected connection.",
+        "Write a tale about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours.",
+        "Write a story about someone who finds an old diary that seems to predict future events with disturbing accuracy.",
+        "Write a short story about a small town where all the residents have agreed never to mention a particular year.",
+        "Write a story about a librarian who discovers that books in their library are rewriting themselves overnight."
+    ]
 
 def run_benchmark(model_name: str, 
                  sampler_names: List[str], 
                  prompts: List[str],
                  max_length: int = 512,
-                 output_dir: str = "results") -> str:
+                 output_dir: str = "results",
+                 seed: int = None) -> str:
     """
     Run benchmark and save results to JSON.
     
@@ -66,6 +46,7 @@ def run_benchmark(model_name: str,
         prompts: List of prompts to test
         max_length: Maximum generation length
         output_dir: Directory to save results
+        seed: Optional random seed for generation (deterministic decoding)
     
     Returns:
         Path to the saved results file
@@ -131,7 +112,7 @@ def run_benchmark(model_name: str,
             start_time = time.time()
             
             # Generate sample
-            gen_result = api.generate_single_sample(prompt, sampler_name, max_length)
+            gen_result = api.generate_single_sample(prompt, sampler_name, max_length, seed=seed)
             
             generation_time = time.time() - start_time
             
@@ -210,7 +191,7 @@ def main():
                        help="Model name to use (default: llama-3.1-8b-instruct)")
     parser.add_argument("--samplers", "-s",
                        nargs="+",
-                       default=["llama_default", "focused", "balanced", "creative"],
+                       default=["llama_default", "standard_minp", "creative_minp"],
                        help="Sampler names to test")
     parser.add_argument("--max-length", "-l",
                        type=int,
@@ -222,6 +203,9 @@ def main():
     parser.add_argument("--custom-prompts", "-p",
                        nargs="+",
                        help="Custom prompts to use instead of defaults")
+    parser.add_argument("--seed", "-d",
+                       type=int,
+                       help="Optional random seed for generation (deterministic decoding)")
     
     args = parser.parse_args()
     
@@ -239,7 +223,8 @@ def main():
         sampler_names=args.samplers,
         prompts=prompts,
         max_length=args.max_length,
-        output_dir=args.output_dir
+        output_dir=args.output_dir,
+        seed=args.seed
     )
     
     if result_file:

@@ -59,7 +59,7 @@ Examples:
                           help="Model name to use (default: llama-3.1-8b-instruct)")
     gen_group.add_argument("--samplers", "-s",
                           nargs="+",
-                          default=["llama_default", "focused", "balanced", "creative"],
+                          default=["llama_default", "standard_minp", "creative_minp"],
                           help="Sampler names to test")
     gen_group.add_argument("--max-length", "-l",
                           type=int,
@@ -68,6 +68,11 @@ Examples:
     gen_group.add_argument("--custom-prompts", "-p",
                           nargs="+",
                           help="Custom prompts to use instead of defaults")
+    
+    # Deterministic generation support
+    gen_group.add_argument("--seed", "-d",
+                          type=int,
+                          help="Optional random seed for generation (deterministic decoding)")
     
     # Judging options
     judge_group = parser.add_argument_group('judging options')
@@ -123,6 +128,10 @@ Examples:
         # Add custom prompts if provided
         if args.custom_prompts:
             benchmark_cmd.extend(["--custom-prompts"] + args.custom_prompts)
+        
+        # Pass seed if provided
+        if args.seed is not None:
+            benchmark_cmd.extend(["--seed", str(args.seed)])
         
         success = run_command(benchmark_cmd, "Benchmark Generation")
         

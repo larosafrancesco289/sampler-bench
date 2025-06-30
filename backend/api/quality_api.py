@@ -7,6 +7,7 @@ import json
 import yaml
 from typing import Dict, List, Any, Optional
 from pathlib import Path
+import time
 
 import requests
 
@@ -138,7 +139,9 @@ class SamplerBenchAPI:
     def generate_single_sample(self, 
                               prompt: str, 
                               sampler_name: str,
-                              max_length: int = 512) -> Dict[str, Any]:
+                              max_length: int = 512,
+                              seed: int = None,
+                              max_retries: int = 3) -> Dict[str, Any]:
         """Generate a single text sample."""
         if not hasattr(self, 'generator_config'):
             return {
@@ -152,41 +155,47 @@ class SamplerBenchAPI:
                 'error': f"Sampler '{sampler_name}' not found"
             }
         
-        try:
-            sampler_config = self.samplers[sampler_name]['parameters'].copy()
-            
-            # Prepare KoboldCpp API request
-            url = f"http://localhost:{self.generator_config['port']}/api/v1/generate"
-            payload = {
-                "prompt": prompt,
-                "max_length": max_length,
-                "stop_sequence": ["<|eot_id|>", "<|end_of_text|>"],
-                **sampler_config
-            }
-            
-            response = requests.post(url, json=payload, timeout=60)
-            
-            if response.status_code == 200:
-                data = response.json()
-                generated_text = data.get('results', [{}])[0].get('text', '')
-                
-                return {
-                    'success': True,
-                    'generated_text': generated_text,
-                    'word_count': len(generated_text.split()),
-                    'sampler_config': sampler_config
-                }
-            else:
-                return {
-                    'success': False,
-                    'error': f"HTTP {response.status_code}: {response.text}"
-                }
-                
-        except Exception as e:
-            return {
-                'success': False,
-                'error': str(e)
-            }
+        sampler_config = self.samplers[sampler_name]['parameters'].copy()
+        
+        # Prepare KoboldCpp API request
+        url = f"http://localhost:{self.generator_config['port']}/api/v1/generate"
+        payload_base = {
+            "prompt": prompt,
+            "max_length": max_length,
+            "stop_sequence": ["<|eot_id|>", "<|end_of_text|>"],
+            **sampler_config
+        }
+        if seed is not None:
+            payload_base["seed"] = seed
+        
+        # Retry loop with exponential back-off
+        attempt = 0
+        while attempt < max_retries:
+            try:
+                response = requests.post(url, json=payload_base, timeout=60)
+                if response.status_code == 200:
+                    data = response.json()
+                    generated_text = data.get('results', [{}])[0].get('text', '')
+                    return {
+                        'success': True,
+                        'generated_text': generated_text,
+                        'word_count': len(generated_text.split()),
+                        'sampler_config': sampler_config
+                    }
+                else:
+                    error_msg = f"HTTP {response.status_code}: {response.text}"
+                    raise RuntimeError(error_msg)
+            except Exception as e:
+                # Last attempt -> return error
+                if attempt == max_retries - 1:
+                    return {
+                        'success': False,
+                        'error': str(e)
+                    }
+                # Wait and retry
+                backoff = 2 ** attempt
+                time.sleep(backoff)
+                attempt += 1
     
     def evaluate_quality(self, 
                         text: str, 

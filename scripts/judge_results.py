@@ -183,6 +183,12 @@ def judge_benchmark_results(results_file: str,
         
     except Exception as e:
         print(f"⚠️ Could not generate quality statistics: {e}")
+        
+        # Provide empty structure to keep JSON schema stable
+        enhanced_results['quality_statistics'] = {
+            'overall_stats': {},
+            'sampler_ranking': []
+        }
     
     # Save enhanced results
     Path(output_dir).mkdir(exist_ok=True)
