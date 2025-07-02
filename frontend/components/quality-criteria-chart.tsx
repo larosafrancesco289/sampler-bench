@@ -11,7 +11,7 @@ export function QualityCriteriaChart() {
   if (loading) {
     return (
       <div className="h-80 flex items-center justify-center">
-        <div className="text-gray-600">Loading chart data...</div>
+        <div className="text-gray-600 dark:text-gray-300 animate-pulse transition-colors duration-300">Loading chart data...</div>
       </div>
     )
   }
@@ -19,7 +19,7 @@ export function QualityCriteriaChart() {
   if (error) {
     return (
       <div className="h-80 flex items-center justify-center">
-        <div className="text-red-600">Error loading chart data</div>
+        <div className="text-red-600 dark:text-red-400 transition-colors duration-300">Error loading chart data</div>
       </div>
     )
   }
@@ -55,15 +55,21 @@ export function QualityCriteriaChart() {
   })
 
   return (
-    <div className="h-80">
+    <div className="h-80 transition-all duration-300">
       <ResponsiveContainer width="100%" height="100%">
         <RadarChart data={chartData}>
-          <PolarGrid />
-          <PolarAngleAxis dataKey="criterion" tick={{ fontSize: 10 }} />
+          <PolarGrid stroke="currentColor" opacity={0.2} />
+          <PolarAngleAxis 
+            dataKey="criterion" 
+            tick={{ fontSize: 10, fill: 'currentColor' }}
+            className="text-gray-700 dark:text-gray-300"
+          />
           <PolarRadiusAxis 
             angle={90} 
             domain={[0, 10]} 
-            tick={{ fontSize: 8 }}
+            tick={{ fontSize: 8, fill: 'currentColor' }}
+            stroke="currentColor"
+            opacity={0.5}
           />
           {data.map((entry, index) => {
             const samplerKey = entry.sampler_name.replace(/[^a-zA-Z0-9]/g, '_')
@@ -76,10 +82,16 @@ export function QualityCriteriaChart() {
                 fill={colors[index % colors.length]}
                 fillOpacity={0.1}
                 strokeWidth={2}
+                className="transition-all duration-300 hover:fillOpacity-20"
               />
             )
           })}
-          <Legend />
+          <Legend 
+            wrapperStyle={{ 
+              color: 'currentColor',
+              fontSize: '12px'
+            }}
+          />
         </RadarChart>
       </ResponsiveContainer>
     </div>

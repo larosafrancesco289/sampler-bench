@@ -11,7 +11,7 @@ export function ScoreChart() {
   if (loading) {
     return (
       <div className="h-80 flex items-center justify-center">
-        <div className="text-gray-600">Loading chart data...</div>
+        <div className="text-gray-600 dark:text-gray-300 animate-pulse transition-colors duration-300">Loading chart data...</div>
       </div>
     )
   }
@@ -19,7 +19,7 @@ export function ScoreChart() {
   if (error) {
     return (
       <div className="h-80 flex items-center justify-center">
-        <div className="text-red-600">Error loading chart data</div>
+        <div className="text-red-600 dark:text-red-400 transition-colors duration-300">Error loading chart data</div>
       </div>
     )
   }
@@ -32,22 +32,30 @@ export function ScoreChart() {
   }))
 
   return (
-    <div className="h-80">
+    <div className="h-80 transition-all duration-300">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid strokeDasharray="3 3" stroke="currentColor" opacity={0.1} />
           <XAxis 
             dataKey="name" 
-            tick={{ fontSize: 12 }}
+            tick={{ fontSize: 12, fill: 'currentColor' }}
             angle={-45}
             textAnchor="end"
             height={80}
+            stroke="currentColor"
+            opacity={0.7}
           />
           <YAxis 
             domain={[0, 10]}
-            tick={{ fontSize: 12 }}
+            tick={{ fontSize: 12, fill: 'currentColor' }}
+            stroke="currentColor"
+            opacity={0.7}
           />
-          <Bar dataKey="score" />
+          <Bar 
+            dataKey="score" 
+            className="transition-all duration-300 hover:opacity-80"
+            radius={[4, 4, 0, 0]}
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>
