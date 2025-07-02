@@ -13,5 +13,10 @@ python-dotenv>=1.0.0
 # Scientific computing (minimal)
 numpy>=1.24.0
 
+# FastAPI web framework and server
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.0.0
+
 # Optional: For advanced analysis (can be removed if not needed)
 # torch>=2.0.0 

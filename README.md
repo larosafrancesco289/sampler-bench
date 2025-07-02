@@ -1,8 +1,37 @@
 # Sampler Bench
 
-A professional quality-focused benchmarking platform for evaluating LLM sampling strategies on creative writing tasks.
+A professional quality-focused benchmarking platform for evaluating LLM sampling strategies on creative writing tasks. Now with a modern FastAPI backend and Next.js frontend!
 
 ## 🚀 Quick Start
+
+### Option 1: Web Interface (Recommended)
+
+1. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **Set up environment:**
+   ```bash
+   cp .env.example .env
+   # Add your OPENAI_API_KEY to .env
+   ```
+
+3. **Start the FastAPI backend:**
+   ```bash
+   python start_backend.py
+   ```
+   The API will be available at http://localhost:8000 with docs at http://localhost:8000/docs
+
+4. **Start the frontend (in a new terminal):**
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+   The web interface will be available at http://localhost:3000
+
+### Option 2: Command Line Interface
 
 1. **Install dependencies:**
    ```bash
@@ -118,23 +147,54 @@ Uses OpenAI GPT for quality assessment on 5 criteria:
 - **Engagement & Readability** (20%) - Reader interest and accessibility
 - **Stylistic Quality** (10%) - Writing technique and language use
 
+## 🌐 FastAPI Endpoints
+
+The new FastAPI backend provides a comprehensive REST API:
+
+### Core Endpoints
+- `GET /api/models` - List available models
+- `GET /api/samplers` - List available samplers  
+- `GET /api/results` - Get benchmark results (for frontend)
+- `GET /health` - Health check
+
+### Initialization
+- `POST /api/judge/initialize` - Initialize LLM judge
+- `POST /api/generator/initialize` - Initialize text generator
+
+### Generation & Evaluation
+- `POST /api/generate` - Generate single text sample
+- `POST /api/evaluate` - Evaluate text quality
+- `POST /api/benchmark/run` - Run complete benchmark
+- `POST /api/results/load` - Load existing results
+
+### Documentation
+- `GET /docs` - Interactive API documentation (Swagger UI)
+- `GET /redoc` - Alternative API documentation
+
 ## 🏗️ Architecture
 
 ```
 sampler-bench/
+├── start_backend.py      # FastAPI server startup
 ├── scripts/              # Execution scripts
 │   ├── start_model_server.sh    # Start KoboldCpp
 │   ├── run_full_benchmark.py    # Complete pipeline
 │   ├── run_benchmark.py         # Generation only
 │   └── judge_results.py         # Judging only
 ├── backend/              # Core system
+│   ├── fastapi_server.py # FastAPI web server
 │   ├── api/             # API interfaces
 │   ├── config/          # Model & sampler configs
 │   ├── evaluation/      # Quality evaluation
 │   ├── inference/       # Text generation
 │   └── utils/           # Utilities
+├── frontend/            # Next.js web interface
+│   ├── app/            # Next.js app router
+│   ├── components/     # React components
+│   ├── hooks/          # React hooks
+│   └── types/          # TypeScript types
 ├── results/             # Benchmark results
-├── requirements.txt     # Dependencies
+├── requirements.txt     # Python dependencies
 ├── .env                 # Environment variables
 └── README.md           # This file
 ```
