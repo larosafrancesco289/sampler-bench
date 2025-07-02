@@ -1,0 +1,1029 @@
+{
+  "search_metadata": {
+    "timestamp": "2025-07-02T14:12:15.465315",
+    "total_configurations": 50,
+    "best_score": 7.283333333333334
+  },
+  "best_configuration": {
+    "parameters": {
+      "temperature": 0.8,
+      "top_p": 0.9,
+      "max_tokens": 512
+    },
+    "mean_score": 7.283333333333334,
+    "std_score": 0.2910708199428829,
+    "scores": [
+      6.7,
+      7.3,
+      7.2,
+      7.6,
+      7.5,
+      7.4
+    ],
+    "sampler_type": "top_p",
+    "evaluation_time": 84.62929654121399,
+    "sample_count": 6
+  },
+  "all_results": [
+    {
+      "parameters": {
+        "temperature": 0.8,
+        "top_p": 0.9,
+        "max_tokens": 512
+      },
+      "mean_score": 7.283333333333334,
+      "std_score": 0.2910708199428829,
+      "scores": [
+        6.7,
+        7.3,
+        7.2,
+        7.6,
+        7.5,
+        7.4
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 84.62929654121399,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.9,
+        "top_p": 0.9,
+        "max_tokens": 512
+      },
+      "mean_score": 7.266666666666667,
+      "std_score": 0.37267799624996506,
+      "scores": [
+        7.0,
+        6.6,
+        7.3,
+        7.7,
+        7.4,
+        7.6
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 62.36162805557251,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.6,
+        "top_p": 0.85,
+        "max_tokens": 512
+      },
+      "mean_score": 7.233333333333333,
+      "std_score": 0.26246692913372704,
+      "scores": [
+        7.5,
+        7.2,
+        6.7,
+        7.2,
+        7.4,
+        7.4
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 60.03895664215088,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.8,
+        "top_p": 0.85,
+        "max_tokens": 512
+      },
+      "mean_score": 7.233333333333333,
+      "std_score": 0.22852182001336827,
+      "scores": [
+        7.4,
+        6.8,
+        7.3,
+        7.5,
+        7.3,
+        7.1
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 61.97753071784973,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.9,
+        "top_p": 0.9,
+        "max_tokens": 512
+      },
+      "mean_score": 7.183333333333334,
+      "std_score": 0.20344259359556194,
+      "scores": [
+        7.2,
+        7.1,
+        6.8,
+        7.4,
+        7.4,
+        7.2
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 57.550018310546875,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.8,
+        "top_p": 0.85,
+        "max_tokens": 512
+      },
+      "mean_score": 7.183333333333334,
+      "std_score": 0.20344259359556194,
+      "scores": [
+        7.4,
+        6.8,
+        7.1,
+        7.2,
+        7.2,
+        7.4
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 80.04786658287048,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.9,
+        "top_p": 0.8,
+        "max_tokens": 512
+      },
+      "mean_score": 7.166666666666667,
+      "std_score": 0.33499585403736326,
+      "scores": [
+        6.6,
+        6.8,
+        7.4,
+        7.4,
+        7.4,
+        7.4
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 59.259095430374146,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.8,
+        "top_p": 0.85,
+        "max_tokens": 512
+      },
+      "mean_score": 7.166666666666667,
+      "std_score": 0.3590109871423001,
+      "scores": [
+        7.3,
+        7.0,
+        6.8,
+        7.6,
+        6.7,
+        7.6
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 97.81042838096619,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.9,
+        "top_p": 0.85,
+        "max_tokens": 512
+      },
+      "mean_score": 7.166666666666667,
+      "std_score": 0.2560381915956203,
+      "scores": [
+        7.2,
+        7.1,
+        7.4,
+        7.1,
+        7.5,
+        6.7
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 65.0386848449707,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.8,
+        "top_p": 0.85,
+        "max_tokens": 512
+      },
+      "mean_score": 7.1499999999999995,
+      "std_score": 0.27537852736430524,
+      "scores": [
+        6.6,
+        7.2,
+        7.3,
+        7.2,
+        7.5,
+        7.1
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 70.78140616416931,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 1.8,
+        "top_n_sigma": 1.0,
+        "max_tokens": 512
+      },
+      "mean_score": 7.1000000000000005,
+      "std_score": 0.5715476066494083,
+      "scores": [
+        6.8,
+        6.4,
+        7.1,
+        6.6,
+        7.8,
+        7.9
+      ],
+      "sampler_type": "top_n_sigma",
+      "evaluation_time": 67.4442789554596,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.9,
+        "top_p": 0.9,
+        "max_tokens": 512
+      },
+      "mean_score": 7.083333333333333,
+      "std_score": 0.37155828016013265,
+      "scores": [
+        7.0,
+        6.7,
+        7.3,
+        6.6,
+        7.7,
+        7.2
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 67.45139217376709,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.8,
+        "top_p": 0.85,
+        "max_tokens": 512
+      },
+      "mean_score": 7.083333333333333,
+      "std_score": 0.2544056253745625,
+      "scores": [
+        7.3,
+        6.8,
+        7.2,
+        7.1,
+        7.4,
+        6.7
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 65.06059527397156,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.7,
+        "top_p": 0.85,
+        "max_tokens": 512
+      },
+      "mean_score": 7.083333333333333,
+      "std_score": 0.4058598553961973,
+      "scores": [
+        7.3,
+        7.2,
+        6.2,
+        7.4,
+        7.1,
+        7.3
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 70.24802088737488,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 1.2,
+        "top_n_sigma": 2.0,
+        "max_tokens": 512
+      },
+      "mean_score": 7.05,
+      "std_score": 0.3403429642777024,
+      "scores": [
+        6.9,
+        6.6,
+        6.7,
+        7.4,
+        7.5,
+        7.2
+      ],
+      "sampler_type": "top_n_sigma",
+      "evaluation_time": 106.72758626937866,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 1.2,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "mean_score": 7.033333333333334,
+      "std_score": 0.45704364002673614,
+      "scores": [
+        6.8,
+        6.7,
+        6.4,
+        7.2,
+        7.3,
+        7.8
+      ],
+      "sampler_type": "min_p",
+      "evaluation_time": 67.45481157302856,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.7,
+        "top_p": 0.85,
+        "max_tokens": 512
+      },
+      "mean_score": 7.0,
+      "std_score": 0.5033222956847166,
+      "scores": [
+        6.6,
+        6.2,
+        6.8,
+        7.4,
+        7.4,
+        7.6
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 64.68401503562927,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.9,
+        "top_p": 0.9,
+        "max_tokens": 512
+      },
+      "mean_score": 7.0,
+      "std_score": 0.3109126351029606,
+      "scores": [
+        6.7,
+        6.5,
+        7.2,
+        7.2,
+        7.0,
+        7.4
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 68.76529169082642,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 1.1,
+        "min_p": 0.01,
+        "max_tokens": 512
+      },
+      "mean_score": 6.966666666666666,
+      "std_score": 0.2981423969999718,
+      "scores": [
+        7.1,
+        6.8,
+        6.4,
+        7.0,
+        7.2,
+        7.3
+      ],
+      "sampler_type": "min_p",
+      "evaluation_time": 57.835572719573975,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.9,
+        "top_p": 0.85,
+        "max_tokens": 512
+      },
+      "mean_score": 6.966666666666666,
+      "std_score": 0.24267032964268417,
+      "scores": [
+        6.8,
+        6.8,
+        7.2,
+        6.8,
+        7.4,
+        6.8
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 58.041409730911255,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.9,
+        "top_p": 0.9,
+        "max_tokens": 512
+      },
+      "mean_score": 6.95,
+      "std_score": 0.3095695936834452,
+      "scores": [
+        6.7,
+        7.1,
+        6.8,
+        7.2,
+        6.5,
+        7.4
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 77.94128489494324,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.8,
+        "top_p": 0.85,
+        "max_tokens": 512
+      },
+      "mean_score": 6.933333333333334,
+      "std_score": 0.8711422896914653,
+      "scores": [
+        5.0,
+        7.2,
+        7.3,
+        7.5,
+        7.2,
+        7.4
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 53.581581830978394,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.8,
+        "top_n_sigma": 2.5,
+        "max_tokens": 512
+      },
+      "mean_score": 6.933333333333334,
+      "std_score": 0.2687419249432851,
+      "scores": [
+        7.1,
+        6.7,
+        6.6,
+        7.4,
+        7.0,
+        6.8
+      ],
+      "sampler_type": "top_n_sigma",
+      "evaluation_time": 60.033509969711304,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.7,
+        "top_p": 0.9,
+        "max_tokens": 512
+      },
+      "mean_score": 6.8999999999999995,
+      "std_score": 0.8602325267042628,
+      "scores": [
+        7.1,
+        5.0,
+        7.1,
+        7.4,
+        7.4,
+        7.4
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 64.00549077987671,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.9,
+        "top_p": 0.9,
+        "max_tokens": 512
+      },
+      "mean_score": 6.883333333333333,
+      "std_score": 0.5550275268448905,
+      "scores": [
+        5.8,
+        6.7,
+        6.8,
+        7.4,
+        7.4,
+        7.2
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 66.95844340324402,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.7,
+        "top_p": 0.9,
+        "max_tokens": 512
+      },
+      "mean_score": 6.883333333333333,
+      "std_score": 0.27938424357067027,
+      "scores": [
+        6.8,
+        6.7,
+        6.7,
+        6.6,
+        7.4,
+        7.1
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 76.49928832054138,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.7,
+        "top_p": 0.85,
+        "max_tokens": 512
+      },
+      "mean_score": 6.8500000000000005,
+      "std_score": 0.5619905100029121,
+      "scores": [
+        6.8,
+        6.8,
+        5.7,
+        7.3,
+        7.1,
+        7.4
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 64.91432666778564,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 1.2,
+        "min_p": 0.01,
+        "max_tokens": 512
+      },
+      "mean_score": 6.8500000000000005,
+      "std_score": 0.9032349269892819,
+      "scores": [
+        6.7,
+        7.7,
+        6.8,
+        7.5,
+        7.4,
+        5.0
+      ],
+      "sampler_type": "min_p",
+      "evaluation_time": 64.85247826576233,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.8,
+        "top_p": 0.85,
+        "max_tokens": 512
+      },
+      "mean_score": 6.8500000000000005,
+      "std_score": 0.8500000000000001,
+      "scores": [
+        7.1,
+        6.9,
+        7.2,
+        7.4,
+        5.0,
+        7.5
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 69.14434170722961,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.9,
+        "top_p": 0.85,
+        "max_tokens": 512
+      },
+      "mean_score": 6.8500000000000005,
+      "std_score": 0.85,
+      "scores": [
+        7.3,
+        6.8,
+        7.3,
+        7.4,
+        7.3,
+        5.0
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 74.5623722076416,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.9,
+        "top_p": 0.9,
+        "max_tokens": 512
+      },
+      "mean_score": 6.816666666666666,
+      "std_score": 0.8254628331359861,
+      "scores": [
+        5.0,
+        7.2,
+        7.4,
+        6.9,
+        7.2,
+        7.2
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 64.87006711959839,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.7,
+        "top_p": 0.85,
+        "max_tokens": 512
+      },
+      "mean_score": 6.816666666666666,
+      "std_score": 0.8610394235392994,
+      "scores": [
+        7.4,
+        6.8,
+        6.8,
+        7.5,
+        5.0,
+        7.4
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 62.18077754974365,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 1.2,
+        "top_n_sigma": 1.2,
+        "max_tokens": 512
+      },
+      "mean_score": 6.766666666666667,
+      "std_score": 0.6128258770283413,
+      "scores": [
+        7.3,
+        7.4,
+        6.1,
+        6.0,
+        7.4,
+        6.4
+      ],
+      "sampler_type": "top_n_sigma",
+      "evaluation_time": 69.34021639823914,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 1.8,
+        "top_n_sigma": 1.5,
+        "max_tokens": 512
+      },
+      "mean_score": 6.716666666666668,
+      "std_score": 0.36704525909242064,
+      "scores": [
+        6.4,
+        6.4,
+        6.8,
+        6.4,
+        6.9,
+        7.4
+      ],
+      "sampler_type": "top_n_sigma",
+      "evaluation_time": 62.38402080535889,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 1.3,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "mean_score": 6.7,
+      "std_score": 0.9486832980505139,
+      "scores": [
+        5.8,
+        7.3,
+        5.0,
+        7.4,
+        7.4,
+        7.3
+      ],
+      "sampler_type": "min_p",
+      "evaluation_time": 64.51622748374939,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.7,
+        "top_p": 0.95,
+        "max_tokens": 512
+      },
+      "mean_score": 6.666666666666667,
+      "std_score": 0.7824463062870334,
+      "scores": [
+        5.0,
+        6.6,
+        6.8,
+        7.3,
+        7.2,
+        7.1
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 71.8776044845581,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.9,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "mean_score": 6.6000000000000005,
+      "std_score": 0.752772652709081,
+      "scores": [
+        7.1,
+        7.3,
+        6.7,
+        6.6,
+        5.0,
+        6.9
+      ],
+      "sampler_type": "min_p",
+      "evaluation_time": 59.350873947143555,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.9,
+        "top_p": 0.9,
+        "max_tokens": 512
+      },
+      "mean_score": 6.583333333333333,
+      "std_score": 0.7861650943380503,
+      "scores": [
+        6.8,
+        6.4,
+        7.5,
+        6.7,
+        5.0,
+        7.1
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 68.14966797828674,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.9,
+        "top_p": 0.95,
+        "max_tokens": 512
+      },
+      "mean_score": 6.5,
+      "std_score": 1.0645812948447542,
+      "scores": [
+        5.0,
+        5.0,
+        7.1,
+        7.3,
+        7.4,
+        7.2
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 64.67112588882446,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.9,
+        "top_p": 0.95,
+        "max_tokens": 512
+      },
+      "mean_score": 6.433333333333334,
+      "std_score": 1.0159833769418778,
+      "scores": [
+        7.1,
+        7.3,
+        7.1,
+        5.0,
+        5.0,
+        7.1
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 62.88846158981323,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.7,
+        "top_p": 0.9,
+        "max_tokens": 512
+      },
+      "mean_score": 6.333333333333333,
+      "std_score": 1.8669642619920597,
+      "scores": [
+        7.4,
+        2.4,
+        6.7,
+        7.9,
+        6.0,
+        7.6
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 68.4477846622467,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.8,
+        "top_p": 0.95,
+        "max_tokens": 512
+      },
+      "mean_score": 6.316666666666666,
+      "std_score": 1.975193380124814,
+      "scores": [
+        7.1,
+        7.4,
+        6.4,
+        2.0,
+        7.8,
+        7.2
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 66.34735131263733,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.7,
+        "top_p": 0.9,
+        "max_tokens": 512
+      },
+      "mean_score": 6.25,
+      "std_score": 0.9069178573608526,
+      "scores": [
+        6.7,
+        5.0,
+        6.7,
+        6.8,
+        5.0,
+        7.3
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 61.436859369277954,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 1.5,
+        "top_n_sigma": 1.0,
+        "max_tokens": 512
+      },
+      "mean_score": 6.233333333333333,
+      "std_score": 0.9030811456096043,
+      "scores": [
+        5.0,
+        6.4,
+        6.8,
+        5.0,
+        7.1,
+        7.1
+      ],
+      "sampler_type": "top_n_sigma",
+      "evaluation_time": 55.48908352851868,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 1.8,
+        "top_n_sigma": 0.8,
+        "max_tokens": 512
+      },
+      "mean_score": 6.233333333333333,
+      "std_score": 0.9267625849638563,
+      "scores": [
+        5.0,
+        5.0,
+        6.4,
+        6.6,
+        7.0,
+        7.4
+      ],
+      "sampler_type": "top_n_sigma",
+      "evaluation_time": 61.35620093345642,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 1.2,
+        "top_p": 0.99,
+        "max_tokens": 512
+      },
+      "mean_score": 6.183333333333334,
+      "std_score": 1.1538582620447317,
+      "scores": [
+        5.8,
+        3.8,
+        6.8,
+        6.7,
+        6.7,
+        7.3
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 65.06849122047424,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 0.9,
+        "min_p": 0.05,
+        "max_tokens": 512
+      },
+      "mean_score": 6.166666666666667,
+      "std_score": 0.8768630958643938,
+      "scores": [
+        5.0,
+        5.0,
+        6.9,
+        6.2,
+        7.2,
+        6.7
+      ],
+      "sampler_type": "min_p",
+      "evaluation_time": 65.70457816123962,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 1.2,
+        "top_p": 0.95,
+        "max_tokens": 512
+      },
+      "mean_score": 6.1499999999999995,
+      "std_score": 0.9447221813845593,
+      "scores": [
+        7.0,
+        5.0,
+        7.4,
+        6.7,
+        5.0,
+        5.8
+      ],
+      "sampler_type": "top_p",
+      "evaluation_time": 60.877726316452026,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 1.8,
+        "top_n_sigma": 2.0,
+        "max_tokens": 512
+      },
+      "mean_score": 5.916666666666667,
+      "std_score": 0.9263128821060169,
+      "scores": [
+        6.7,
+        5.0,
+        5.0,
+        5.0,
+        7.1,
+        6.7
+      ],
+      "sampler_type": "top_n_sigma",
+      "evaluation_time": 66.13207960128784,
+      "sample_count": 6
+    },
+    {
+      "parameters": {
+        "temperature": 1.4,
+        "min_p": 0.08,
+        "max_tokens": 512
+      },
+      "mean_score": 5.75,
+      "std_score": 1.3162446581088183,
+      "scores": [
+        5.0,
+        5.0,
+        6.6,
+        7.1,
+        7.2,
+        3.6
+      ],
+      "sampler_type": "min_p",
+      "evaluation_time": 58.99620461463928,
+      "sample_count": 6
+    }
+  ]
+}

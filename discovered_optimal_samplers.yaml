@@ -1,0 +1,52 @@
+best_by_sampler:
+  min_p:
+    description: Best min_p from hyper-search
+    parameters:
+      max_tokens: 512
+      min_p: 0.02
+      temperature: 1.2
+    performance:
+      mean_score: 7.033333333333334
+      std_score: 0.45704364002673614
+    sampler: min_p
+  top_n_sigma:
+    description: Best top_n_sigma from hyper-search
+    parameters:
+      max_tokens: 512
+      temperature: 1.8
+      top_n_sigma: 1.0
+    performance:
+      mean_score: 7.1000000000000005
+      std_score: 0.5715476066494083
+    sampler: top_n_sigma
+  top_p:
+    description: Best top_p from hyper-search
+    parameters:
+      max_tokens: 512
+      temperature: 0.8
+      top_p: 0.9
+    performance:
+      mean_score: 7.283333333333334
+      std_score: 0.2910708199428829
+    sampler: top_p
+best_overall:
+  evaluation_time: 84.62929654121399
+  mean_score: 7.283333333333334
+  parameters:
+    max_tokens: 512
+    temperature: 0.8
+    top_p: 0.9
+  sample_count: 6
+  sampler_type: top_p
+  scores:
+  - 6.7
+  - 7.3
+  - 7.2
+  - 7.6
+  - 7.5
+  - 7.4
+  std_score: 0.2910708199428829
+search_metadata:
+  best_score: 7.283333333333334
+  timestamp: '2025-07-02T14:12:15.465315'
+  total_configurations: 50

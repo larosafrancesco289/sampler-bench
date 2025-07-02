@@ -205,6 +205,27 @@ sampler-bench/
 2. **OpenAI API Key** - For quality evaluation
 3. **Python 3.12+** - Runtime environment
 
+## 🔍 NEW: Hyperparameter Search
+
+Automatically find optimal sampler configurations for your tasks:
+
+```bash
+# 1. Setup and verify everything is ready
+source venv/bin/activate
+python scripts/setup_hyper_search.py
+
+# 2. Start model server (in separate terminal)
+./scripts/start_model_server.sh llama-3.1-8b-instruct
+
+# 3. Run hyperparameter search
+python scripts/run_hyper_search.py --model llama-3.1-8b-instruct --config-section quick_test
+
+# 4. Analyze results and get recommendations  
+python scripts/analyze_hyper_search.py --latest --export best_configs.yaml
+```
+
+The setup script will guide you through all prerequisites. See [HYPERPARAMETER_SEARCH.md](HYPERPARAMETER_SEARCH.md) for complete documentation.
+
 ## 📝 Notes
 
 - **Decoupled Design**: Generation and judging are independent
