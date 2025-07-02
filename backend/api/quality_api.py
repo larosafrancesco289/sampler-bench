@@ -49,6 +49,8 @@ class SamplerBenchAPI:
         self.models = models_data.get('models', {}) if models_data else {}
         # Use presets from the samplers config (the actual sampler configurations)
         self.samplers = samplers_data.get('presets', {}) if samplers_data else {}
+        # Load model defaults mapping for dynamic resolution
+        self.model_defaults = samplers_data.get('model_defaults', {}) if samplers_data else {}
         
     def _load_yaml(self, filepath: Path) -> Dict[str, Any]:
         """Load YAML configuration file."""
@@ -58,6 +60,22 @@ class SamplerBenchAPI:
         except Exception as e:
             print(f"Warning: Could not load {filepath}: {e}")
             return {}
+    
+    def _resolve_model_default(self) -> str:
+        """Resolve model_default sampler to the appropriate model-specific default."""
+        if not hasattr(self, 'generator_config') or not self.generator_config:
+            return "llama_default"  # fallback
+        
+        # Get current model name from generator config
+        current_model = self.generator_config.get('name', '').lower()
+        
+        # Check model defaults mapping
+        for model_pattern, default_sampler in self.model_defaults.items():
+            if model_pattern.lower() in current_model:
+                return default_sampler
+        
+        # Fallback to llama_default
+        return self.model_defaults.get('default', 'llama_default')
     
     def initialize_judge(self, api_key: str = None, model: str = None) -> Dict[str, Any]:
         """Initialize the LLM judge."""
@@ -155,7 +173,17 @@ class SamplerBenchAPI:
                 'error': f"Sampler '{sampler_name}' not found"
             }
         
-        sampler_config = self.samplers[sampler_name]['parameters'].copy()
+        # Handle dynamic model_default sampler
+        actual_sampler_name = sampler_name
+        if sampler_name == 'model_default':
+            actual_sampler_name = self._resolve_model_default()
+            if actual_sampler_name not in self.samplers:
+                return {
+                    'success': False,
+                    'error': f"Could not resolve model_default to valid sampler. Tried: {actual_sampler_name}"
+                }
+        
+        sampler_config = self.samplers[actual_sampler_name]['parameters'].copy()
         
         # Prepare KoboldCpp API request
         url = f"http://localhost:{self.generator_config['port']}/api/v1/generate"

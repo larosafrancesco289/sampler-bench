@@ -75,12 +75,11 @@ models/
 *.model
 *.onnx
 
-# Data directories
+# Data directories  
 data/
 cache/
 logs/
 outputs/
-results/
 
 # Jupyter Notebook
 .ipynb_checkpoints

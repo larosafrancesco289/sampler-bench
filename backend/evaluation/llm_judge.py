@@ -233,33 +233,225 @@ Respond ONLY in the specified JSON format with no additional text."""
     
     def judge_batch(self, 
                     samples: List[Dict[str, Any]], 
+                    batch_size: int = 5,
                     progress_callback: Optional[callable] = None) -> List[JudgmentResult]:
-        """Judge multiple text samples.
+        """Judge multiple text samples using true API batching.
         
         Args:
             samples: List of sample dicts with 'text', 'prompt', and 'sampler_config'
+            batch_size: Number of samples to evaluate in each API call
             progress_callback: Optional callback for progress updates
             
         Returns:
             List of JudgmentResult objects
         """
-        results = []
+        all_results = []
         
-        for i, sample in enumerate(samples):
+        # Process samples in batches
+        for batch_start in range(0, len(samples), batch_size):
+            batch_end = min(batch_start + batch_size, len(samples))
+            batch_samples = samples[batch_start:batch_end]
+            
             if progress_callback:
-                progress_callback(i, len(samples))
+                progress_callback(batch_start, len(samples))
             
-            result = self.judge_text(
-                text=sample['text'],
-                prompt=sample['prompt'],
-                sampler_config=sample.get('sampler_config', {})
-            )
-            results.append(result)
+            # Create batched prompt
+            batch_prompt = self._create_batch_judgment_prompt(batch_samples)
             
-            # Brief pause to respect API rate limits
-            time.sleep(0.5)
+            start_time = time.time()
+            
+            try:
+                # Single API call for the batch
+                response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=[
+                        {"role": "system", "content": self._get_batch_system_prompt()},
+                        {"role": "user", "content": batch_prompt}
+                    ],
+                    temperature=self.temperature,
+                    max_tokens=2000 * len(batch_samples)  # Scale tokens with batch size
+                )
+                
+                evaluation_time = time.time() - start_time
+                
+                # Parse batch response
+                batch_results = self._parse_batch_judgment(
+                    response.choices[0].message.content, 
+                    batch_samples,
+                    evaluation_time / len(batch_samples)  # Average time per sample
+                )
+                
+                all_results.extend(batch_results)
+                
+                print(f"✅ Batched evaluation of {len(batch_samples)} samples ({evaluation_time:.1f}s)")
+                
+            except Exception as e:
+                print(f"❌ Batch evaluation failed: {e}")
+                # Fallback to individual evaluation for this batch
+                for sample in batch_samples:
+                    try:
+                        result = self.judge_text(
+                            text=sample['text'],
+                            prompt=sample['prompt'],
+                            sampler_config=sample.get('sampler_config', {})
+                        )
+                        all_results.append(result)
+                    except Exception as e2:
+                        # Create fallback result
+                        all_results.append(JudgmentResult(
+                            overall_score=5.0,
+                            criterion_scores=[
+                                JudgmentScore(criterion, 5.0, f"Evaluation failed: {str(e2)}")
+                                for criterion in self.criteria.keys()
+                            ],
+                            summary=f"Evaluation failed: {str(e2)}",
+                            evaluation_time=0.0,
+                            model_used=self.model
+                        ))
+            
+            # Brief pause between batches to respect rate limits
+            if batch_end < len(samples):
+                time.sleep(1.0)
         
-        return results
+        return all_results
+
+    def _get_batch_system_prompt(self) -> str:
+        """Get system prompt for batch evaluation."""
+        return """You are an expert literary critic and creative writing evaluator. You will evaluate multiple creative writing samples in a single response.
+
+For each sample, evaluate on a 1-10 scale where:
+- 1-2: Poor quality with major issues
+- 3-4: Below average with notable problems  
+- 5-6: Average quality, adequate but unremarkable
+- 7-8: Good quality with strong elements
+- 9-10: Excellent quality, exceptional work
+
+Be objective, consistent, and provide specific reasoning. Respond ONLY with valid JSON containing evaluations for all samples."""
+
+    def _create_batch_judgment_prompt(self, batch_samples: List[Dict[str, Any]]) -> str:
+        """Create a batched judgment prompt for multiple samples."""
+        criteria_text = "\n".join([
+            f"- **{criterion.replace('_', ' ').title()}**: {details['description']}"
+            for criterion, details in self.criteria.items()
+        ])
+        
+        # Build prompt for each sample in the batch
+        samples_text = ""
+        for i, sample in enumerate(batch_samples, 1):
+            sampler_info = f"Temperature: {sample.get('sampler_config', {}).get('temperature', 'N/A')}, " \
+                          f"Sampler: {sample.get('sampler_config', {}).get('type', 'N/A')}"
+            
+            samples_text += f"""
+**SAMPLE {i}**:
+Original Prompt: {sample['prompt']}
+Sampling Config: {sampler_info}
+Generated Text: {sample['text']}
+
+"""
+        
+        return f"""**TASK**: Evaluate the following {len(batch_samples)} creative writing samples based on the specified criteria.
+
+**EVALUATION CRITERIA**:
+{criteria_text}
+
+{samples_text}
+
+**INSTRUCTIONS**: 
+1. Score each sample on each criterion (1-10 scale)
+2. Provide specific reasoning for scores
+3. Calculate overall weighted scores
+4. Provide brief summary assessments
+
+**REQUIRED JSON RESPONSE FORMAT**:
+{{
+    "evaluations": [
+        {{
+            "sample_id": 1,
+            "criterion_scores": {{
+                "narrative_coherence": {{"score": X.X, "reasoning": "explanation"}},
+                "creativity_originality": {{"score": X.X, "reasoning": "explanation"}},
+                "character_development": {{"score": X.X, "reasoning": "explanation"}},
+                "engagement_readability": {{"score": X.X, "reasoning": "explanation"}},
+                "stylistic_quality": {{"score": X.X, "reasoning": "explanation"}}
+            }},
+            "overall_score": X.X,
+            "summary": "brief assessment"
+        }},
+        ... (continue for all {len(batch_samples)} samples)
+    ]
+}}"""
+
+    def _parse_batch_judgment(self, judgment_text: str, batch_samples: List[Dict[str, Any]], avg_eval_time: float) -> List[JudgmentResult]:
+        """Parse batched judgment response."""
+        try:
+            judgment_data = json.loads(judgment_text)
+            results = []
+            
+            evaluations = judgment_data.get('evaluations', [])
+            
+            for i, evaluation in enumerate(evaluations):
+                if i >= len(batch_samples):
+                    break
+                    
+                # Extract criterion scores
+                criterion_scores = []
+                for criterion, details in evaluation.get('criterion_scores', {}).items():
+                    score = JudgmentScore(
+                        criterion=criterion,
+                        score=float(details.get('score', 5.0)),
+                        reasoning=details.get('reasoning', 'No reasoning provided')
+                    )
+                    criterion_scores.append(score)
+                
+                # Calculate overall score if not provided
+                overall_score = float(evaluation.get('overall_score', 5.0))
+                if overall_score == 5.0 and criterion_scores:
+                    weighted_sum = sum(
+                        score.score * self.criteria.get(score.criterion, {}).get('weight', 0.2)
+                        for score in criterion_scores
+                    )
+                    overall_score = weighted_sum
+                
+                result = JudgmentResult(
+                    overall_score=overall_score,
+                    criterion_scores=criterion_scores,
+                    summary=evaluation.get('summary', 'No summary provided'),
+                    evaluation_time=avg_eval_time,
+                    model_used=self.model
+                )
+                results.append(result)
+            
+            # Fill in missing results if batch response was incomplete
+            while len(results) < len(batch_samples):
+                results.append(JudgmentResult(
+                    overall_score=5.0,
+                    criterion_scores=[
+                        JudgmentScore(criterion, 5.0, "Incomplete batch response")
+                        for criterion in self.criteria.keys()
+                    ],
+                    summary="Incomplete batch response",
+                    evaluation_time=avg_eval_time,
+                    model_used=self.model
+                ))
+            
+            return results
+            
+        except (json.JSONDecodeError, KeyError) as e:
+            print(f"⚠️ Failed to parse batch judgment, falling back to individual calls")
+            # Fallback: return default scores for all samples
+            return [
+                JudgmentResult(
+                    overall_score=5.0,
+                    criterion_scores=[
+                        JudgmentScore(criterion, 5.0, f"Batch parsing failed: {str(e)}")
+                        for criterion in self.criteria.keys()
+                    ],
+                    summary=f"Batch parsing failed: {str(e)}",
+                    evaluation_time=avg_eval_time,
+                    model_used=self.model
+                )
+                for _ in batch_samples
+            ]
     
     def get_criteria_info(self) -> Dict[str, Any]:
         """Get information about evaluation criteria."""

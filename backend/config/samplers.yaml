@@ -3,7 +3,12 @@
 
 # Core sampling presets for creative writing research
 presets:
-  # Model provider default (Llama 3.1 recommended)
+  # Model-specific defaults (dynamically selected based on model)
+  model_default:
+    description: "Dynamic model provider recommended settings"
+    sampler: "model_specific"  # Special flag for dynamic selection
+    
+  # Model provider defaults
   llama_default:
     description: "Default Llama 3.1 provider-recommended settings"
     sampler: "top_p"
@@ -12,22 +17,29 @@ presets:
       top_p: 0.9
       max_tokens: 512
       
-  # Ministral 8B recommended settings
-  ministral_recommended:
-    description: "Recommended settings for Ministral 8B (temp 0.3, top_p 1.0)"
+  mistral_default:
+    description: "Default Mistral/Ministral provider-recommended settings"
     sampler: "top_p"
     parameters:
       temperature: 0.3
       top_p: 1.0
       max_tokens: 512
       
+  qwen_default:
+    description: "Default Qwen provider-recommended settings"
+    sampler: "top_p"
+    parameters:
+      temperature: 0.7
+      top_p: 0.8
+      max_tokens: 512
+
   # Min-p sampling configurations
   standard_minp:
     description: "Standard creative writing with min_p sampling"
     sampler: "min_p"
     parameters:
       temperature: 0.7
-      min_p: 0.2
+      min_p: 0.02
       max_tokens: 512
       
   creative_minp:
@@ -35,7 +47,7 @@ presets:
     sampler: "min_p"
     parameters:
       temperature: 1.0
-      min_p: 0.2
+      min_p: 0.02
       max_tokens: 512
       
   ultra_minp:
@@ -43,54 +55,68 @@ presets:
     sampler: "min_p"
     parameters:
       temperature: 1.5
-      min_p: 0.2
+      min_p: 0.02
       max_tokens: 512
       
-  # Top-n-sigma sampling configurations  
-  balanced_sigma:
-    description: "Balanced creative writing with sigma sampling"
-    sampler: "top_n_sigma"
-    parameters:
-      temperature: 1.0
-      top_n_sigma: 1.5
-      max_tokens: 512
-      
-  creative_sigma:
-    description: "Creative writing with high-temp sigma sampling"
+  # Top-n-sigma sampling configurations (standardized naming, aligned with paper settings)
+  standard_sigma:
+    description: "Standard sigma sampling (paper settings: temp 1.5, sigma 1.0)"
     sampler: "top_n_sigma"
     parameters:
       temperature: 1.5
       top_n_sigma: 1.0
       max_tokens: 512
       
-  ultra_sigma:
-    description: "Ultra creative writing with max-temp sigma sampling"
+  creative_sigma:
+    description: "Creative sigma sampling with moderate temperature"
     sampler: "top_n_sigma"
     parameters:
-      temperature: 2.0
-      top_n_sigma: 1.0
+      temperature: 1.0
+      top_n_sigma: 1.5
       max_tokens: 512
+
+# Model mapping for dynamic default selection
+model_defaults:
+  # Llama family models
+  "llama": "llama_default"
+  "llama-3": "llama_default"
+  "llama-3.1": "llama_default"
+  "llama-3.2": "llama_default"
+  
+  # Mistral family models
+  "mistral": "mistral_default"
+  "mistral-small": "mistral_default"
+  "ministral": "mistral_default"
+  "ministral-8b": "mistral_default"
+  
+  # Qwen family models
+  "qwen": "qwen_default"
+  "qwen2": "qwen_default"
+  "qwen2.5": "qwen_default"
+  
+  # Fallback for unknown models
+  "default": "llama_default"
 
 # Creative writing task configurations for rigorous testing
 tasks:
   short_story:
     description: "Short narrative fiction (500-1000 words)"
-    test_presets: ["llama_default", "standard_minp", "creative_minp", "ultra_minp"]
+    test_presets: ["model_default", "standard_minp", "creative_minp", "ultra_minp"]
     context_length: 2048
     
   character_dialogue:
     description: "Character interaction and conversation"
-    test_presets: ["llama_default", "standard_minp", "balanced_sigma"]
+    test_presets: ["model_default", "standard_minp", "creative_sigma"]
     context_length: 1024
     
   creative_exploration:
     description: "High-creativity narrative experiments"
-    test_presets: ["creative_minp", "ultra_minp", "creative_sigma", "ultra_sigma"]
+    test_presets: ["creative_minp", "ultra_minp", "creative_sigma", "standard_sigma"]
     context_length: 2048
     
   experimental_writing:
-    description: "Testing extreme creativity with sigma sampling"
-    test_presets: ["balanced_sigma", "creative_sigma", "ultra_sigma"]
+    description: "Testing sigma sampling approaches"
+    test_presets: ["standard_sigma", "creative_sigma"]
     context_length: 2048
 
 # Test configuration for systematic evaluation

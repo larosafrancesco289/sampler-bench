@@ -8,7 +8,38 @@ For users who want the traditional all-in-one workflow.
 import argparse
 import sys
 import subprocess
+import yaml
 from pathlib import Path
+
+def load_config(config_path: str) -> dict:
+    """Load configuration from YAML file."""
+    try:
+        with open(config_path, 'r') as f:
+            return yaml.safe_load(f)
+    except Exception as e:
+        print(f"❌ Error loading config file {config_path}: {e}")
+        sys.exit(1)
+
+def extract_config_settings(config: dict) -> tuple:
+    """Extract prompts, samplers, and repetitions from config."""
+    try:
+        exp_design = config['benchmark_config']['experimental_design']
+        
+        # Extract prompts
+        prompts_dict = exp_design['prompts']
+        prompts = [prompt_info['text'] for prompt_info in prompts_dict.values()]
+        
+        # Extract samplers
+        samplers = exp_design['samplers']
+        
+        # Extract repetitions
+        repetitions = exp_design.get('repetitions_per_prompt_per_sampler', 1)
+        
+        return prompts, samplers, repetitions
+        
+    except KeyError as e:
+        print(f"❌ Config file missing required field: {e}")
+        sys.exit(1)
 
 def run_command(cmd, description):
     """Run a command and handle errors."""
@@ -52,6 +83,11 @@ Examples:
         """
     )
     
+    # Configuration options
+    config_group = parser.add_argument_group('configuration options')
+    config_group.add_argument("--config", "-c",
+                             help="YAML config file to use (e.g., backend/config/robust_creative_writing.yaml)")
+    
     # Generation options
     gen_group = parser.add_argument_group('generation options')
     gen_group.add_argument("--model", "-m", 
@@ -59,15 +95,14 @@ Examples:
                           help="Model name to use (default: llama-3.1-8b-instruct)")
     gen_group.add_argument("--samplers", "-s",
                           nargs="+",
-                          default=["llama_default", "standard_minp", "creative_minp"],
-                          help="Sampler names to test")
+                          help="Sampler names to test (overrides config file)")
     gen_group.add_argument("--max-length", "-l",
                           type=int,
                           default=512,
                           help="Maximum generation length (default: 512)")
     gen_group.add_argument("--custom-prompts", "-p",
                           nargs="+",
-                          help="Custom prompts to use instead of defaults")
+                          help="Custom prompts to use instead of defaults/config")
     
     # Deterministic generation support
     gen_group.add_argument("--seed", "-d",
@@ -105,6 +140,21 @@ Examples:
         print("❌ Cannot use both --no-judge and --judge-only")
         sys.exit(1)
     
+    # Load configuration if provided
+    config_prompts = None
+    config_samplers = None
+    repetitions = 1
+    
+    if args.config:
+        print(f"📋 Loading configuration from: {args.config}")
+        config = load_config(args.config)
+        config_prompts, config_samplers, repetitions = extract_config_settings(config)
+        print(f"✅ Config loaded: {len(config_prompts)} prompts, {len(config_samplers)} samplers, {repetitions} repetitions each")
+    
+    # Determine final settings (command line overrides config)
+    final_samplers = args.samplers if args.samplers else config_samplers or ["llama_default", "standard_minp", "creative_minp"]
+    final_prompts = args.custom_prompts if args.custom_prompts else config_prompts
+    
     # Get script directory
     script_dir = Path(__file__).parent
     
@@ -123,11 +173,15 @@ Examples:
         ]
         
         # Add samplers
-        benchmark_cmd.extend(["--samplers"] + args.samplers)
+        benchmark_cmd.extend(["--samplers"] + final_samplers)
         
-        # Add custom prompts if provided
-        if args.custom_prompts:
-            benchmark_cmd.extend(["--custom-prompts"] + args.custom_prompts)
+        # Add prompts if we have them (either custom or from config)
+        if final_prompts:
+            benchmark_cmd.extend(["--custom-prompts"] + final_prompts)
+        
+        # Add repetitions if > 1
+        if repetitions > 1:
+            benchmark_cmd.extend(["--repetitions", str(repetitions)])
         
         # Pass seed if provided
         if args.seed is not None:

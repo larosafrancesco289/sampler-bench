@@ -17,7 +17,7 @@ from datetime import datetime
 sys.path.append(str(Path(__file__).parent.parent / "backend"))
 
 from evaluation.llm_judge import CreativeWritingJudge, JudgmentResult, JudgmentScore
-from evaluation.quality_aggregator import QualityAggregator
+from evaluation.quality_aggregator import EnhancedQualityAggregator
 
 def load_benchmark_results(filepath: str) -> Dict[str, Any]:
     """Load benchmark results from JSON file."""
@@ -69,7 +69,7 @@ def judge_benchmark_results(results_file: str,
         return None
     
     # Initialize aggregator for quality tracking
-    aggregator = QualityAggregator()
+    aggregator = EnhancedQualityAggregator()
     
     # Process samples
     samples = data.get('samples', [])
@@ -84,33 +84,49 @@ def judge_benchmark_results(results_file: str,
     judged_samples = []
     evaluation_failures = 0
     
-    for i, sample in enumerate(valid_samples, 1):
-        print(f"\n📊 Sample {i}/{len(valid_samples)}")
-        print(f"   Sampler: {sample.get('sampler_name', 'unknown')}")
-        print(f"   Prompt: {sample.get('prompt', 'N/A')[:60]}...")
-        
-        # Extract sample data
+    # Prepare samples for batch judging
+    batch_samples = []
+    for sample in valid_samples:
         prompt = sample.get('prompt', '')
         generated_text = sample.get('generated_text', '')
         sampler_name = sample.get('sampler_name', 'unknown')
         sampler_config = sample.get('sampler_config', {})
         
-        # Judge the text
-        print("   ⚖️ Judging quality...")
-        try:
-            start_time = time.time()
-            judgment = judge.judge_text(
-                text=generated_text,
-                prompt=prompt,
-                sampler_config={**sampler_config, 'type': sampler_name}
-            )
-            evaluation_time = time.time() - start_time
+        batch_samples.append({
+            'text': generated_text,
+            'prompt': prompt,
+            'sampler_config': {**sampler_config, 'type': sampler_name},
+            'original_sample': sample  # Keep reference to original
+        })
+    
+    print(f"\n⚖️ Judging {len(batch_samples)} samples using batched evaluation...")
+    
+    # Progress callback for batch processing
+    def progress_callback(completed, total):
+        print(f"   📊 Progress: {completed}/{total} samples evaluated...")
+    
+    try:
+        # Use batch judging for efficiency
+        judgments = judge.judge_batch(
+            samples=batch_samples,
+            batch_size=5,  # Process 5 samples per API call
+            progress_callback=progress_callback
+        )
+        
+        print(f"\n✅ Completed batch evaluation of {len(judgments)} samples")
+        
+        # Process the judgment results
+        for i, (judgment, batch_sample) in enumerate(zip(judgments, batch_samples)):
+            original_sample = batch_sample['original_sample']
             
-            print(f"   📊 Quality score: {judgment.overall_score:.2f}/10 ({evaluation_time:.1f}s)")
+            print(f"\n📊 Sample {i+1}/{len(valid_samples)}")
+            print(f"   Sampler: {original_sample.get('sampler_name', 'unknown')}")
+            print(f"   Prompt: {original_sample.get('prompt', 'N/A')[:60]}...")
+            print(f"   📊 Quality score: {judgment.overall_score:.2f}/10")
             
             # Create enhanced sample with judgment
             enhanced_sample = {
-                **sample,  # Keep all original data
+                **original_sample,  # Keep all original data
                 'judgment': {
                     'overall_score': judgment.overall_score,
                     'criterion_scores': [
@@ -122,7 +138,7 @@ def judge_benchmark_results(results_file: str,
                         for cs in judgment.criterion_scores
                     ],
                     'summary': judgment.summary,
-                    'evaluation_time': evaluation_time,
+                    'evaluation_time': judgment.evaluation_time,
                     'model_used': judgment.model_used,
                     'judged_at': datetime.now().isoformat()
                 }
@@ -130,20 +146,23 @@ def judge_benchmark_results(results_file: str,
             
             judged_samples.append(enhanced_sample)
             
-            # Add to aggregator for statistics
+            # Add to aggregator for statistics  
             aggregator.add_sample(
-                prompt=prompt,
-                sampler_name=sampler_name,
-                sampler_config=sampler_config,
-                generated_text=generated_text,
-                judgment=judgment
+                prompt=batch_sample['prompt'],
+                sampler_name=original_sample.get('sampler_name', 'unknown'),
+                sampler_config=batch_sample['sampler_config'],
+                generated_text=batch_sample['text'],
+                judgment=judgment,
+                repetition=original_sample.get('repetition', 1)
             )
-            
-        except Exception as e:
-            evaluation_failures += 1
-            print(f"   ❌ Judging failed: {e}")
-            
-            # Keep sample without judgment
+    
+    except Exception as e:
+        evaluation_failures = len(valid_samples)
+        print(f"   ❌ Batch judging failed: {e}")
+        print(f"   📉 Using fallback: no quality scores will be available")
+        
+        # Keep samples without judgment
+        for sample in valid_samples:
             enhanced_sample = {
                 **sample,
                 'judgment': None,
@@ -151,9 +170,6 @@ def judge_benchmark_results(results_file: str,
                 'judged_at': datetime.now().isoformat()
             }
             judged_samples.append(enhanced_sample)
-        
-        # Rate limiting - be gentle on OpenAI API
-        time.sleep(0.5)
     
     # Create enhanced results
     enhanced_results = {
@@ -169,26 +185,63 @@ def judge_benchmark_results(results_file: str,
         }
     }
     
-    # Add quality statistics
+    # Add enhanced quality statistics
     try:
-        benchmark_results = aggregator.get_benchmark_results(
+        benchmark_results = aggregator.get_enhanced_benchmark_results(
             benchmark_name=data.get('benchmark_name', 'Creative Writing Benchmark'),
             model_name=data.get('model_name', 'Unknown')
         )
         
+        # Extract traditional format for compatibility
+        sampler_ranking = []
+        for sampler, stats in benchmark_results.sampler_stats.items():
+            sampler_ranking.append({
+                'sampler_name': sampler,
+                'avg_quality': stats.overall_mean,
+                'consistency': stats.prompt_consistency,
+                'sample_count': stats.total_samples,
+                'config': stats.sampler_config
+            })
+        sampler_ranking.sort(key=lambda x: x['avg_quality'], reverse=True)
+        
         enhanced_results['quality_statistics'] = {
-            'overall_stats': benchmark_results.quality_stats,
-            'sampler_ranking': aggregator.get_quality_ranking()
+            'overall_stats': {sampler: {
+                'overall_quality': {'avg_score': stats.overall_mean, 'consistency': stats.prompt_consistency},
+                'sample_count': stats.total_samples,
+                'sampler_config': stats.sampler_config
+            } for sampler, stats in benchmark_results.sampler_stats.items()},
+            'sampler_ranking': sampler_ranking
+        }
+        
+        # Enhanced statistics
+        enhanced_results['enhanced_statistics'] = {
+            'sampler_stats': {sampler: {
+                'overall_mean': stats.overall_mean,
+                'overall_std': stats.overall_std,
+                'confidence_interval': stats.overall_confidence_interval,
+                'prompt_consistency': stats.prompt_consistency,
+                'total_samples': stats.total_samples,
+                'prompts_covered': stats.prompts_covered,
+                'criterion_stats': stats.criterion_stats
+            } for sampler, stats in benchmark_results.sampler_stats.items()},
+            'effect_sizes': benchmark_results.effect_sizes,
+            'statistical_significance': benchmark_results.statistical_significance,
+            'best_sampler_per_prompt': benchmark_results.best_sampler_per_prompt,
+            'most_consistent_sampler': benchmark_results.most_consistent_sampler,
+            'highest_quality_sampler': benchmark_results.highest_quality_sampler
         }
         
     except Exception as e:
         print(f"⚠️ Could not generate quality statistics: {e}")
+        import traceback
+        traceback.print_exc()
         
         # Provide empty structure to keep JSON schema stable
         enhanced_results['quality_statistics'] = {
             'overall_stats': {},
             'sampler_ranking': []
         }
+        enhanced_results['enhanced_statistics'] = {}
     
     # Save enhanced results
     Path(output_dir).mkdir(exist_ok=True)
@@ -210,8 +263,38 @@ def judge_benchmark_results(results_file: str,
     print(f"   ❌ Judgment failures: {evaluation_failures}")
     print(f"   📈 Success rate: {((len(valid_samples) - evaluation_failures) / len(valid_samples) * 100):.1f}%")
     
-    # Print quality ranking if available
-    if 'quality_statistics' in enhanced_results:
+    # Print enhanced quality analysis if available
+    if 'enhanced_statistics' in enhanced_results and enhanced_results['enhanced_statistics']:
+        print(f"\n🎭 ENHANCED QUALITY ANALYSIS:")
+        enhanced_stats = enhanced_results['enhanced_statistics']
+        
+        # Overall ranking with confidence intervals
+        print(f"\n🏆 QUALITY RANKING (with 95% confidence intervals):")
+        ranking = enhanced_results['quality_statistics']['sampler_ranking']
+        for rank, sampler_data in enumerate(ranking, 1):
+            sampler_name = sampler_data['sampler_name']
+            if sampler_name in enhanced_stats['sampler_stats']:
+                stats = enhanced_stats['sampler_stats'][sampler_name]
+                ci_low, ci_high = stats['confidence_interval']
+                consistency_icon = "🔸" if stats['prompt_consistency'] > 8.0 else "🔹"
+                
+                print(f"   {rank}. {sampler_name}: {stats['overall_mean']:.2f}/10 "
+                      f"[{ci_low:.2f}-{ci_high:.2f}] {consistency_icon}")
+                print(f"      Consistency: {stats['prompt_consistency']:.1f}/10, "
+                      f"Samples: {stats['total_samples']}")
+        
+        # Best performers analysis
+        print(f"\n📊 PERFORMANCE INSIGHTS:")
+        print(f"   🏅 Highest Quality: {enhanced_stats['highest_quality_sampler']}")
+        print(f"   🎯 Most Consistent: {enhanced_stats['most_consistent_sampler']}")
+        
+        # Per-prompt winners
+        print(f"\n📝 BEST SAMPLER PER PROMPT:")
+        for prompt, best_sampler in enhanced_stats['best_sampler_per_prompt'].items():
+            print(f"   • {prompt[:50]}... → {best_sampler}")
+        
+    elif 'quality_statistics' in enhanced_results:
+        # Fallback to basic ranking
         print(f"\n🏆 QUALITY RANKING:")
         ranking = enhanced_results['quality_statistics']['sampler_ranking']
         for rank, sampler_data in enumerate(ranking, 1):

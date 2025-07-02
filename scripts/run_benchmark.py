@@ -36,7 +36,8 @@ def run_benchmark(model_name: str,
                  prompts: List[str],
                  max_length: int = 512,
                  output_dir: str = "results",
-                 seed: int = None) -> str:
+                 seed: int = None,
+                 repetitions: int = 1) -> str:
     """
     Run benchmark and save results to JSON.
     
@@ -84,7 +85,8 @@ def run_benchmark(model_name: str,
             'max_length': max_length,
             'total_samplers': len(sampler_names),
             'total_prompts': len(prompts),
-            'total_samples': len(sampler_names) * len(prompts)
+            'repetitions': repetitions,
+            'total_samples': len(sampler_names) * len(prompts) * repetitions
         }
     }
     
@@ -93,58 +95,62 @@ def run_benchmark(model_name: str,
         if sampler_name in api.samplers:
             results['sampler_configs'][sampler_name] = api.samplers[sampler_name]
     
-    total_samples = len(sampler_names) * len(prompts)
+    total_samples = len(sampler_names) * len(prompts) * repetitions
     current_sample = 0
     failed_samples = 0
     
     print(f"\n📝 Generating {total_samples} samples...")
     
-    # Generate samples
+    # Generate samples with repetitions
     for sampler_name in sampler_names:
         print(f"\n🎯 Testing sampler: {sampler_name}")
         
         for i, prompt in enumerate(prompts, 1):
-            current_sample += 1
+            print(f"\n  📋 Prompt {i}: {prompt[:60]}...")
             
-            print(f"  {current_sample}/{total_samples} - Prompt {i}")
-            print(f"    Prompt: {prompt[:60]}...")
-            
-            # Generate sample
-            gen_result = api.generate_single_sample(prompt, sampler_name, max_length, seed=seed)
-            
-            if gen_result['success']:
-                word_count = gen_result['word_count']
+            for rep in range(repetitions):
+                current_sample += 1
                 
-                sample = {
-                    'sample_id': current_sample,
-                    'prompt': prompt,
-                    'sampler_name': sampler_name,
-                    'sampler_config': gen_result['sampler_config'],
-                    'generated_text': gen_result['generated_text'],
-                    'word_count': word_count,
-                    'timestamp': datetime.now().isoformat()
-                }
+                print(f"    {current_sample}/{total_samples} - Repetition {rep+1}/{repetitions}")
                 
-                results['samples'].append(sample)
+                # Generate sample
+                gen_result = api.generate_single_sample(prompt, sampler_name, max_length, seed=seed)
                 
-                print(f"    ✅ Generated {word_count} words")
-                
-            else:
-                failed_samples += 1
-                print(f"    ❌ Generation failed: {gen_result['error']}")
-                
-                # Still record the failed attempt
-                sample = {
-                    'sample_id': current_sample,
-                    'prompt': prompt,
-                    'sampler_name': sampler_name,
-                    'sampler_config': api.samplers.get(sampler_name, {}).get('parameters', {}),
-                    'generated_text': None,
-                    'error': gen_result['error'],
-                    'timestamp': datetime.now().isoformat()
-                }
-                
-                results['samples'].append(sample)
+                if gen_result['success']:
+                    word_count = gen_result['word_count']
+                    
+                    sample = {
+                        'sample_id': current_sample,
+                        'prompt': prompt,
+                        'sampler_name': sampler_name,
+                        'sampler_config': gen_result['sampler_config'],
+                        'generated_text': gen_result['generated_text'],
+                        'word_count': word_count,
+                        'repetition': rep + 1,  # Track which repetition this is
+                        'timestamp': datetime.now().isoformat()
+                    }
+                    
+                    results['samples'].append(sample)
+                    
+                    print(f"    ✅ Generated {word_count} words")
+                    
+                else:
+                    failed_samples += 1
+                    print(f"    ❌ Generation failed: {gen_result['error']}")
+                    
+                    # Still record the failed attempt
+                    sample = {
+                        'sample_id': current_sample,
+                        'prompt': prompt,
+                        'sampler_name': sampler_name,
+                        'sampler_config': api.samplers.get(sampler_name, {}).get('parameters', {}),
+                        'generated_text': None,
+                        'error': gen_result['error'],
+                        'repetition': rep + 1,  # Track which repetition this is
+                        'timestamp': datetime.now().isoformat()
+                    }
+                    
+                    results['samples'].append(sample)
             
             # Brief pause to be gentle on the API
             time.sleep(0.1)
@@ -196,6 +202,10 @@ def main():
     parser.add_argument("--seed", "-d",
                        type=int,
                        help="Optional random seed for generation (deterministic decoding)")
+    parser.add_argument("--repetitions", "-r",
+                       type=int,
+                       default=1,
+                       help="Number of repetitions per prompt-sampler combination (default: 1)")
     
     args = parser.parse_args()
     
@@ -214,7 +224,8 @@ def main():
         prompts=prompts,
         max_length=args.max_length,
         output_dir=args.output_dir,
-        seed=args.seed
+        seed=args.seed,
+        repetitions=args.repetitions
     )
     
     if result_file:
