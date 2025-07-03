@@ -122,6 +122,31 @@ python scripts/run_benchmark.py \
 python scripts/judge_results.py --auto-find
 ```
 
+### Mistral Small Benchmark (Latest Results)
+```bash
+# Activate virtual environment
+source venv/bin/activate
+
+# Start Mistral Small with 43 GPU layers offloaded
+./scripts/start_model_server.sh mistral-small-24b --gpu-layers 43
+
+# Run complete robust benchmark with 5 samplers, 3 prompts, 3 repetitions (45 samples)
+python scripts/run_full_benchmark.py --model mistral-small-24b --config backend/config/robust_creative_writing.yaml
+```
+
+**Results (January 3, 2025):**
+1. **standard_sigma: 7.47/10** (temp 1.5, sigma 1.0) - Best overall
+2. **creative_sigma: 7.40/10** (temp 1.0, sigma 1.5) - High creativity 
+3. **creative_minp: 6.98/10** (temp 1.0, min_p 0.02) - Creative min-p
+4. **standard_minp: 6.39/10** (temp 0.7, min_p 0.02) - Conservative min-p
+5. **model_default: 6.33/10** (temp 0.15) - Custom conservative setting
+
+**Key Insights:**
+- Higher temperatures (1.0-1.5) perform better for creative writing with Mistral Small
+- Top-n-sigma sampling outperformed min-p sampling across all temperature levels
+- The conservative temperature 0.15 setting ranked lowest, suggesting it may be too restrictive for creative tasks
+- All 45 samples generated successfully with 100% reliability
+
 ## 📊 Output
 
 ### Generation Results

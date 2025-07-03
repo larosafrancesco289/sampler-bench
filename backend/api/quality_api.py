@@ -69,13 +69,18 @@ class SamplerBenchAPI:
         # Get current model name from generator config
         current_model = self.generator_config.get('name', '').lower()
         
-        # Check model defaults mapping
-        for model_pattern, default_sampler in self.model_defaults.items():
-            if model_pattern.lower() in current_model:
-                return default_sampler
+        # Find the most specific (longest) matching pattern
+        best_match = None
+        best_length = 0
         
-        # Fallback to llama_default
-        return self.model_defaults.get('default', 'llama_default')
+        for model_pattern, default_sampler in self.model_defaults.items():
+            pattern_lower = model_pattern.lower()
+            if pattern_lower in current_model and len(pattern_lower) > best_length:
+                best_match = default_sampler
+                best_length = len(pattern_lower)
+        
+        # Return best match or fallback
+        return best_match if best_match else self.model_defaults.get('default', 'llama_default')
     
     def initialize_judge(self, api_key: str = None, model: str = None) -> Dict[str, Any]:
         """Initialize the LLM judge."""
@@ -102,7 +107,9 @@ class SamplerBenchAPI:
         
         try:
             model_config = self.models[model_name]
-            self.generator_config = model_config
+            self.generator_config = model_config.copy()
+            # Store the model name for model_default resolution
+            self.generator_config['name'] = model_name
             
             # Test connection to KoboldCpp server
             test_url = f"http://localhost:{model_config['port']}/api/v1/model"

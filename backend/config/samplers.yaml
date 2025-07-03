@@ -25,6 +25,14 @@ presets:
       top_p: 1.0
       max_tokens: 512
       
+  mistral_small_default:
+    description: "Mistral Small default settings with temp 0.15"
+    sampler: "top_p"
+    parameters:
+      temperature: 0.15
+      top_p: 1.0
+      max_tokens: 512
+      
   qwen_default:
     description: "Default Qwen provider-recommended settings"
     sampler: "top_p"
@@ -74,6 +82,14 @@ presets:
       temperature: 1.0
       top_n_sigma: 1.5
       max_tokens: 512
+      
+  diagnostic_temp5:
+    description: "Diagnostic sampler with extreme temperature to test parameter application"
+    sampler: "top_p"
+    parameters:
+      temperature: 5.0
+      top_p: 1.0
+      max_tokens: 512
 
 # Model mapping for dynamic default selection
 model_defaults:
@@ -85,7 +101,8 @@ model_defaults:
   
   # Mistral family models
   "mistral": "mistral_default"
-  "mistral-small": "mistral_default"
+  "mistral-small": "mistral_small_default"
+  "mistral-small-24b": "mistral_small_default"
   "ministral": "mistral_default"
   "ministral-8b": "mistral_default"
   

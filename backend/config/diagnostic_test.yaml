@@ -1,0 +1,54 @@
+benchmark_config:
+  name: "Diagnostic Temperature Test"
+  description: "Quick test to verify sampling parameters are being applied"
+  
+  experimental_design:
+    prompts:
+      simple_test:
+        text: "Write a complete short story (300-400 words) about two strangers who meet during a citywide power outage and discover an unexpected connection. Make sure to include a proper beginning, development, and conclusion."
+        category: "diagnostic"
+        focus: "Parameter verification"
+        
+    repetitions_per_prompt_per_sampler: 1
+    total_samples: 2
+    samples_per_sampler: 1
+    
+    samplers:
+      - "model_default"      # Should be conservative (temp 0.15)
+      - "diagnostic_temp5"   # Should be wild (temp 5.0)
+
+evaluation_framework:
+  judge_config:
+    model: "${LLM_JUDGE_MODEL}"
+    api_key: "${LLM_JUDGE_API_KEY}"
+    batch_size: 2
+    
+  criteria:
+    narrative_structure:
+      weight: 1.0
+      description: "Story organization and coherence"
+
+quality_control:
+  automated_checks:
+    minimum_length: 50
+    maximum_length: 800
+    
+performance_config:
+  generation:
+    sequential_prompts: true
+    parallel_samplers: false
+    timeout_per_sample: 90
+    
+  evaluation:
+    batch_judge_requests: 2
+    cache_enabled: true
+    concurrent_evaluations: 1
+
+output_config:
+  results_structure:
+    individual_samples: true
+    sampler_summaries: true
+    
+reproducibility:
+  seeds:
+    generation_seed: 42 

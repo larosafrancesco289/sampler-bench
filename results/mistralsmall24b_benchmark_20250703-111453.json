@@ -1,0 +1,79 @@
+{
+  "benchmark_name": "Creative Writing Benchmark - mistral-small-24b",
+  "timestamp": "2025-07-03T11:14:27.994612",
+  "model_name": "mistral-small-24b",
+  "model_config": {
+    "name": "Mistral Small 3.2 24B Instruct",
+    "path": "/home/franc/llms/mistralai_Mistral-Small-3.2-24B-Instruct-2506-IQ4_XS.gguf",
+    "context_length": 2048,
+    "quantization": "iq4_xs",
+    "inference_engine": "koboldcpp",
+    "template": "mistral",
+    "port": 5001,
+    "gpu_layers": 43,
+    "parameters": {
+      "max_tokens": 512,
+      "stop_tokens": [
+        "</s>",
+        "[/INST]"
+      ]
+    }
+  },
+  "prompts": [
+    "Write a complete short story (300-400 words) about two strangers who meet during a citywide power outage and discover an unexpected connection. Make sure to include a proper beginning, development, and conclusion."
+  ],
+  "sampler_configs": {
+    "model_default": {
+      "description": "Dynamic model provider recommended settings",
+      "sampler": "model_specific"
+    },
+    "diagnostic_temp5": {
+      "description": "Diagnostic sampler with extreme temperature to test parameter application",
+      "sampler": "top_p",
+      "parameters": {
+        "temperature": 5.0,
+        "top_p": 1.0,
+        "max_tokens": 512
+      }
+    }
+  },
+  "samples": [
+    {
+      "sample_id": 1,
+      "prompt": "Write a complete short story (300-400 words) about two strangers who meet during a citywide power outage and discover an unexpected connection. Make sure to include a proper beginning, development, and conclusion.",
+      "sampler_name": "model_default",
+      "sampler_config": {
+        "temperature": 0.15,
+        "top_p": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " Use vivid descriptions and dialogue to bring the scene to life.\n\n---\n\n**The Blackout Connection**\n\nThe city plunged into darkness as the power outage hit. Emma clutched her phone, the dim glow of the flashlight app barely piercing the thick night. She had been on her way home from work when the streetlights flickered and died, leaving her stranded in the middle of the sidewalk.\n\n\"Great,\" she muttered, glancing around. The usual hum of traffic was gone, replaced by an eerie silence. Then, a voice called out from the shadows.\n\n\"Need some light?\"\n\nEmma turned to see a man holding a lantern, its warm glow casting long shadows. He was tall, with a friendly smile and a backpack slung over one shoulder.\n\n\"Yeah, thanks,\" she said, stepping closer. \"I was just trying to figure out how to get home.\"\n\n\"Same,\" he said, extending the lantern toward her. \"I\u2019m Jake, by the way.\"\n\n\"Emma.\"\n\nThey walked together, the lantern\u2019s light guiding them through the dark streets. The air smelled of rain and distant smoke, and the occasional distant shout echoed in the stillness.\n\n\"So, what do you do, Emma?\" Jake asked.\n\n\"I\u2019m a librarian,\" she said. \"You?\"\n\n\"Musician. I was actually on my way to a gig when this happened.\"\n\nEmma laughed. \"Well, at least you won\u2019t have to worry about an audience now.\"\n\nJake grinned. \"True. But I\u2019d rather have power than a crowd.\"\n\nThey turned a corner, and Emma recognized her street. \"This is me,\" she said, pointing to her apartment building. \"Thanks for the light\u2014and the company.\"\n\n\"Anytime,\" Jake said. \"Hey, if you ever want to hear some music, I play at the Blue Note on Fridays.\"\n\nEmma hesitated, then smiled. \"I might just take you up on that.\"\n\nAs she unlocked her door, she glanced back. Jake was already walking away, the lantern swinging gently at his side. She wondered if she\u2019d ever see him again.\n\nThen, as she stepped inside, her phone buzzed. A text from her sister: *Did you hear? The power\u2019s out all over the city.*\n\nEmma smiled. Maybe fate had a way of bringing people together\u2014even in the dark.\n\n---\n\n**Word Count: 350**",
+      "word_count": 360,
+      "repetition": 1,
+      "timestamp": "2025-07-03T11:14:41.555118"
+    },
+    {
+      "sample_id": 2,
+      "prompt": "Write a complete short story (300-400 words) about two strangers who meet during a citywide power outage and discover an unexpected connection. Make sure to include a proper beginning, development, and conclusion.",
+      "sampler_name": "diagnostic_temp5",
+      "sampler_config": {
+        "temperature": 5.0,
+        "top_p": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " It all started dark last thurning during\n\nOne Hot Summer Month:\n\n_The Summer Longing Out The_ Summer,\n\nSearing Sun beat, down was down on street New Hope wasn have. Windows glass a clear with day like that was day even air didn hold even no moisture\u2014day hot stood almost and dry no hint clouds storm cooling which needed wind bad turn air feel didn worse stand people outdoors struggle a were not survive that just while thought them while those even with in comfort own for who car sitting they lucky while standing wait with\n\npower that evening loss light in plunged most quickly but\n\nsuddetiy after it came one quick second that whole first lasted few didn lights for out there on city return were so electricity had was thing power that they few short those flick on even then faded turned dark then people every where was turned off things completely without light again power out stood night it as and everything darkness this only where light there in be for own them flick didn't others some though others just stayed it in with few\n\nbut what but were then light one little person other little strange them so each noticed didn a where someone else something inside something each noticed moment were then had but someone and just had there they a even knew was light noticed someone something and because people they wasn there one around been with been might were own street right just suddenly thought stood when looked two two a on same out each looked as just they then others stood standing why knew of darkness maybe could just wanted someone was a together not there have to walk down in for there would person didn know even didn what have so one woman young saw had someone few steps heard away standing first looked while there at turned dark been out front a she apartment stood there lived near when walking to where while so then so as lights suddenly quickly going was with power back outside darkness would back had to have known didn walk across city now needed thing home this make didn where if something was no who any wanted she what had phone too the case still the but own so in with even charged need any work still see did should first light to when tried use in the so something looked little find another outside as thought while flash if flash from little had and light knew someone then right so stood up away looking held head torch shining few heard a voice\n\nwoman her thought have little be anyone then man who where was head around stepped in head shone walked closer did he he looked so came where walking with be stood around head away face hands but seen just hadn couldn knew looked just felt couldn to there step on looked closer back head when walked",
+      "word_count": 493,
+      "repetition": 1,
+      "timestamp": "2025-07-03T11:14:53.295271"
+    }
+  ],
+  "metadata": {
+    "max_length": 512,
+    "total_samplers": 2,
+    "total_prompts": 1,
+    "repetitions": 1,
+    "total_samples": 2,
+    "completed_samples": 2,
+    "failed_samples": 0
+  }
+}

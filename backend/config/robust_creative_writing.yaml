@@ -1,36 +1,48 @@
-# Robust Creative Writing Benchmark Configuration v2
-# Optimized for quality and practical execution (50 total samples)
+# Robust Creative Writing Benchmark Configuration v2.2
+# Optimized for quality and practical execution (100 total samples)
 
 benchmark_config:
-  name: "Robust Creative Writing Benchmark v2"
-  description: "Quality-focused evaluation with practical sample size and optimized execution"
+  name: "Robust Creative Writing Benchmark v2.2"
+  description: "Quality-focused evaluation with robust sample size and optimized execution"
   
-  # Core experimental design - 45 total samples with higher statistical power
+  # Core experimental design - 100 total samples with high statistical power
   experimental_design:
-    # 3 strategically selected prompts representing core creative writing dimensions
+    # 5 strategically selected prompts representing core creative writing dimensions
     prompts:
       character_driven:
-        text: "Write a story about two strangers who meet during a citywide power outage and discover an unexpected connection."
+        text: "Write a complete short story (300-400 words) about two strangers who meet during a citywide power outage and discover an unexpected connection. Make sure to include a proper beginning, development, and conclusion."
         category: "character/dialogue"
         focus: "Character interaction, relationship development, dialogue, emotional connection"
         writing_skills: ["dialogue", "character_voice", "relationship_dynamics", "emotional_authenticity"]
         
       speculative_concept:
-        text: "Write a tale about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours."
+        text: "Write a complete short tale (300-400 words) about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours. Include a clear beginning, middle, and satisfying conclusion."
         category: "high-concept/speculative"
         focus: "Premise exploration, creative problem-solving, consequence development, world-building"
         writing_skills: ["premise_development", "creative_logic", "plot_progression", "conceptual_depth"]
         
       atmospheric_narrative:
-        text: "Write a short story about a mysterious package that appears on someone's doorstep one rainy evening."
+        text: "Write a complete short story (300-400 words) about a mysterious package that appears on someone's doorstep one rainy evening. Ensure the story has a proper beginning, development, and resolution."
         category: "atmosphere/mystery"
         focus: "Mood establishment, setting description, tension building, atmospheric storytelling"
         writing_skills: ["descriptive_writing", "mood_creation", "pacing", "atmospheric_tension"]
+        
+      transformation_story:
+        text: "Write a complete short story (300-400 words) about someone who wakes up one morning to find they have gained an unusual superpower for just one day. Include a clear beginning, middle, and satisfying conclusion."
+        category: "transformation/adventure"
+        focus: "Character transformation, creative problem-solving, conflict resolution, personal growth"
+        writing_skills: ["character_arc", "conflict_development", "creative_resolution", "pacing"]
+        
+      memory_narrative:
+        text: "Write a complete short story (300-400 words) about a person who discovers an old photograph that brings back a forgotten memory with unexpected consequences. Make sure to include a proper beginning, development, and conclusion."
+        category: "memory/emotion"
+        focus: "Emotional depth, memory exploration, consequence development, introspective storytelling"
+        writing_skills: ["emotional_resonance", "introspection", "consequence_chain", "reflective_narrative"]
     
-    # Sample distribution: 5 samplers × 3 prompts × 3 repetitions = 45 samples
-    repetitions_per_prompt_per_sampler: 3
-    total_samples: 45
-    samples_per_sampler: 9  # Much better for statistical analysis
+    # Sample distribution: 5 samplers × 5 prompts × 4 repetitions = 100 samples
+    repetitions_per_prompt_per_sampler: 4
+    total_samples: 100
+    samples_per_sampler: 20  # Robust statistical analysis
     
     # 5 distinct samplers covering the sampling space
     samplers:
@@ -112,13 +124,13 @@ quality_control:
 performance_config:
   generation:
     sequential_prompts: true  # Don't batch prompts (speed optimization)
-    parallel_samplers: false  # Process samplers sequentially for stability
+    parallel_samplers: true   # Process samplers in parallel for 100-sample run
     timeout_per_sample: 90    # seconds
     
   evaluation:
     batch_judge_requests: 5   # Batch judge API calls
     cache_enabled: true
-    concurrent_evaluations: 3 # Parallel judge requests
+    concurrent_evaluations: 5 # Parallel judge requests (increased for 100 samples)
 
 # Output Configuration
 output_config:
@@ -147,8 +159,8 @@ output_config:
       sample_adequacy: true           # Power analysis for sample size
       
     cross_validation:
-      train_prompts: ["character_driven", "speculative_concept"]  # 2 prompts for ranking
-      holdout_prompt: "atmospheric_narrative"                    # 1 prompt for validation
+      train_prompts: ["character_driven", "speculative_concept", "atmospheric_narrative", "transformation_story"]  # 4 prompts for ranking
+      holdout_prompt: "memory_narrative"                    # 1 prompt for validation
       ranking_stability: true        # How stable are sampler rankings?
       expected_samplers: ["model_default", "standard_minp", "creative_minp", "creative_sigma", "standard_sigma"]
     
@@ -168,7 +180,7 @@ output_config:
       normality_tests: true            # Check if scores are normally distributed
       
     practical_significance:
-      minimum_detectable_effect: 0.5   # Minimum Cohen's d we care about
+      minimum_detectable_effect: 0.8   # Minimum Cohen's d we care about (large effect)
       power_analysis: true             # Did we have enough samples?
       
     robustness_checks:

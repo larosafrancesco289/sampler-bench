@@ -1,0 +1,710 @@
+{
+  "benchmark_name": "Creative Writing Benchmark - mistral-small-24b",
+  "timestamp": "2025-07-03T09:18:29.132508",
+  "model_name": "mistral-small-24b",
+  "model_config": {
+    "name": "Mistral Small 3.2 24B Instruct",
+    "path": "/home/franc/llms/mistralai_Mistral-Small-3.2-24B-Instruct-2506-IQ4_XS.gguf",
+    "context_length": 2048,
+    "quantization": "iq4_xs",
+    "inference_engine": "koboldcpp",
+    "template": "mistral",
+    "port": 5001,
+    "gpu_layers": 43,
+    "parameters": {
+      "max_tokens": 512,
+      "stop_tokens": [
+        "</s>",
+        "[/INST]"
+      ]
+    }
+  },
+  "prompts": [
+    "Write a story about two strangers who meet during a citywide power outage and discover an unexpected connection.",
+    "Write a tale about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours.",
+    "Write a short story about a mysterious package that appears on someone's doorstep one rainy evening."
+  ],
+  "sampler_configs": {
+    "model_default": {
+      "description": "Dynamic model provider recommended settings",
+      "sampler": "model_specific"
+    },
+    "standard_minp": {
+      "description": "Standard creative writing with min_p sampling",
+      "sampler": "min_p",
+      "parameters": {
+        "temperature": 0.7,
+        "min_p": 0.02,
+        "max_tokens": 512
+      }
+    },
+    "creative_minp": {
+      "description": "Creative plus writing with min_p sampling",
+      "sampler": "min_p",
+      "parameters": {
+        "temperature": 1.0,
+        "min_p": 0.02,
+        "max_tokens": 512
+      }
+    },
+    "standard_sigma": {
+      "description": "Standard sigma sampling (paper settings: temp 1.5, sigma 1.0)",
+      "sampler": "top_n_sigma",
+      "parameters": {
+        "temperature": 1.5,
+        "top_n_sigma": 1.0,
+        "max_tokens": 512
+      }
+    },
+    "creative_sigma": {
+      "description": "Creative sigma sampling with moderate temperature",
+      "sampler": "top_n_sigma",
+      "parameters": {
+        "temperature": 1.0,
+        "top_n_sigma": 1.5,
+        "max_tokens": 512
+      }
+    }
+  },
+  "samples": [
+    {
+      "sample_id": 1,
+      "prompt": "Write a story about two strangers who meet during a citywide power outage and discover an unexpected connection.",
+      "sampler_name": "model_default",
+      "sampler_config": {
+        "temperature": 0.15,
+        "top_p": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " The story should be take place in a big city and should be in the third person.\n\n**Title: The Light in the Dark**\n\nThe city of New York had never looked so quiet. The usual hum of traffic, the neon glow of billboards, the distant wail of sirens\u2014all of it had vanished in an instant when the power went out. The streets, usually teeming with life, were now shrouded in darkness, broken only by the faint glow of emergency lights and the occasional flicker of a phone screen.\n\nAmong the sea of frustrated commuters and bewildered pedestrians, two strangers found themselves standing on the same corner, both staring up at the blackened skyline.\n\nLena had been on her way home from work when the lights died. She clutched her laptop bag tightly, her heels clicking against the pavement as she tried to navigate the unfamiliar darkness. She wasn\u2019t afraid\u2014just annoyed. Another delay, another reason to be late for dinner with her parents.\n\nAcross from her, a man in a rumpled suit leaned against a lamppost, his phone held uselessly in his hand. He exhaled sharply, running a hand through his disheveled hair. \"Great,\" he muttered. \"Just great.\"\n\nLena glanced at him, then back at the street. \"You\u2019re not the only one stuck here,\" she said, her voice sharper than she intended.\n\nThe man looked up, surprised. \"Sorry,\" he said. \"I didn\u2019t mean to\u2014\" He paused, then chuckled. \"You know what? Forget it. It\u2019s not your fault.\"\n\nLena hesitated, then softened. \"Yeah, I know. It\u2019s just\u2026 frustrating.\"\n\n\"Tell me about it,\" he said, pushing off the lamppost. \"I was supposed to be on a flight in an hour. Now I\u2019m standing here like a lost tourist.\"\n\nLena smirked. \"You don\u2019t look like a tourist.\"\n\n\"Good,\" he said. \"Because I\u2019m not. Just a guy who really needs to get out of town.\"\n\nThey fell into step together as they walked, the city around them eerily still. The usual rush of people had slowed to a crawl, everyone unsure of what to do in the sudden silence.\n\n\"So, where were you headed?\" Lena asked.\n\n\"Chicago,\" he said. \"Business. You?\"\n\n\"Home,\" she said. \"Just a normal Tuesday.\"\n\n\"Nothing normal about this,\" he said, gesturing",
+      "word_count": 370,
+      "repetition": 1,
+      "timestamp": "2025-07-03T09:18:41.180713"
+    },
+    {
+      "sample_id": 2,
+      "prompt": "Write a story about two strangers who meet during a citywide power outage and discover an unexpected connection.",
+      "sampler_name": "model_default",
+      "sampler_config": {
+        "temperature": 0.15,
+        "top_p": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " They are both from different countries and cultures, but they find common ground in their shared experience.\n\n**Title: \"The Light in the Dark\"**\n\nThe city was plunged into darkness, the hum of electricity replaced by an eerie silence. Streets that were usually alive with neon signs and headlights now lay shrouded in shadows. People murmured in confusion, their phones useless without signal.\n\nAmara had been on her way home from work when the power went out. She stood on the sidewalk, clutching her bag, unsure of what to do. She was new to the city, having moved from Lagos just a few months ago. The unfamiliar streets felt even more foreign in the dark.\n\nThen she heard it\u2014a soft humming. She turned and saw a man sitting on the steps of a closed caf\u00e9, strumming a guitar. The melody was familiar, a traditional Nigerian folk song. Amara\u2019s eyes widened in surprise.\n\nShe approached cautiously. \"You know that song?\"\n\nThe man looked up, his face illuminated by the dim glow of a nearby emergency light. \"Yes,\" he said in accented English. \"My grandmother used to sing it to me. I\u2019m from Kenya.\"\n\nAmara smiled. \"I\u2019m from Nigeria. That\u2019s one of our folk songs.\"\n\nThey introduced themselves\u2014Amara, a software engineer, and Jomo, a musician. They sat together on the steps, sharing stories about their homes, their cultures, and how they ended up in the same city.\n\nAs they talked, the power outage felt less like an inconvenience and more like a gift. Without the distractions of screens and schedules, they had time to connect. They laughed about the quirks of their new city, the food they missed from home, and the dreams that had brought them here.\n\nWhen the lights finally flickered back on, the city buzzed with relief. But for Amara and Jomo, the real light had come from the darkness\u2014the unexpected connection they had found in each other.\n\nThey exchanged numbers, promising to meet again. As Amara walked home, she realized that sometimes, the best things happen when the power goes out.",
+      "word_count": 342,
+      "repetition": 2,
+      "timestamp": "2025-07-03T09:18:51.008358"
+    },
+    {
+      "sample_id": 3,
+      "prompt": "Write a story about two strangers who meet during a citywide power outage and discover an unexpected connection.",
+      "sampler_name": "model_default",
+      "sampler_config": {
+        "temperature": 0.15,
+        "top_p": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " They decide to spend the night together, exploring the city and sharing stories. As the morning comes, they realize they have to part ways, but not before making a promise to meet again.\n\n**Title: \"The Night the Lights Went Out\"**\n\nThe city was never meant to be dark. Not like this. Not with the hum of electricity silenced, the neon signs extinguished, and the streets bathed in an eerie, moonlit glow. But tonight, the power was out\u2014citywide, unexpected, and seemingly endless.\n\nLena sat on the steps of her apartment building, her phone dead in her hand. She had been in the middle of a video call when the screen had gone black, and now she was stranded in the middle of the city with no way to call for help. She sighed, running a hand through her hair. There was nothing to do but wait.\n\nThen she heard footsteps.\n\nA figure emerged from the darkness, moving cautiously down the sidewalk. As they got closer, Lena could make out the silhouette of a man, his hands shoved into his pockets, his shoulders hunched against the unexpected chill of the night.\n\n\"Hey,\" he said, his voice low and hesitant. \"You okay?\"\n\nLena nodded. \"Just stuck here until the power comes back.\"\n\nThe man chuckled, a warm sound that cut through the stillness. \"Same. I was at a caf\u00e9 when it happened. They\u2019re already closing up.\"\n\nLena smiled. \"I\u2019m Lena.\"\n\n\"Jake.\"\n\nThey stood there for a moment, the silence between them comfortable despite the strangeness of the situation. Then Jake gestured toward the street. \"Want to walk around a bit? It\u2019s kind of\u2026 peaceful, isn\u2019t it?\"\n\nLena hesitated, then nodded. \"Sure.\"\n\nThey set off, their footsteps echoing on the empty pavement. The city was different without its usual glow\u2014quieter, slower. They passed darkened storefronts, their windows reflecting the moonlight, and the occasional flicker of a candle or flashlight from an apartment above.\n\nJake broke the silence first. \"So, what do you do when the lights are on?\"\n\nLena laughed. \"I\u2019m a writer. Mostly articles, but I\u2019m working on a novel.\"\n\nJake\u2019s eyes lit up. \"Really? What\u2019s it about?\"\n\n\"Family secrets,\" Lena said. \"And the way the past always catches up with us.\"\n\nJake nodded thoughtfully. \"I like that",
+      "word_count": 375,
+      "repetition": 3,
+      "timestamp": "2025-07-03T09:19:04.843445"
+    },
+    {
+      "sample_id": 4,
+      "prompt": "Write a tale about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours.",
+      "sampler_name": "model_default",
+      "sampler_config": {
+        "temperature": 0.15,
+        "top_p": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " It can be a bartender, a teacher, or any other profession. It is up to you.\n\n---\n\n**The Bartender's Burden**\n\nLiam had been a bartender for fifteen years. He knew the rhythm of the job\u2014the clink of glasses, the hum of conversation, the occasional drunken confession. But tonight, something was different.\n\nIt started with a whisper.\n\n*\"I hope he doesn\u2019t notice the shake in my hand.\"*\n\nLiam glanced at the man at the end of the bar, a regular named Greg. He was nursing a whiskey, his fingers trembling slightly around the glass. Liam had never noticed before, but now the thought was as clear as if Greg had spoken aloud.\n\nThen another voice, this one from a woman two stools down.\n\n*\"Why did I wear these heels? I can\u2019t even stand up straight.\"*\n\nLiam blinked. He could *hear* them. Not just their words, but their thoughts.\n\nAt first, he thought he was losing his mind. But as the night went on, the voices grew louder, more insistent. A couple arguing in the corner\u2014*\"I wish he\u2019d just admit he\u2019s wrong\"*\u2014*\"She\u2019s the one who\u2019s being unreasonable!\"*\u2014a group of friends laughing, their thoughts a chaotic jumble of inside jokes and half-formed plans.\n\nLiam tried to focus on his work, but the noise was overwhelming. He could hear the bartender next to him thinking, *\"I need to check the inventory before close,\"* and the customer at the far end, *\"I shouldn\u2019t have had that third beer.\"*\n\nBy midnight, his head was pounding. He wanted to scream, to make it stop. But then he heard something that made him freeze.\n\n*\"I\u2019m going to kill him.\"*\n\nThe thought came from a man in a dark jacket, sitting alone in the back. His face was calm, but his mind was a storm of rage and planning.\n\nLiam\u2019s hands tightened around the rag he was using to wipe the counter. He looked at the man\u2014average height, unremarkable features\u2014and then at the door. He had to do something.\n\nHe moved down the bar, pretending to check on another customer. As he passed the man, he leaned in slightly.\n\n\"Everything okay?\" he asked, keeping his voice low.\n\nThe man\u2019s eyes flicked up, surprised. *\"What does he know?\"* he thought.\n\nLiam\u2019s pulse spiked. He had to act fast.\n\n\"Hey, man,\"",
+      "word_count": 380,
+      "repetition": 1,
+      "timestamp": "2025-07-03T09:19:16.343900"
+    },
+    {
+      "sample_id": 5,
+      "prompt": "Write a tale about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours.",
+      "sampler_name": "model_default",
+      "sampler_config": {
+        "temperature": 0.15,
+        "top_p": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " It can be a bartender, a teacher, or anyone else. It is up to you.\n\n---\n\n**The Unwanted Gift**\n\nLena had always prided herself on being a good listener. As a bartender at *The Rusty Anchor*, she heard more than her fair share of stories\u2014heartbreaks, triumphs, confessions, and lies. But today, something was different.\n\nIt started with a whisper.\n\nShe was wiping down the counter when a customer, a middle-aged man in a rumpled suit, sat down. \"Whiskey, neat,\" he muttered.\n\nLena nodded and poured his drink. As she slid it toward him, she heard it\u2014not his voice, but a thought, clear as a bell.\n\n*\"I hope she doesn\u2019t call tonight. I can\u2019t deal with her drama again.\"*\n\nLena froze. Had she imagined it? But then another voice\u2014this time from a woman at the end of the bar, sipping a martini.\n\n*\"God, I hate my job. If I hear one more \u2018that\u2019s not how we do things here\u2019 from Mark, I\u2019m going to scream.\"*\n\nLena\u2019s breath hitched. She could *hear* their thoughts.\n\nAt first, it was overwhelming. The bar was a cacophony of inner monologues\u2014some mundane, some shocking. A couple on a date was already planning their escape routes. A regular, who always tipped well, was mentally calculating how much he could afford to drink before his rent was due.\n\nLena tried to focus on her work, but the noise was relentless. She wanted to scream, to cover her ears, but she couldn\u2019t. She had to keep serving, keep smiling, even as the thoughts battered her.\n\nThen, she heard something that made her stomach drop.\n\n*\"I wonder if she\u2019s noticed the missing cash yet.\"*\n\nHer eyes snapped to the man who had just ordered a beer. He was looking at her, a smirk playing on his lips. Her heart pounded. *He stole from the register.*\n\nLena\u2019s hands trembled as she grabbed her phone. She couldn\u2019t let him get away with it. But how could she prove it? She couldn\u2019t exactly say, *\"I heard your thoughts.\"*\n\nThen, an idea struck. She pretended to take an order from another customer, then \"accidentally\" bumped the man\u2019s glass, spilling beer all over his lap.\n\n\"Oh my God, I\u2019m so sorry!\" she exclaimed",
+      "word_count": 368,
+      "repetition": 2,
+      "timestamp": "2025-07-03T09:19:28.114541"
+    },
+    {
+      "sample_id": 6,
+      "prompt": "Write a tale about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours.",
+      "sampler_name": "model_default",
+      "sampler_config": {
+        "temperature": 0.15,
+        "top_p": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " It can be a bartender, a teacher, or anyone else. It is up to you.\n\n---\n\n**The Unwanted Gift**\n\nLena had always prided herself on being a good listener. As a bartender at *The Tipsy Mermaid*, she heard more than just orders for drinks\u2014she heard stories, confessions, and secrets spilled over the counter. But tonight, something was different.\n\nIt started with a whisper.\n\n*\"I hope she doesn\u2019t notice the stain on my shirt.\"*\n\nLena blinked. The words had come from nowhere, yet they were as clear as if the man in the corner booth had spoken them aloud. She glanced at him\u2014just a regular, mid-thirties, nursing a whiskey. He hadn\u2019t moved his lips.\n\nThen another voice, this time from the woman at the end of the bar: *\"I can\u2019t believe he actually said yes. What if he finds out about the other guy?\"*\n\nLena\u2019s breath hitched. She could *hear* their thoughts.\n\nPanic set in. She gripped the edge of the counter, her knuckles whitening. The voices kept coming\u2014overlapping, chaotic, a symphony of secrets.\n\n*\"I need to quit smoking\u2026\"*\n*\"She\u2019s looking at me. Does she know?\"*\n*\"I hate this job.\"*\n\nLena\u2019s hands trembled as she poured a drink, nearly spilling it. She had to focus. She had to *control* this.\n\nBut then she heard something that made her freeze.\n\n*\"I\u2019m going to kill him.\"*\n\nThe voice was cold, calculated. It came from a man sitting alone, his back to her. He was sipping a beer, his expression calm, but his thoughts were anything but.\n\nLena\u2019s pulse pounded in her ears. She glanced at the clock\u201411:30 PM. She had no idea how long this ability would last, but she couldn\u2019t ignore this.\n\nShe took a deep breath and walked over to the man. \"Hey, everything okay?\"\n\nHe turned, smiling. \"Yeah, why?\"\n\nLena hesitated. She couldn\u2019t just accuse him. But she couldn\u2019t ignore it either.\n\n\"Just checking,\" she said lightly. \"You seem\u2026 tense.\"\n\nHis smile didn\u2019t reach his eyes. *\"She\u2019s suspicious. I\u2019ll have to be careful.\"*\n\nLena\u2019s stomach twisted. She needed to act.\n\nShe turned to the bartender next to her, a friend named Jake. \"Hey",
+      "word_count": 353,
+      "repetition": 3,
+      "timestamp": "2025-07-03T09:19:41.072953"
+    },
+    {
+      "sample_id": 7,
+      "prompt": "Write a short story about a mysterious package that appears on someone's doorstep one rainy evening.",
+      "sampler_name": "model_default",
+      "sampler_config": {
+        "temperature": 0.15,
+        "top_p": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " The package is addressed to a person who doesn't live there anymore. What happens next?\n\n**The Package on the Doorstep**\n\nThe rain tapped a steady rhythm against the windows as Emma pulled her car into the driveway. The house was dark, save for the dim glow of the porch light, which flickered weakly against the storm. She hurried inside, shaking off the damp from her coat, and kicked off her shoes before flopping onto the couch.\n\nThen she noticed it.\n\nA small, brown package sat on the doormat, its edges slightly damp from the rain. It was wrapped in plain paper, the kind that came from a stationery store, and tied with a frayed piece of twine. The address was scrawled in messy handwriting:\n\n*Mr. Daniel Carter*\n*124 Maplewood Lane*\n\nEmma frowned. Daniel Carter had lived in this house before her\u2014she knew that much from the previous owner. But he had moved out years ago. Who would be sending him mail now?\n\nCuriosity gnawed at her. She picked up the package, turning it over in her hands. There was no return address, no postmark, nothing to indicate where it had come from. Just the name and address, written as if the sender had known Daniel personally.\n\nShe hesitated, then decided to open it. The twine came undone easily, and the paper peeled back to reveal a small, leather-bound journal. The cover was worn, the edges slightly curled, as if it had been handled many times. Inside, the pages were filled with tight, looping handwriting\u2014Daniel\u2019s, she assumed.\n\nThe first entry was dated fifteen years ago.\n\n*\"I found something today. Something I shouldn\u2019t have. Something that doesn\u2019t belong in this world.\"*\n\nEmma\u2019s pulse quickened. She flipped through the pages, scanning the frantic, disjointed entries. Daniel wrote about strange lights in the woods behind the house, about whispers in the night, about something watching him from the shadows. The later entries grew more desperate, filled with talk of a \"presence\" that followed him, of things moving on their own when he wasn\u2019t looking.\n\nThe last entry was short, written in a shaky hand:\n\n*\"It\u2019s here. It knows I know. I have to leave. I have to\u2014\"*\n\nThe page ended abruptly.\n\nEmma\u2019s breath hitched. The house felt colder suddenly, the air thick with an unnatural silence. She glanced toward the back door, half-expect",
+      "word_count": 389,
+      "repetition": 1,
+      "timestamp": "2025-07-03T09:19:52.699822"
+    },
+    {
+      "sample_id": 8,
+      "prompt": "Write a short story about a mysterious package that appears on someone's doorstep one rainy evening.",
+      "sampler_name": "model_default",
+      "sampler_config": {
+        "temperature": 0.15,
+        "top_p": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " The package is addressed to a person who doesn't live there anymore. What's inside?\n\n**The Package on the Doorstep**\n\nThe rain tapped a steady rhythm against the windows as Emma pulled her car into the driveway. The house was dark, save for the dim glow of the porch light, which flickered weakly against the storm. She hurried inside, shaking the water from her coat, and kicked off her shoes before flopping onto the couch.\n\nThat\u2019s when she noticed it.\n\nA small, weathered package sat on the doormat, its brown paper damp from the rain. The address was scrawled in faded ink, and the name sent a chill down her spine.\n\n*To: Daniel Carter*\n\nDaniel hadn\u2019t lived here in years. Not since the accident. Not since the night he\u2019d vanished into the storm, just like this one, and never returned.\n\nEmma hesitated, her fingers hovering over the package. It was sealed with old twine, the knot tight and stubborn. She untied it carefully, her breath catching as she peeled back the paper.\n\nInside was a single, yellowed photograph. It showed a young couple standing in front of the very house she was in now, their faces lit with laughter. The woman\u2019s hand rested on her rounded belly, and the man\u2014Daniel\u2014had his arm wrapped protectively around her.\n\nEmma\u2019s heart pounded. She didn\u2019t recognize the woman. But the date scrawled in the corner made her stomach twist.\n\n*June 12, 1998.*\n\nThe night Daniel had disappeared.\n\nA gust of wind rattled the windows, and the porch light flickered again, then went dark. Emma\u2019s hands trembled as she turned the photograph over.\n\nIn shaky handwriting, a single line was written:\n\n*He\u2019s coming home.*\n\nThe rain outside grew louder, and for the first time, Emma wondered\u2014had Daniel ever really left?",
+      "word_count": 294,
+      "repetition": 2,
+      "timestamp": "2025-07-03T09:20:01.781897"
+    },
+    {
+      "sample_id": 9,
+      "prompt": "Write a short story about a mysterious package that appears on someone's doorstep one rainy evening.",
+      "sampler_name": "model_default",
+      "sampler_config": {
+        "temperature": 0.15,
+        "top_p": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " The package is addressed to them, but they have no idea who sent it. They open it and find a strange object inside. The object is a small, ornate box with a keyhole. The person is curious and decides to open it, but the key is missing. They search their home for a key that might fit, but they can't find one. They become increasingly frustrated and obsessed with opening the box. They even try to break it open, but it's too sturdy. They finally give up and put the box away, but they can't stop thinking about it. One day, they receive another package, this time with a key. They rush to open the box, but when they do, they find a note inside that reads, \"You were not ready.\" The note is signed by someone they don't recognize. The story ends with the person staring at the note, wondering what it means and who sent it.\n\n**The Box on the Doorstep**\n\nThe rain tapped a steady rhythm against the windows as Emma pulled her car into the driveway. The evening had been long, and all she wanted was to curl up with a book and a cup of tea. But as she stepped onto the porch, something caught her eye\u2014a small, unassuming package resting against her front door.\n\nHer name was scrawled across the top in elegant, looping script, but there was no return address. Frowning, she picked it up, turning it over in her hands. It was light, yet strangely heavy in a way that made her pulse quicken. She unlocked the door and stepped inside, shaking off the rain before setting the package on the kitchen counter.\n\nCuriosity gnawed at her as she tore open the brown paper wrapping. Inside was a small, ornate box, its surface carved with intricate patterns of vines and flowers. A keyhole sat in the center, gleaming under the kitchen lights. Emma ran her fingers over the smooth wood, feeling the craftsmanship. Who had sent this? And why?\n\nShe searched her apartment for a key that might fit\u2014checking drawers, jewelry boxes, even the junk drawer where forgotten trinkets collected dust. Nothing. Frustration built inside her, a slow burn that refused to fade. She tried prying the box open with a butter knife, then a screwdriver, but the hinges held firm. It was as if the box itself was mocking her, daring her to find a way inside.\n\nDays passed, and the box",
+      "word_count": 411,
+      "repetition": 3,
+      "timestamp": "2025-07-03T09:20:15.540613"
+    },
+    {
+      "sample_id": 10,
+      "prompt": "Write a story about two strangers who meet during a citywide power outage and discover an unexpected connection.",
+      "sampler_name": "standard_minp",
+      "sampler_config": {
+        "temperature": 0.7,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "generated_text": " The outage lasts 24 hours and the two must navigate the city together during this time.\n\n**Title: \"The Lights Out Connection\"**\n\nThe city had never been so quiet.\n\nLena stood on the sidewalk, her phone dead in her hand, staring up at the dark skyscrapers. The power had gone out an hour ago, and the usually bustling streets were now eerily still. No traffic lights, no neon signs, no hum of air conditioners. Just silence.\n\nShe sighed, glancing at her watch. She was supposed to be at a dinner meeting in fifteen minutes\u2014now impossible. Her stomach growled, reminding her she hadn\u2019t eaten since breakfast. She\u2019d have to walk to her favorite diner, if it was even open.\n\nAs she turned to head down the street, a voice called out.\n\n\u201cHey! You heading somewhere?\u201d\n\nLena turned to see a man standing a few feet away, his hands shoved in his pockets. He had a backpack slung over one shoulder and a flashlight in his hand.\n\n\u201cYeah,\u201d she said. \u201cI was supposed to meet someone, but now I\u2019m just trying to find food.\u201d\n\nThe man nodded. \u201cSame. I was on my way home from work when the lights went out. My apartment\u2019s on the other side of the city, but I doubt the trains are running.\u201d\n\nLena hesitated. She didn\u2019t know this guy, but walking alone in the dark didn\u2019t feel safe. \u201cYou want to walk together?\u201d she asked.\n\nHe smiled. \u201cSounds like a plan.\u201d\n\nThey introduced themselves\u2014Lena was a marketing manager, and he was a history teacher named Daniel. They walked side by side, the beam of Daniel\u2019s flashlight cutting through the darkness.\n\nThe city was surreal without power. Streetlights were dark, and the usual glow of windows was gone. People were out, some with flashlights, others with candles. A few shops had generators running, their lights a welcome sight.\n\nThey stopped at a corner deli that was still open, grabbing sandwiches and bottles of water. As they ate outside on the steps, they talked\u2014about work, about the city, about how strange it was to see everything so still.\n\n\u201cDo you think it\u2019ll be back on soon?\u201d Lena asked.\n\nDaniel shook his head. \u201cNot for a while, if the news is right. Some kind of major grid failure.\u201d\n\nLena groaned. \u201cGreat. My boss is going to kill me.\u201d\n\nDaniel laughed.",
+      "word_count": 389,
+      "repetition": 1,
+      "timestamp": "2025-07-03T09:20:27.329442"
+    },
+    {
+      "sample_id": 11,
+      "prompt": "Write a story about two strangers who meet during a citywide power outage and discover an unexpected connection.",
+      "sampler_name": "standard_minp",
+      "sampler_config": {
+        "temperature": 0.7,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "generated_text": " (1,000 words)\n\n---\n\n**The Blackout Connection**\n\nThe power went out just as Lily was pouring herself a glass of wine. One moment, the kitchen was bathed in the warm glow of her pendant lights; the next, everything plunged into darkness. She stood frozen, the unfinished pour dripping down the neck of the bottle.\n\n\"Great,\" she muttered, setting the bottle aside. She fumbled for her phone, the dim glow of the screen barely enough to navigate her small apartment. The battery was at 15 percent\u2014enough for a few calls, maybe. She tapped the screen, but her carrier had no signal. Of course.\n\nOutside, the city was silent, save for the distant hum of generators and the occasional shout from neighbors. A citywide blackout. Just her luck.\n\nLily sighed and made her way to the living room, where she had left her emergency kit\u2014flashlight, candles, a half-charged portable charger. She lit a candle, the flickering flame casting long shadows on the walls. As she sat on the couch, she heard a soft tapping at her door.\n\n\"Hello?\" a voice called out.\n\nLily hesitated. She wasn\u2019t expecting anyone. She stood and approached the door, peeking through the peephole. A man stood in the hallway, holding a flashlight. He looked familiar\u2014perhaps a neighbor from a few floors down?\n\nShe unlocked the door and opened it just a crack. \"Can I help you?\"\n\nThe man blinked in the candlelight. \"Hey, sorry to bother you. I was wondering if you had a phone charger. Mine died, and I need to call my roommate to see if he\u2019s okay.\"\n\nLily studied him for a moment before stepping aside. \"Come in. I\u2019ve got a portable charger, but it\u2019s not fully charged. You\u2019re welcome to try it.\"\n\n\"Thanks,\" he said, stepping inside. He was taller than she had thought, with dark hair and a friendly smile. \"I\u2019m Ethan, by the way. I live in 302.\"\n\n\"Lily,\" she replied. \"307.\"\n\nEthan took the charger from her and plugged in his phone. \"The whole city seems to be out. Any idea what happened?\"\n\nLily shook her head. \"No clue. I was just about to have a glass of wine when the lights went out.\"\n\nEthan chuckled. \"Rough night.\"\n\nShe smiled. \"You could say",
+      "word_count": 372,
+      "repetition": 2,
+      "timestamp": "2025-07-03T09:20:39.079054"
+    },
+    {
+      "sample_id": 12,
+      "prompt": "Write a story about two strangers who meet during a citywide power outage and discover an unexpected connection.",
+      "sampler_name": "standard_minp",
+      "sampler_config": {
+        "temperature": 0.7,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "generated_text": " You may include any genre (romance, comedy, mystery, etc.) as long as the main plot revolves around the two strangers meeting during the power outage and discovering an unexpected connection.\n\n---\n\n**Title: \"Flicker of Fate\"**\n\nThe city plunged into darkness as the power outage took hold. Streetlights flickered and died, leaving only the faint glow of emergency exit signs and the occasional flash of a phone screen. Among the disoriented crowd, two strangers found themselves walking the same path\u2014literally.\n\n\"Sorry!\" a woman gasped as she bumped into a man, nearly dropping the candle in her hand.\n\n\"No, my fault\u2014I was staring at the ground,\" the man replied, steadying her. His voice was warm, even in the chaos.\n\nShe looked up, meeting his eyes in the dim light. \"You don\u2019t recognize me, do you?\"\n\nHe blinked. \"Should I?\"\n\nShe laughed, a soft, familiar sound. \"Probably not. But I recognize you.\"\n\nThe man frowned, then realized\u2014she was the woman from the caf\u00e9. The one who always sat by the window, reading the same book every morning. He\u2019d noticed her but never spoken to her.\n\n\"Wait\u2014you\u2019re the one with the mystery novel,\" he said.\n\n\"Guilty,\" she admitted. \"And you\u2019re the guy who always buys black coffee, no sugar.\"\n\nHe grinned. \"Small world.\"\n\nAs the city remained dark, they wandered the streets together, sharing stories they never thought they\u2019d tell. The conversation flowed effortlessly, as if they\u2019d known each other for years.\n\nBy the time the power flickered back on, they both knew this wasn\u2019t just a coincidence.\n\n\"Maybe we should exchange numbers,\" he suggested.\n\nShe smiled. \"I was hoping you\u2019d say that.\"\n\nAnd just like that, a power outage became the spark that connected them.",
+      "word_count": 282,
+      "repetition": 3,
+      "timestamp": "2025-07-03T09:20:48.972575"
+    },
+    {
+      "sample_id": 13,
+      "prompt": "Write a tale about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours.",
+      "sampler_name": "standard_minp",
+      "sampler_config": {
+        "temperature": 0.7,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "generated_text": " It's a day of revelations, realizations, and revelry for our protagonist. But when the day is over and the ability is gone, he feels a strange sense of loss.\n\n**Title: The Day I Could Hear You**\n\nJames Carter had always prided himself on being a good listener. He\u2019d nod along during conversations, offer thoughtful responses, and never interrupt. But today, he didn\u2019t have to *try* to listen. Today, he couldn\u2019t *not* listen.\n\nIt started when he woke up. The sound of his alarm was normal enough, but then\u2014\n\n*Ugh, not again. Just five more minutes\u2026*\n\nJames sat bolt upright in bed. That wasn\u2019t his own thought. It was his roommate, Kyle\u2019s, drifting through the wall from the room next door.\n\nJames\u2019s breath hitched. *This isn\u2019t happening.*\n\nBut it was.\n\nHe stumbled out of bed, his mind racing. Had he accidentally taken some weird new supplement? Was this a side effect of that weird dream he\u2019d had last night? Whatever it was, he had to test it.\n\n\u201cMorning, Kyle,\u201d James called as he passed his roommate\u2019s door.\n\n*Morning? It\u2019s way too early for this.*\n\nKyle groaned, and James grinned. Okay, so it wasn\u2019t a dream.\n\n---\n\nBy the time James reached the campus cafeteria, his head was spinning. Everywhere he turned, thoughts flooded in like a radio station with too many stations tuned in at once.\n\n*I forgot to do my laundry\u2026*\n\n*Why does she always sit next to me?*\n\n*I hope he doesn\u2019t talk to me today\u2026*\n\nIt was overwhelming. But it was also fascinating.\n\nJames sat down at a table, trying to focus on his breakfast. A girl across from him sighed, stirring her coffee.\n\n*I wish I could tell him how I feel\u2026*\n\nJames glanced at her. She was looking at a guy at another table, biting her lip. The guy hadn\u2019t noticed her at all.\n\n*Maybe I should just say something\u2026*\n\nJames\u2019s heart ached. He wanted to help, but what could he do? He couldn\u2019t just walk over and say, \u201cHey, she likes you.\u201d\n\nBut then\u2014an idea struck him.\n\nHe stood up, walked over to the guy\u2019s table, and tapped him on the shoulder.\n\n\u201cHey, uh, do you mind if I borrow a pen?\u201d James asked.\n\nThe guy blinked. \u201cSure,",
+      "word_count": 373,
+      "repetition": 1,
+      "timestamp": "2025-07-03T09:21:00.416473"
+    },
+    {
+      "sample_id": 14,
+      "prompt": "Write a tale about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours.",
+      "sampler_name": "standard_minp",
+      "sampler_config": {
+        "temperature": 0.7,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "generated_text": " For this period, they are able to hear the thoughts of those around them, and the story should include some of the thoughts they hear.\n\nThe day started like any other for me\u2014groggy, coffee-dependent, and filled with the humdrum of daily life. I rolled out of bed, kicked my laundry pile to the side, and shuffled to the kitchen. The familiar beep of my coffee maker filled the apartment, a comforting sound that signaled the start of another monotonous day.\n\nI was halfway through my first sip when it happened. A voice, clear and distinct, cut through my morning haze.\n\n*\"Ugh, I hope the meeting doesn\u2019t run long. I have a date tonight.\"*\n\nI nearly choked on my coffee. The voice wasn\u2019t coming from outside my head. It was *inside* it. I spun around, searching for the source, but my apartment was empty. The voice had come from\u2026 nowhere.\n\nThen another thought, this time laced with frustration:\n\n*\"Why does he always have to leave his dishes in the sink? It\u2019s like he thinks I\u2019m his personal maid.\"*\n\nI recognized that voice\u2014it was my roommate, Jake. He was still asleep in his room. The realization hit me like a brick. I could hear his thoughts.\n\nI stood frozen, my heart pounding. Was this some kind of joke? A prank? But the thoughts kept coming, a relentless stream of consciousness from everyone around me.\n\nMy neighbor downstairs was thinking about whether he should finally fix that squeaky hinge on his front door. The barista at the coffee shop was mentally calculating how much money he needed to save before quitting his job. Even the stranger sitting next to me on the bus was replaying an awkward conversation from yesterday.\n\nIt was overwhelming. The constant noise of other people\u2019s minds was like having a dozen radio stations blaring inside my skull. I pressed my hands to my temples, trying to block it out, but the thoughts only grew louder.\n\nAt work, it was worse. My boss\u2019s thoughts were a never-ending loop of self-doubt and frustration with the company. My coworkers gossiped about each other, their thoughts far more brutal than anything they\u2019d ever say out loud. Even the client I was supposed to be helping was mentally calling me an idiot behind my back.\n\nI tried to focus, to ignore the voices, but it was impossible. Every thought, every secret, every hidden judgment was laid bare. I felt like a spy in my own life, priv",
+      "word_count": 413,
+      "repetition": 2,
+      "timestamp": "2025-07-03T09:21:12.160049"
+    },
+    {
+      "sample_id": 15,
+      "prompt": "Write a tale about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours.",
+      "sampler_name": "standard_minp",
+      "sampler_config": {
+        "temperature": 0.7,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "generated_text": " This power is not something they can control, and they want to use it to help people, but quickly find out that this is not easy.\n\n### The Unwanted Gift\n\nLena sat at her desk, staring at the half-finished report on her screen. Her coffee had gone cold, and the clock on the wall ticked relentlessly toward the end of another uneventful workday. She rubbed her temples, feeling a dull ache build behind her eyes.\n\n*Why did I agree to take on this extra project? I should have just said no.*\n\nLena blinked. That voice\u2014it wasn\u2019t hers. It was clear, distinct, and coming from the man two cubicles down. She turned her head slightly, studying him. Mark was typing away, his brow furrowed in concentration.\n\n*If I don\u2019t get this done by five, Lisa\u2019s going to kill me. Why does she always pile on the work right before a deadline?*\n\nLena\u2019s breath hitched. She could hear his thoughts.\n\nShe quickly glanced around the office, but no one else seemed to notice anything unusual. Her heart pounded in her chest as she tried to process what was happening. Was this some kind of joke? A prank? But how?\n\n*No one\u2019s playing a trick on you, Lena. This is real.*\n\nThe voice in her head was her own this time. She clenched her fists, her nails digging into her palms. This wasn\u2019t possible. People didn\u2019t just suddenly develop psychic abilities.\n\nBut the thoughts kept coming.\n\nFrom the woman in the cubicle next to her: *I can\u2019t believe I forgot to call my mom again. She\u2019s going to be so disappointed.*\n\nFrom the guy in accounting: *I wonder if Sarah would go out with me if I asked. But what if she says no?*\n\nLena pressed her hands over her ears, as if that would block out the noise, but it didn\u2019t help. The thoughts kept flooding in, a chaotic symphony of worries, hopes, and mundane musings.\n\nShe needed to get out of there.\n\nGrabbing her bag, she stood up and hurried toward the elevator, ignoring the confused looks from her coworkers. The doors slid open, and she stepped inside, pressing the button for the lobby with a shaky finger.\n\nOnce outside, she walked quickly, not sure where she was going but desperate to escape the overwhelming noise in her head. She ended up in a small park, sitting on a bench beneath a towering oak",
+      "word_count": 403,
+      "repetition": 3,
+      "timestamp": "2025-07-03T09:21:25.134696"
+    },
+    {
+      "sample_id": 16,
+      "prompt": "Write a short story about a mysterious package that appears on someone's doorstep one rainy evening.",
+      "sampler_name": "standard_minp",
+      "sampler_config": {
+        "temperature": 0.7,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "generated_text": " This package contains a secret that could change the life of the recipient forever. What is inside the package?\n\nThe rain fell in relentless sheets, drumming against the windows of Clara\u2019s cozy cottage. The storm had rolled in without warning, turning the quiet evening into a symphony of thunder and wind. She curled up on the sofa with a book, trying to ignore the way the trees outside bent under the force of the gales.\n\nA sharp knock at the door made her jump. She wasn\u2019t expecting anyone\u2014especially not in this weather. Frowning, she set her book aside and padded to the front door, peering through the frosted glass before undoing the latch.\n\nA man stood on her doorstep, his dark coat drenched, his face obscured by the brim of his hat. He held a small, waterproof package in his gloved hands.\n\n\u201cClara Hart?\u201d he asked, his voice muffled by the storm.\n\nShe hesitated. \u201cYes?\u201d\n\nHe didn\u2019t speak again, simply handed her the package before turning and disappearing into the rain. Clara watched him go, baffled, before shutting the door and examining the parcel. There was no return address, no label\u2014just her name scrawled in sharp, precise letters across the sealed wrapping.\n\nHer fingers trembled as she tore it open.\n\nInside was a single photograph, yellowed with age. It showed a young woman standing beside a man in a military uniform\u2014her grandfather, she realized. But it wasn\u2019t the faces that made her breath catch. It was the background.\n\nA newspaper clipping was tucked behind the photo, its headline screaming in bold letters:\n\n**MISSING TREASURE STILL BURIED IN LOCAL COTTAGE\u20141942**\n\nClara\u2019s heart pounded. Her grandfather had lived in this very house. And according to the article, he had been one of the last people to know where a priceless collection of stolen artifacts had been hidden during World War II.\n\nShe flipped the photo over. Scrawled in the same handwriting as her name were three words:\n\n**Dig beneath the oak.**\n\nThe storm still raged outside, but Clara barely noticed. She grabbed her coat, her mind racing with possibilities. The secret had been in her family all along.\n\nAnd now, it was hers to uncover.",
+      "word_count": 363,
+      "repetition": 1,
+      "timestamp": "2025-07-03T09:21:35.967670"
+    },
+    {
+      "sample_id": 17,
+      "prompt": "Write a short story about a mysterious package that appears on someone's doorstep one rainy evening.",
+      "sampler_name": "standard_minp",
+      "sampler_config": {
+        "temperature": 0.7,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "generated_text": " What's inside? What happens next?\n\n**The Package on the Porch**\n\nThe rain tapped insistently against the windows of Clara\u2019s small cottage, a steady rhythm that matched the uneasy drumming of her fingers on the armrest of her chair. She had been reading for hours, trying to ignore the storm outside, but the thunder\u2019s deep growls and the occasional flash of lightning made concentration nearly impossible.\n\nA sudden, sharp knock at the door jolted her from her thoughts.\n\n*Who could be out in this weather?* she wondered, frowning. She wasn\u2019t expecting anyone\u2014no deliveries, no visitors.\n\nHesitantly, she rose from her chair and padded to the front door. Through the frosted glass, she could see the silhouette of a figure on her porch, their head bowed against the rain. Before she could decide whether to answer, the person turned and left, vanishing into the storm.\n\nClara unlocked the door and stepped outside, the cold air biting at her skin. There, on the welcome mat, sat a small, wrapped package, its brown paper already damp from the rain.\n\nShe picked it up, turning it over in her hands. There was no label, no return address\u2014just her name, written in elegant, looping script, directly on the paper.\n\n*Clara.*\n\nHer heart pounded as she carried the package inside, shutting the door firmly behind her. The storm raged on outside, but inside, the air felt charged, electric.\n\nShe set the package on the kitchen table and carefully unwrapped it. The paper peeled away to reveal a small, ornate wooden box, its surface carved with intricate swirling patterns. There was no lock, no hinge\u2014just a smooth, unbroken surface.\n\nClara ran her fingers over the carvings, feeling the cool wood beneath her touch. She hesitated, then pressed her palm flat against the lid.\n\nThe box clicked open, revealing a single object inside: a silver pocket watch, its chain glinting in the dim light.\n\nShe lifted it out, turning it over in her hands. The face was blank\u2014no numbers, no hands. Just a smooth, reflective surface.\n\nThen, as she watched, something began to shift. A faint, shimmering light flickered beneath the silver, and the reflection of her own face in the metal distorted, warped, until it was no longer her own.\n\nThe image resolved into a scene\u2014a dark, fog-covered street, the glow of a streetlamp barely piercing",
+      "word_count": 388,
+      "repetition": 2,
+      "timestamp": "2025-07-03T09:21:48.799811"
+    },
+    {
+      "sample_id": 18,
+      "prompt": "Write a short story about a mysterious package that appears on someone's doorstep one rainy evening.",
+      "sampler_name": "standard_minp",
+      "sampler_config": {
+        "temperature": 0.7,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "generated_text": " What's inside?\n\n**The Package**\n\nThe rain drummed against the windows as Emily pulled her old Ford into the driveway. She had spent the evening at her friend\u2019s book club, and the storm had rolled in while she was gone. The wind howled, rattling the loose shutters on the side of her house.\n\nGrabbing her umbrella, she dashed through the downpour to the front door. Just as she turned the key, something caught her eye\u2014a small, unmarked box sitting on the welcome mat. She frowned. She hadn\u2019t ordered anything, and no one knew she\u2019d be home tonight.\n\nWiping the rain from her face, she picked up the package. It was light, wrapped in plain brown paper, tied with a frayed string. No return address, no note. Just her name, written in neat, looping handwriting.\n\nHer heart beat a little faster as she carried it inside, setting it on the kitchen table. The air smelled of wet wood and ozone. She hesitated, then untied the string and peeled back the paper.\n\nInside was a small, leather-bound journal, its pages yellowed with age. The cover was embossed with a strange symbol\u2014a crescent moon cradling a single star. She opened it carefully.\n\nThe first page bore a single line in elegant script:\n\n*\"Beware the whispers of the storm.\"*\n\nEmily\u2019s breath caught. The handwriting was the same as the one on the package.\n\nShe flipped through the pages. Some were filled with dates and locations, others with strange symbols and scribbled notes in a language she didn\u2019t recognize. One entry, dated fifty years ago, read:\n\n*\"They found me. The door won\u2019t hold much longer.\"*\n\nA cold draft slithered through the room, though all the windows were shut. The rain outside grew louder, as if something were knocking against the glass.\n\nEmily snapped the journal shut. She wrapped it back in the paper and carried it to the fireplace. The fire roared to life as she tossed it in, watching the pages curl and blacken.\n\nBut as she turned away, she heard it\u2014a faint whisper, carried on the wind through the cracks in the window.\n\n*\"You should have left it alone.\"*",
+      "word_count": 355,
+      "repetition": 3,
+      "timestamp": "2025-07-03T09:21:59.337563"
+    },
+    {
+      "sample_id": 19,
+      "prompt": "Write a story about two strangers who meet during a citywide power outage and discover an unexpected connection.",
+      "sampler_name": "creative_minp",
+      "sampler_config": {
+        "temperature": 1.0,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "generated_text": " \"Powerless Hearts\" by A.L. Adams\n\nThe rain fell in relentless sheets, turning the streets of Manhattan into a glistening river. Lightning cracked the sky, illuminating the skyscrapers for a fleeting second before plunging the city back into darkness. The power outage had been citywide for hours, and with it, the usual hum of the city had been silenced.\n\nEva had been trapped in her apartment, her phone dead, the internet down, and the only light coming from the occasional flash of lightning. She had been about to give up and try to sleep when a sudden knock at her door startled her.\n\nCautiously, she opened the door a crack, revealing a man standing under the awning, soaked from the rain. He held a small lantern in his hand, casting a warm glow over his tired face.\n\n\"Hi,\" he said, his voice barely audible over the storm. \"I saw your light and thought maybe you had a spare flashlight or something.\"\n\nEva hesitated, but something about his desperate look made her step aside. \"Come in,\" she said, allowing him into her apartment.\n\nThe man stepped inside, shaking the water from his hair. \"Thank you,\" he said, setting the lantern on her coffee table. \"I'm Jake.\"\n\n\"Eva,\" she replied, grabbing a towel from the bathroom and handing it to him. \"You're soaked.\"\n\nJake smiled gratefully as he dried his face. \"Yeah, I was trying to get home from work when everything went dark. My phone died, and I got a little turned around.\"\n\nEva nodded sympathetically. \"Me too. I was about to go to bed when the power went out.\"\n\nThey sat in silence for a moment, listening to the rain outside. Then, Eva turned to Jake. \"You know, I think I have a few candles somewhere. I'll go get them.\"\n\nAs she rummaged through her closet, she couldn't shake the feeling that she knew Jake from somewhere. His voice, his face\u2014something about him was familiar.\n\nShe returned with a handful of candles and matches. \"Here,\" she said, lighting one and placing it on the table. The soft flickering glow filled the room, casting shadows on the walls.\n\nJake leaned forward, his eyes meeting Eva's. \"You look familiar,\" he said, echoing her thoughts. \"Have we met before?\"\n\nEva shook her head. \"I don't think so. But",
+      "word_count": 384,
+      "repetition": 1,
+      "timestamp": "2025-07-03T09:22:11.614772"
+    },
+    {
+      "sample_id": 20,
+      "prompt": "Write a story about two strangers who meet during a citywide power outage and discover an unexpected connection.",
+      "sampler_name": "creative_minp",
+      "sampler_config": {
+        "temperature": 1.0,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "generated_text": " This story should incorporate the following elements:\n\n- A romantic relationship between the leaders of two rival factions\n- A historical building that is illuminated during the outage\n- A conversation about the building's history\n\n---\n\n**Title: The Glow of the Past**\n\nThe citywide power outage caught Daniel off guard. One moment, he was at his desk, finalizing a report; the next, his computer screen flickered and died, plunging the entire block into darkness.\n\nHe stepped outside, where the cool evening air greeted him. The streets were eerily quiet, save for the distant murmur of confused voices. Then, he saw her\u2014standing under the glow of a flickering emergency exit sign, her phone held aloft like a dim lantern.\n\n\"Lost, too?\" she asked, her voice light but carrying a hint of amusement.\n\nDaniel nodded. \"I was just about to head home, but I think the subway\u2019s down.\"\n\nShe laughed, a warm sound that cut through the tension. \"Same. I\u2019m Rachel, by the way.\"\n\n\"Daniel.\"\n\nA comfortable silence settled between them as they walked, guided by the occasional streetlight that still held a charge. Then, the old City Hall clock tower came into view, bathed in a soft, ethereal light from a backup generator.\n\nRachel gasped. \"Look at that! It\u2019s beautiful.\"\n\nDaniel glanced at the historic building, its grand architecture standing out against the dark sky. \"It\u2019s one of the few buildings with emergency lighting. They say it\u2019s never failed during a blackout.\"\n\nRachel\u2019s eyes sparkled with curiosity. \"Do you know the history of this place?\"\n\n\"A little,\" Daniel admitted. \"It was built in the early 1900s. Back then, the city was split between two powerful families\u2014the Dawsons and the Carrs.\"\n\nRachel\u2019s eyebrows shot up. \"Rival factions?\"\n\n\"Exactly. The Dawsons controlled the industrial sector, while the Carrs had the trade routes. The rivalry was legendary\u2014there were even rumors of forbidden romances between them.\"\n\nRachel smirked. \"Forbidden romances? That\u2019s dramatic.\"\n\nDaniel chuckled. \"History has a way of making things sound more intense than they probably were. But the point is, this building was meant to unite the city, to symbolize cooperation over conflict.\"\n\nRachel studied the tower, her expression thoughtful. \"And now it\u2019s the one thing still standing out in all this darkness.\"\n\nDaniel turned to her, realizing",
+      "word_count": 375,
+      "repetition": 2,
+      "timestamp": "2025-07-03T09:22:24.644339"
+    },
+    {
+      "sample_id": 21,
+      "prompt": "Write a story about two strangers who meet during a citywide power outage and discover an unexpected connection.",
+      "sampler_name": "creative_minp",
+      "sampler_config": {
+        "temperature": 1.0,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "generated_text": " \ud83c\udf03\ud83d\udca1\n\nThe city\u2019s lights flickered and died, plunging the streets into an eerie twilight. Emily, a lawyer stuck in her high-rise office, sighed as she fumbled for her phone\u2014only to realize the dead battery had betrayed her hours ago. Outside, the hum of traffic had faded into an unsettling silence, broken only by the distant murmur of voices and the occasional clatter of something falling in the dark.\n\nShe stepped onto the fire escape, the metal rail cool under her hands, and glanced down at the street. Shadows stretched long and unfamiliar, the usual glow of streetlights absent. Then she heard it\u2014a soft hum, almost like a lullaby.\n\nCurious, she followed the sound, stepping carefully down the emergency stairs until she reached the ground. The melody led her to a small park where a man sat on a bench, strumming a guitar under the pale moonlight. His fingers moved with ease, as if he\u2019d played a thousand times before.\n\nEmily hesitated. \u201cThat\u2019s beautiful.\u201d\n\nThe man looked up, his expression friendly. \u201cThanks. Helps pass the time, I guess.\u201d He grinned. \u201cAnd keeps the ghosts at bay.\u201d\n\nShe laughed, the tension in her chest easing. \u201cI\u2019m Emily.\u201d\n\n\u201cJake,\u201d he said, extending a hand. \u201cYou work in the office building?\u201d\n\nShe nodded. \u201cStuck there when the power went out.\u201d\n\n\u201cSame,\u201d Jake said. \u201cThough I was just leaving when it happened.\u201d He gestured to the guitar. \u201cThis was in the trunk of my car. Figured why not?\u201d\n\nEmily sat beside him, the bench creaking slightly. \u201cDo you play often?\u201d\n\n\u201cUsed to,\u201d Jake said. \u201cIn college, actually.\u201d He paused. \u201cI saw your name before\u2014on a flyer for a charity gala. You\u2019re a lawyer, right?\u201d\n\nEmily blinked in surprise. \u201cYeah. How did you\u2014?\u201d\n\n\u201cMy sister works at your firm,\u201d Jake said, grinning. \u201cSmall world.\u201d\n\nEmily\u2019s mouth fell open. \u201cRachel? Your sister\u2019s Rachel Martinez?\u201d\n\n\u201cThat\u2019s her,\u201d Jake said, laughing. \u201cYou two worked on the Thompson case together.\u201d\n\nEmily couldn\u2019t believe it. Rachel had mentioned her brother, but they\u2019d never met. Now, here they were, under the stars, connected by fate\u2014or at least, a citywide blackout.\n\n\u201cMaybe this wasn\u2019t such a bad thing after all,\u201d Jake",
+      "word_count": 358,
+      "repetition": 3,
+      "timestamp": "2025-07-03T09:22:36.262320"
+    },
+    {
+      "sample_id": 22,
+      "prompt": "Write a tale about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours.",
+      "sampler_name": "creative_minp",
+      "sampler_config": {
+        "temperature": 1.0,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "generated_text": " If you'd like, you have to choose either option a) they don't remember they've gained this power afterwards or b) they remember it forever. (No time frame restrictions.)\n\n**Title: The Whispering World**\n\nEmily sat in her usual spot at the coffee shop, sipping her latte and scrolling through her phone. It was a quiet Tuesday morning, the kind where the world seemed to move at a leisurely pace. She enjoyed these moments\u2014small pockets of calm in the chaos of life.\n\nThen, she heard a voice.\n\n*\"Ugh, she's late again. I swear, if she doesn't show up in the next five minutes, I'm leaving.\"*\n\nEmily frowned, glancing around. The voice wasn't loud enough to be anyone speaking aloud. It was soft, almost a whisper, but clear as day in her mind. She looked at the people nearby, but no one seemed to be speaking\u2014or thinking, for that matter.\n\n*\"I can't believe I forgot my keys. How am I supposed to get into my apartment now?\"*\n\nThis time, the voice was a man's, and it came from the direction of the counter. A tall guy in a hoodie was staring at the door, looking frustrated. Emily's eyes widened. She could hear his thoughts.\n\nHer heart raced as more voices flooded her mind.\n\n*\"I wonder if she's seeing someone else. She's been distant lately.\"*\n\n*\"I hope my presentation goes well today. I can't afford to mess this up.\"*\n\n*\"Coffee tastes better when it's fresh. Why is this place always out of the good beans?\"*\n\nEmily pressed her hands to her temples, overwhelmed. She had never experienced anything like this before. Was she losing her mind? Had she somehow developed telepathy overnight?\n\nShe took a deep breath and tried to focus. Maybe she could control it. Maybe she could choose whose thoughts she heard.\n\n*\"Emily? Are you okay?\"*\n\nHer best friend, Sarah, was standing in front of her, concern etched on her face. Emily blinked, realizing she hadn't even noticed Sarah arrive.\n\n\"Yeah, I'm fine,\" Emily said quickly, forcing a smile. \"Just\u2026 a lot on my mind.\"\n\nSarah frowned but didn't push. \"Well, I ordered for you. Your usual.\"\n\n\"Thanks,\" Emily murmured, watching as Sarah sat across from her.\n\nShe tried to tune out the thoughts around her, but they persisted, a relentless chorus of inner monologues. Some were mundane",
+      "word_count": 386,
+      "repetition": 1,
+      "timestamp": "2025-07-03T09:22:48.787149"
+    },
+    {
+      "sample_id": 23,
+      "prompt": "Write a tale about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours.",
+      "sampler_name": "creative_minp",
+      "sampler_config": {
+        "temperature": 1.0,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "generated_text": " And this ability is really, really inconvenient.\n\nThe thing about listening to people\u2019s thoughts is that they don\u2019t always want you to hear them. It\u2019s not polite. But, in my case, it\u2019s not like I had a choice. I\u2019d been walking to work, lost in the daydreaming that usually fills the walk from the train station to my office when I noticed a woman on her phone. She was just saying, \u201cOkay, yeah,\u201d and \u201cUh-huh\u201d a lot, but the thought that bounced through her head was something about me that made me stop in my tracks.\n\nI thought about ignoring it, but I wasn\u2019t sure I could. This woman was thinking about me. She was thinking about how she didn\u2019t like my shoes. And, well, that stung a bit. I\u2019d spent hours picking them out.\n\nShe hung up her phone and went on her way, and I went mine, but I couldn\u2019t shake the knowledge that this woman hated my shoes. Maybe she thought my hair was a mess, too. Or maybe she was thinking about her grocery list.\n\nI tried to keep my mind on the walk ahead, but it was like a switch had been flipped in my brain. Everywhere I looked, thoughts were coming at me from every direction.\n\nIt was overwhelming. The more I tried to ignore them, the louder they seemed to get. People\u2019s thoughts were invading my personal space, and I didn\u2019t know how to make them stop. I had to figure out a way to turn this off, or else I was going to go insane.\n\nI made it to my office, but it was just as bad. My co-workers\u2019 thoughts were a constant buzz in my head, and I could barely focus on my work. I tried to block them out, but it was like trying to block out the sound of a jackhammer with earplugs made of cotton balls.\n\nThen, I had an idea. If I could hear other people\u2019s thoughts, maybe I could also control them. Maybe I could make them think only happy thoughts, or at least not think about me.\n\nBut, I had to be careful. If people found out I could do this, they\u2019d either think I was a freak or want to use me for their own gain. And, worst of all, they might not think about my shoes at all. So, I had to keep this a secret.\n\nI spent the rest of the day trying to figure out how to control this power. I",
+      "word_count": 420,
+      "repetition": 2,
+      "timestamp": "2025-07-03T09:23:01.790447"
+    },
+    {
+      "sample_id": 24,
+      "prompt": "Write a tale about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours.",
+      "sampler_name": "creative_minp",
+      "sampler_config": {
+        "temperature": 1.0,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "generated_text": " Read the words of the waitress: 'Anything else, hon?' to a customer and the reply: 'No, just the check please.'\n\nCharacters who are often unnoticed are: 1- The elderly\n2- The poor\n3- The homeless\n4- The disabled\n5- The mentally ill\n\nI choose the homeless.\n\nTHE HEARERS\n\n\"Anything else, hon?\"\n\nThe waitress asked politely. She didn't know the man's name. In fact, she rarely asked for a name unless the customer was a regular. The man, with his battered boots and dirty clothes, definitely was not.\n\n\"No, just the check, please.\"\n\nHis voice was deep and rough, and the waitress could tell he was tired. She knew that there were people that avoided restaurants and shops because they didn't want to look at those who were less fortunate than them, especially during the holidays.\n\nShe thought about the man and wondered what his life was like. As she returned with his check, she felt something strange happen. She could suddenly hear people\u2019s thoughts. At first, she thought it was something about the old clock in the restaurant, but soon she realized she was hearing what people were actually thinking.\n\n\"Man, this place stinks. I want out of here.\"\n\nThat was from a young couple who looked as if they had just graduated high school. They didn't want to be seen with anyone that wasn't exactly like them.\n\n\u201cHow do I get rid of these guys?\u201d\n\nThat was from a woman who looked to be in her early thirties. She was at a table with four children who were all under the age of 10.\n\n\u201cIt\u2019s not easy being poor.\u201d\n\nThis was from a girl who appeared to be around ten years old. She was wearing a thin coat and had dirty fingerprints all over her face. She looked at the man who was paying his check. Her eyes held a deep sorrow, but she tried to hide it with a smile.\n\n\u201cMaybe I can help her.\u201d\n\nThe waitress turned her attention to the man.\n\n\"Anything else, sir?\"\n\nHe shook his head and handed her the money.\n\n\"No, that's all.\"\n\nHe stood and walked out of the restaurant. She watched him through the window and then looked at the little girl.\n\nThe waitress suddenly felt a wave of pity for the man. He was homeless, and she knew that many people were going to be less than nice to him, but she couldn't help but feel sorry",
+      "word_count": 407,
+      "repetition": 3,
+      "timestamp": "2025-07-03T09:23:13.241571"
+    },
+    {
+      "sample_id": 25,
+      "prompt": "Write a short story about a mysterious package that appears on someone's doorstep one rainy evening.",
+      "sampler_name": "creative_minp",
+      "sampler_config": {
+        "temperature": 1.0,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "generated_text": " Here are some details you can use:\n\n- The person is a young woman named Mara, who is a book lover and works as a librarian.\n- She lives alone in a small cottage near the woods.\n- It is a rainy evening, and she is relaxing with a book when the knock on her door comes.\n- The package is large and wrapped in plain brown paper. There is no return address.\n- When she opens it, inside is a book with a black cover, a very old, leather-bound volume.\n- The book\u2019s pages are made of something that isn\u2019t paper.\n- The pages feel strangely cold to the touch.\n- The book seems to be written in a foreign language, but Mara can somehow read it.\n- As she reads, she realizes the words are changing, morphing into a different language\u2014one that doesn\u2019t exist.\n- The words begin to rearrange themselves into a sentence that speaks directly to her.\n\n---\n\n**The Black Book**\n\nThe rain tapped softly against the windows of Mara\u2019s cottage, a steady rhythm that lulled her into the warmth of her favorite armchair. She sipped her tea, the steam curling above the pages of her book, a well-loved copy of *The Secret Garden*. The crackle of the fire was the only other sound in the quiet room.\n\nA sharp knock at the door made her jump.\n\nMara frowned. No one ever came to her cottage this late, especially not on a rainy night. She set her book down and padded to the door, pulling it open just enough to peer outside.\n\nA large, plain package sat on her welcome mat, wrapped in brown paper and tied with thick twine. No note. No return address.\n\nHer pulse quickened as she carried it inside, setting it on the small wooden table near the fire. The twine unraveled easily in her fingers, and she peeled back the paper to reveal a book\u2014an old, leather-bound volume with a cover as black as midnight.\n\nIt was heavy in her hands, the leather cool to the touch, almost unnaturally so.\n\nMara traced her fingers over the embossed letters on the cover, though she couldn\u2019t read them. The symbols were strange, looping and sharp in equal measure. She flipped it open, and the scent of old parchment\u2014and something else, something metallic\u2014filled her nose.\n\nThe pages weren\u2019t paper.\n\nThey were thin, almost translucent, like vellum, but colder. Icier. She",
+      "word_count": 406,
+      "repetition": 1,
+      "timestamp": "2025-07-03T09:23:25.371330"
+    },
+    {
+      "sample_id": 26,
+      "prompt": "Write a short story about a mysterious package that appears on someone's doorstep one rainy evening.",
+      "sampler_name": "creative_minp",
+      "sampler_config": {
+        "temperature": 1.0,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "generated_text": " This is the story of **The Lost Artifact**.\n\n---\n\n**The Lost Artifact**\n\nThe rain pattered against the windowpanes of Dr. Eleanor Mercer\u2019s cottage as she sipped her tea, lost in the pages of an old manuscript. The fire crackled softly in the hearth, casting flickering shadows across the bookshelves that lined the walls. She had always loved the sound of rain, the way it muffled the world outside, making her small home feel even more cozy and insulated from the outside world.\n\nJust as she turned another page, a sharp knock at the door broke her concentration. She frowned, glancing at the clock\u2014it was nearly nine in the evening. Visitors were rare at this hour, especially on a night like this.\n\nCurious, she set down her tea and made her way to the door. She hesitated before turning the handle, peering through the frosted glass. The porch was empty, but something glinted in the dim light. A package.\n\nHer brow furrowed. She hadn\u2019t ordered anything. And there was no note, no address\u2014just a small, weathered wooden box tied with a length of frayed rope. The moment her fingers brushed against it, she felt an odd sensation, like a faint electrical current running through the wood.\n\nInside, her heart pounded. She had spent years researching lost artifacts, ancient relics that held untold power. But this\u2026 this felt different. Forbidden.\n\nWith trembling hands, she carried the box to her desk and untied the rope. The lid creaked open, revealing a tarnished silver key, its bow carved with strange, looping symbols. It was unlike anything she had ever seen.\n\nA whisper of wind rustled through the room, though the windows were shut. The fire dimmed, as if something had stolen its warmth.\n\nEleanor\u2019s breath hitched. She had heard tales of the *Key of Aetheris*, a legendary artifact said to unlock gateways between worlds. But those were only stories. Legends.\n\nYet here it was, in her hands.\n\nShe hesitated, then carefully lifted the key. The moment it left the box, the room seemed to shift, the air growing thick and heavy. Shadows stretched unnaturally long, and the walls trembled.\n\nThen\u2014silence.\n\nThe rain had stopped. The fire roared back to life.\n\nEleanor exhaled sharply. What had she just witnessed?\n\nShe placed the key back inside the box, her mind",
+      "word_count": 384,
+      "repetition": 2,
+      "timestamp": "2025-07-03T09:23:38.509978"
+    },
+    {
+      "sample_id": 27,
+      "prompt": "Write a short story about a mysterious package that appears on someone's doorstep one rainy evening.",
+      "sampler_name": "creative_minp",
+      "sampler_config": {
+        "temperature": 1.0,
+        "min_p": 0.02,
+        "max_tokens": 512
+      },
+      "generated_text": " What could it be? How did it get there? Who sent it? These are the questions the characters will want to answers to and must find out for themselves!\n\n---\n\n**The Doorstep Package**\n\nThe rain drummed against the windows of Sarah's cozy apartment as she curled up on the couch with a book. The storm had rolled in unexpectedly, turning the evening gloomy and dreary. A sudden knock at the door made her jump.\n\n\u201cWho could that be?\u201d she muttered, glancing at the clock. It was nearly nine.\n\nShe set her book aside and padded to the door, checking the peephole first. No one was there. She opened the door a crack, peering into the rainy darkness. The porch was empty\u2014no sign of anyone. But something lay on the welcome mat: a small, wrapped package.\n\nSarah frowned. It was about the size of a shoebox, tied with plain brown string. There was no return address, no note, nothing to indicate where it had come from.\n\nShe hesitated, then picked it up. It was surprisingly light. The rain pattered against the porch as she carried it inside, shutting the door behind her.\n\nHer curiosity got the better of her. She untied the string and carefully lifted the lid.\n\nInside, nestled in soft white tissue paper, was a strange little object\u2014a brass key, old and tarnished, with an ornate scrollwork design. But what really made her heart race was the small, folded slip of paper beneath it.\n\nShe unfolded it and read:\n\n*\"Follow the key to the answer you seek.\"*\n\nSarah stared at the words, her mind racing. What did it mean? Who had sent this? And what answer was she supposed to be seeking?\n\nShe turned the key over in her hands. There was something oddly familiar about it, though she couldn\u2019t place why.\n\nThen she noticed something else\u2014a faint engraving on the back, nearly worn away by time.\n\n*\"Beneath the willow.\"*\n\nHer breath caught. She knew exactly where that was.\n\nWithout another thought, Sarah grabbed her coat and stepped back out into the rain.\n\nThe key was the first clue. But the real mystery was still waiting.\n\nAnd she was determined to find it.",
+      "word_count": 364,
+      "repetition": 3,
+      "timestamp": "2025-07-03T09:23:48.835218"
+    },
+    {
+      "sample_id": 28,
+      "prompt": "Write a story about two strangers who meet during a citywide power outage and discover an unexpected connection.",
+      "sampler_name": "standard_sigma",
+      "sampler_config": {
+        "temperature": 1.5,
+        "top_n_sigma": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " There\u2019s no theme or limit on length, it\u2019s up to you! Please just add a \u201c#StuckTogether\u201d to your story so I can easily find them!\n\nYou and the boy meet in a park, just two students trying to take advantage of the power outage to get some much needed sunlight before the midterm grind picks up again. The sky is blue, the grass is warm, and for a moment you feel at peace.\n\nThen the ground splits open.\n\nNot actually. That would be weird. You just notice the difference between the concrete beneath your feet and the surrounding grass\u2014two separate slabs. Someone has taken advantage of this power outage to get some things done.\n\nThere is a sudden weight to the air and the moment between the two of you turns tense. Neither one of you move and you both stand stock still, but the distance between the two of you no longer feels natural.\n\nThen the boy laughs, throwing his head back. When he regains composure, he nudges the concrete slab and a rickety sound is produced by the slabs shifting beneath his shoe. It sounds as though the whole thing will give way and swallow both of you whole, but the slab steadies beneath your feet, and you both keep your footing. He doesn\u2019t say anything, so neither do you.\n\nHe starts off walking to the opposite side of the grass patch. There are two slabs there. He carefully skips the one that\u2019s currently submerged a bit into the grass and tries the one beside it. There\u2019s a sudden scrape of concrete, then he falls.\n\nWhen you go over to where he\u2019s standing, he laughs. The laugh is more nervous now, and you feel a hint of panic coming off of him in waves.\n\n\u201cAre you okay?\u201d you ask.\n\nThe boy nods.\n\nHe walks over to the next slab. It creaks as he puts weight on it, then stays steady.\n\n\u201cTry walking like a duck,\u201d he advises. \u201cOr just keep stepping off each slab quickly before they have time to sink further.\u201d\n\nIt\u2019s easier said than done. You test the one you are on. Sure enough, as soon as you put weight on it, it sinks a bit. You put weight on your other foot, and sure enough the slab goes back to the right height.\n\nBy ducking off the concrete as quickly as possible, it becomes less jarring, but still feels somewhat awkward. The boy jumps the gaps between slabs with confidence, hopping onto the next concrete slab",
+      "word_count": 421,
+      "repetition": 1,
+      "timestamp": "2025-07-03T09:24:00.493472"
+    },
+    {
+      "sample_id": 29,
+      "prompt": "Write a story about two strangers who meet during a citywide power outage and discover an unexpected connection.",
+      "sampler_name": "standard_sigma",
+      "sampler_config": {
+        "temperature": 1.5,
+        "top_n_sigma": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " It is winter, but they're at least safe and dry and have blankets in an old church.\n\n---\n\n**The Long Night**\n\nThe city went dark as a sudden, violent wind tossed bare tree branches against the street lamps. They flickered, gasped, and died. Somewhere a car alarm wailed, and in the distance, the steady thrum of traffic vanished. Then the silence. Deep, empty, and cold.\n\nEmily shivered, her breath fogging in the frosty air. She'd been on her way home from work when the power died. Now, she was trapped outside in the midst of an early December freeze.\n\nAcross the street, a dim glow flickered in the window of an old stone church. The kind of place that probably housed relics of a forgotten faith and tourists who took bad group photos.\n\nWithout a better option, Emily crossed the road and tried the door. It creaked open.\n\nWarmth rushed out. Not electric warmth\u2014this was something heavier, earthy. Like the lingering heat of a furnace just shy of running out. A pair of lanterns flickered near the entrance, casting long shadows across the stained glass windows.\n\n\"Hello?\" Emily called.\n\nA man stood up from the front pew, blinking as he turned. He was tall, broad-shouldered, with dark hair just a little too long, like he\u2019d meant to get it cut and forgot.\n\n\"You too, huh?\" he said.\n\nEmily nodded. \"I was on my way home when everything cut out.\"\n\n\"Me too,\" he said. \"I work a few blocks away. Name's Daniel.\"\n\n\"Emily.\" She glanced around. The pews were scattered with folded blankets, and a pot of something was simmering on an old stove at the back of the sanctuary.\n\n\"You found the last working furnace in the city,\" Daniel said. \"Place is actually my aunt\u2019s. She let me crash here after my place burned down. Insurance nightmare, you know?\"\n\nEmily hesitated. \"That\u2019s terrible.\"\n\nHe shrugged. \"I got lucky. Lost most of my stuff, but I got out in time. Some others weren\u2019t so fortunate.\"\n\nThere was a quiet in his voice that told her there was more to the story, but she didn\u2019t press.\n\nDaniel gestured to the pews. \"Grab a blanket. Hot soup\u2019s on if you want it.\"\n\nEmily sat, wrapping herself in the thick wool blanket. The scent of the soup\u2014rich, savory\u2014filled the air.",
+      "word_count": 386,
+      "repetition": 2,
+      "timestamp": "2025-07-03T09:24:13.976169"
+    },
+    {
+      "sample_id": 30,
+      "prompt": "Write a story about two strangers who meet during a citywide power outage and discover an unexpected connection.",
+      "sampler_name": "standard_sigma",
+      "sampler_config": {
+        "temperature": 1.5,
+        "top_n_sigma": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " If the other prompt would be useful, feel free to use it! (The two strangers are a paramedic and a librarian).\n\nIn the heart of the city, where towering skyscrapers pierced the night sky, a sudden darkness fell. A citywide power outage had plunged every street into an eerie blackness, turning neon signs into lifeless shadows and skyscrapers into silent sentinels.\n\nEmma, a librarian with a love for books and quiet corners, was walking home from work when the lights flickered and then died. She had been engrossed in her latest audiobook, completely unaware of the world around her until the sudden silence made her look up. The streets were alive with murmurs and the distant sounds of car horns as people struggled to navigate the sudden darkness.\n\nShe pulled out her phone, but the screen remained stubbornly blank. Great, no signal, no light. Just perfect. She sighed and adjusted her backpack, filled with the books she\u2019d just checked out.\n\nAcross the street, James, a paramedic on his way home after a long shift, had been stopped in his tracks by the outage. He was mid-conversation with his brother when the call dropped, leaving him with an eerily quiet world. His first instinct was to check for injuries or people who might need help, but for now, the streets seemed relatively calm.\n\nAs he scanned the darkness, his eyes fell on a lone figure standing near the crosswalk\u2014Emma. She seemed okay, but something about her posture, the way she held herself, made him hesitate. He decided to approach her.\n\n\u201cYou alright there?\u201d he called out, his voice cutting through the stillness.\n\nEmma turned, startled, but relaxed when she saw the friendly concern in his eyes. \u201cYeah, just lost my bearings for a second. My phone died, and I didn\u2019t realize the outage was so widespread.\u201d\n\nJames nodded. \u201cI\u2019m James, by the way. Paramedic. Just finished my shift.\u201d\n\n\u201cEmma,\u201d she said with a small smile. \u201cLibrarian.\u201d\n\nJames chuckled. \u201cFigures. I bet you\u2019ve got a whole backpack of books to read in the dark.\u201d\n\nEmma laughed. \u201cGuilty. But I\u2019d rather not drop them and lose them in the darkness.\u201d\n\nJames grinned. \u201cMind if I walk with you? There\u2019s a shelter a few blocks away where they\u2019re handing out flashlights and battery-powered lanterns. I could use",
+      "word_count": 383,
+      "repetition": 3,
+      "timestamp": "2025-07-03T09:24:25.624408"
+    },
+    {
+      "sample_id": 31,
+      "prompt": "Write a tale about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours.",
+      "sampler_name": "standard_sigma",
+      "sampler_config": {
+        "temperature": 1.5,
+        "top_n_sigma": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " How do they deal with their new-found power, and how does the world respond to the character's sudden 'revelation'?\n\n---\n\n### **The Unwanted Gift**\n\nLena Harper was a librarian. Her life was quiet, predictable\u2014books, her apartment, the occasional coffee date with friends. But on the morning of March 15th, everything changed.\n\nShe woke up with a pounding headache and a strange, distant voice in her mind.\n\n*\"Damn, I forgot to wash my car again.\"*\n\nShe sat up, blinking. The voice wasn\u2019t coming from the apartment. It was\u2026 somewhere else. But who was speaking? She pressed her hands to her temples.\n\n*\"Coffee. Need coffee.\"*\n\nThis time, it was closer. She whipped her head toward the window.\n\nThe neighbors. The people next door.\n\nShe could *hear* them.\n\n---\n\nAt first, Lena thought she was losing her mind. But the voices kept coming\u2014strangers on the bus, co-workers in the break room, even the mayor during his morning radio interview.\n\nAt first, it was terrifying. Then, fascinating.\n\n*\"Ugh, did she really wear those socks again?\"* whispered a patron behind her at the library. Lena glanced down. Oh no, the rainbow striped ones. She sighed and made a mental note to rethink her wardrobe.\n\nBut then, the *other* thoughts started.\n\n*\"I hate my job.\"*\n\n*\"He doesn\u2019t even know how much I\u2019ve sacrificed.\"*\n\n*\"I wish I had the courage to\u2014\"*\n\nHer heart ached. She wanted to help, but how? People wouldn\u2019t believe her. And if they did, would they blame her? Fear her?\n\nBy the end of the day, the constant noise was exhausting. She shut herself in her apartment, covering her ears with pillows. She just needed one night of peace.\n\nThen, like a dream fading, the voices started to recede. By morning, they were gone.\n\n---\n\nLena wasn\u2019t sure what to make of it. Had it been real? A stroke? A figment of her imagination? She kept waiting for the voices to return, but they never did.\n\nThen, a week later, she saw it on the news:\n\n*\"Former Wall Street analyst, Richard Hayes, resigns after bizarre accusations of telepathy.\"*\n\n*\"Local doctor claims patient is \u2018receiving direct messages from the divine.\u2019\"*\n\n*\"Are we all starting to hear things?\"*\n\nLena",
+      "word_count": 364,
+      "repetition": 1,
+      "timestamp": "2025-07-03T09:24:38.759075"
+    },
+    {
+      "sample_id": 32,
+      "prompt": "Write a tale about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours.",
+      "sampler_name": "standard_sigma",
+      "sampler_config": {
+        "temperature": 1.5,
+        "top_n_sigma": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " \"Just once, just to make sure this isn't a freak incident, I decide to ask for proof of my newfound skill.\"\n        - **Prompt by: A Fabled Fiction**\n    - **Written by:** Kittehface\n\nEthan felt it before he heard it: the presence of an unspoken question in the store clerk's mind. Her brown eyes scanned his face, but she was curious about something else entirely. *What kind of an idiot steals a shopping cart in the middle of a blizzard?*\n\nThe realization slammed into him, as forceful as a train derailing. He could hear people's thoughts. All the thoughts.\n\nHe fumbled for words. His mind blanked like a glitching computer screen, and for a moment he was certain the woman in front of him could hear that, too. \"What do you mean, idiot?\"\n\nThe question startled the woman. She opened and closed her mouth like a beached fish, before settling for a nonplussed expression. \"Sorry, what?\"\n\nHe needed answers, needed proof. He stepped forward, hands curling around the counter as he fought for something coherent to say. *Can she hear this? This isn\u2019t a dream, is it? No, because she thinks I\u2019m strange.*\n\nThe words didn\u2019t come out loud, but the woman stiffened anyway. Her gaze sharpened. \"Do I\u2026 do I know you?\"\n\n\"I, uh, do I...?\" This was all too much. Ethan forced himself to focus on the woman in front of him, searching her face for a hint of understanding. He had no idea how to say what he was feeling. He just blurted, \"Am I an idiot?\"\n\nIt wasn\u2019t eloquent. It wasn\u2019t a clever statement. But it was real. And it was the truth of what had happened, according to her unfiltered thought. As if to confirm, she blinked, before laughing. \"Where did that come from?\"\n\nShe had said it aloud, and it hurt him in a way he wasn't expecting. His heart clenched, like it had for a second after he found out about his parents\u2019 divorce last year. Why was it such a big deal that she thought he was stupid? He'd never considered himself dumb before.\n\nExcept now, knowing how much of an impact it could have on someone's day, the fact that she thought he was an idiot made his palms sweat.\n\nAs a thought, it\u2019s hardly fair of you.\n\n\"I mean, seriously. You",
+      "word_count": 389,
+      "repetition": 2,
+      "timestamp": "2025-07-03T09:24:50.488080"
+    },
+    {
+      "sample_id": 33,
+      "prompt": "Write a tale about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours.",
+      "sampler_name": "standard_sigma",
+      "sampler_config": {
+        "temperature": 1.5,
+        "top_n_sigma": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " In that time, their entire view of reality shifts as they have to face uncomfortable truths.\n\n**The Echoes of Tomorrow**\n\nJames Mercer had always prided himself on his empathy. A social worker by profession, he believed he understood people\u2019s emotions, their struggles, and their silent cries for help. But this morning, as he sipped his coffee and glanced around his local caf\u00e9, the world shattered around him.\n\nA sharp, foreign voice pierced his mind.\n\n*God, I hate her smug face.*\n\nHe blinked. The woman in line ahead of him was a regular, pleasant enough\u2014always smiled, asked about his day. But her thoughts, now crashing into his skull, were a storm of venom. She hated James, hated the barista, hated everyone in this damn place.\n\nJames stumbled back, spilling his coffee. The woman glanced at him, her forced smile slipping for a second. \u201cEverything alright?\u201d\n\n\u201cY-yeah,\u201d James stammered. His heart pounded. Was this some kind of hallucination?\n\nThen another voice:\n\n*I hope he chokes on his fucking croissant.*\n\nHis co-worker, Mark, was walking into the caf\u00e9. James knew Mark well\u2014or so he thought. The man had always been friendly, had even saved James from drowning during a hike last year. But now, Mark\u2019s thoughts were a toxic mix of jealousy and resentment.\n\n*Ever since he got that promotion, he\u2019s looked down on us. Fucking bastard.*\n\nJames\u2019s breath came in short gasps. He needed to get out.\n\nThe rest of the day was a nightmare. His boss, Mrs. Daniels, a woman he\u2019d respected for her wisdom and compassion, thought of him as lazy and overpaid. A neighbor he\u2019d shared coffee with for years fantasized about his death. Even his own wife\u2019s thoughts were jarring\u2014she loved him, but she was *bored* of him.\n\nThe most crushing revelation came from his seven-year-old son, Ethan. Playing in the backyard, the boy looked up at his father with those innocent eyes and thought:\n\n*Dad\u2019s so old. I wish I had a different one.*\n\nJames collapsed onto the porch steps, clutching his head. The world had flipped upside down.\n\nAs the hours ticked by, James struggled to function. He heard the truth behind every word, every smile. He learned who had cheated, who was lying, who was silently suffering. The weight of it threatened to crush him.\n\nJust as he was about",
+      "word_count": 385,
+      "repetition": 3,
+      "timestamp": "2025-07-03T09:25:02.038988"
+    },
+    {
+      "sample_id": 34,
+      "prompt": "Write a short story about a mysterious package that appears on someone's doorstep one rainy evening.",
+      "sampler_name": "standard_sigma",
+      "sampler_config": {
+        "temperature": 1.5,
+        "top_n_sigma": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " 500 words\n\n**The Package on Rainy Lane**\n\nThe rain drummed against the windows of Clara\u2019s cozy cottage as she sipped her tea, the firelight flickering across the room. She had spent the evening engrossed in a novel, oblivious to the world outside, until a faint *thump* echoed from her front door.\n\nFrowning, she set her book down. It was past ten o\u2019clock\u2014no one would be delivering mail now, especially not in this downpour. Curiosity tugged at her as she rose, the floorboards creaking beneath her slippers.\n\nThe moment she pulled the door open, the cold air rushed in, mingling with the damp scent of earth. On the welcome mat lay a small, unassuming box wrapped in worn brown paper, its string tied in a simple bow.\n\nNo name. No label. Just the box, untouched by the rain despite the storm.\n\nClara crouched, running her fingers over the paper. It felt oddly\u2026 old. Like it had been buried for years and only now unearthed.\n\nShe carried it inside, the weight surprising for its size. Setting it on the kitchen table, she untied the string with careful fingers, her pulse quickening. The wrapping peeled away like dried leaves, revealing a plain wooden box with an engraved latch.\n\nNo keyhole. Just a simple mechanism.\n\nTaking a deep breath, Clara lifted the latch.\n\nThe scent of vanilla and aged parchment wafted out, thick with time. Inside lay a single piece of creased paper, its edges frayed. Unfolding it, she found a message scrawled in ink that had faded but never fully vanished:\n\n*\"This is the last thing you\u2019ll ever find. Or the first.\"*\n\nA shiver ran down her spine.\n\nBefore she could question the words further, the latch of the box clicked shut on its own. Clara flinched, her fingers jumping back. The box sat there, inert once more\u2014yet the paper was gone.\n\nHer stomach twisted. She dug through the box, but it was empty.\n\nThen, a whisper.\n\nHer name, soft and muffled, seemed to come from the box itself. Clara slammed it shut, her breath coming fast. The air in the room felt heavier, as if something unseen pressed against her.\n\nOutside, the rain suddenly stopped.\n\nSilence. Then\u2014a slow, deliberate *tapping* on the window.\n\nClara turned.\n\nThrough the",
+      "word_count": 375,
+      "repetition": 1,
+      "timestamp": "2025-07-03T09:25:14.985895"
+    },
+    {
+      "sample_id": 35,
+      "prompt": "Write a short story about a mysterious package that appears on someone's doorstep one rainy evening.",
+      "sampler_name": "standard_sigma",
+      "sampler_config": {
+        "temperature": 1.5,
+        "top_n_sigma": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " The package doesn't belong to the recipient, but they can't resist opening it to see what's inside.\n\n---\n\n**The Unexpected Package**\n\nThe rain tapped insistently against the windows as Emma stood in the doorway of her small cottage, the wooden floor creaking beneath her bare feet. She wasn\u2019t expecting anyone tonight\u2014not a friend, not a delivery, nothing. So when she spotted the damp cardboard box resting just outside her front door, her heart skipped a beat.\n\nIt was modestly wrapped, unmarked except for a smudged brown paper and frayed string binding it. No return address, no name. Just\u2026 *her doorstep.*\n\nCuriosity gnawed at her. It didn\u2019t belong to her. Of that, she was certain. But the way it sat there, so vulnerable in the dim porch light, made her hesitate.\n\n*Who sent it?*\n\nThe string unraveled with a single tug. Inside, nestled in crumpled tissue paper, was a porcelain figurine of a raven, its beady black eyes gleaming under the porch light. No note. No explanation.\n\nEmma\u2019s breath hitched. Ravens. They\u2019d been in her dreams lately\u2014black, watching, never speaking.\n\nShe turned the figurine over. Beneath it, hidden in the folds of paper, was a single key, tarnished with age.\n\nA chill slithered down her spine.\n\nThe box hadn\u2019t come from a delivery person.\n\nIt had come for *her.*\n\nAnd now, it was too late to ignore.",
+      "word_count": 226,
+      "repetition": 2,
+      "timestamp": "2025-07-03T09:25:22.111960"
+    },
+    {
+      "sample_id": 36,
+      "prompt": "Write a short story about a mysterious package that appears on someone's doorstep one rainy evening.",
+      "sampler_name": "standard_sigma",
+      "sampler_config": {
+        "temperature": 1.5,
+        "top_n_sigma": 1.0,
+        "max_tokens": 512
+      },
+      "generated_text": " The story is a perfect length for bedtime reading.\n\n**The Package on the Doorstep**\n\nOn a stormy autumn evening, as the rain pattered against the windows of her cozy little cottage, Maggie found a package on her doorstep.\n\nShe hadn\u2019t ordered anything, and no one had dropped it off that she knew of. Wrapping her cardigan tighter around herself, she picked it up, turning it over in her hands. It was small, neatly wrapped in brown paper, tied with twine, and there was no note or address.\n\nCurious, Maggie carried it inside, where the scent of brewing tea and the crackling fire made her feel safe. She sat at the kitchen table, the rain tapping softly against the panes, and carefully unwrapped the package.\n\nInside, nestled in crumpled newspaper, was a silver pocket watch. It was old\u2014perhaps from the early 1900s\u2014and beautifully crafted, with intricate engravings of vines and flowers. The glass face was smooth, though faintly tarnished, and when she turned the tiny key on its side, the watch began to tick with a soft, steady rhythm.\n\nBut that wasn\u2019t the strange part. The truly odd thing was that the hands of the watch didn\u2019t move like a normal clock. They stayed fixed in place, always pointing to three o\u2019clock, no matter how long she watched them.\n\nMaggie frowned, turning the watch over. On the back, in delicate, faded script, were the words: *\"Time waits for no one, but this keeps you safe.\"*\n\nA shiver ran down her spine. Who had left this? And what did it mean?\n\nJust then, a gust of wind rattled the windows, and the fire flickered as if stirred by an unseen hand. Maggie glanced at the watch again, then at the door. She thought she heard a whisper\u2014soft, almost lost in the rain\u2014but there was no one there.\n\nHesitantly, she slipped the watch into her pocket. That night, as she lay in bed, she felt the gentle ticking against her side, like a silent promise.\n\nThe next morning, the storm had passed, and the world outside was washed clean. Maggie looked at the watch again. The hands still pointed to three o\u2019clock, but something had changed. The tiny scratch she had noticed yesterday on the edge of the glass was now gone.\n\nShe placed the watch on her dresser, where it would remain for years, ticking",
+      "word_count": 393,
+      "repetition": 3,
+      "timestamp": "2025-07-03T09:25:33.620356"
+    },
+    {
+      "sample_id": 37,
+      "prompt": "Write a story about two strangers who meet during a citywide power outage and discover an unexpected connection.",
+      "sampler_name": "creative_sigma",
+      "sampler_config": {
+        "temperature": 1.0,
+        "top_n_sigma": 1.5,
+        "max_tokens": 512
+      },
+      "generated_text": " Their journey takes them through the city, as they seek a place of refuge from the storm that followed.\n\n**Title: The Storm That Brought Us Together**\n\nThe city of Veridia had never seen a blackout like this before. One moment, the streets were alive with the hum of electricity\u2014neon signs flickering, traffic lights pulsing, the distant glow of office windows cutting through the dusk. The next, everything went dark.\n\nRain began to fall, heavy and relentless, turning the sidewalks into rivers. Streetlights flickered uselessly, their halos extinguished as if the city itself had been swallowed by the night. Inside their apartments, people stumbled in the dark, phones clutched in their hands, their screens the only sources of light.\n\nLena had been on her way home from work when the power failed. Her phone was already at 12%\u2014just enough to send a quick text to her roommate before the last bar vanished. Now, she stood under the awning of a closed bakery, water dripping from her umbrella, her heels sinking into the growing puddles.\n\n\"You okay?\"\n\nThe voice startled her. She turned to see a man in a rain-splattered jacket, his dark hair plastered to his forehead. He was holding a flashlight, its beam cutting a weak path through the storm.\n\n\"I\u2014yeah, I\u2019m fine,\" Lena said, though her teeth were already chattering. \"Just trying to figure out the best way home.\"\n\nHe nodded toward the street, where cars sat motionless, their drivers frustrated behind fogged windows. \"Traffic isn\u2019t moving. The storm\u2019s getting worse. Maybe we should find somewhere to wait it out.\"\n\nLena hesitated. She barely knew this guy. But the rain showed no sign of stopping, and the wind was picking up, howling through the narrow streets like a warning. \"Okay. Any ideas?\"\n\nHe thought for a moment. \"There\u2019s a diner a few blocks from here. The kind that\u2019s always open, even when the power\u2019s out.\"\n\nShe agreed, and together they fought their way through the storm, their pace quickened by the wind\u2019s relentless push. The diner was exactly as he\u2019d described\u2014a retro-style place with red vinyl booths and a long counter. The lights inside were off, but the scent of coffee and frying eggs still lingered in the air.\n\nA few other people had taken refuge there, huddling in booths or",
+      "word_count": 382,
+      "repetition": 1,
+      "timestamp": "2025-07-03T09:25:47.081856"
+    },
+    {
+      "sample_id": 38,
+      "prompt": "Write a story about two strangers who meet during a citywide power outage and discover an unexpected connection.",
+      "sampler_name": "creative_sigma",
+      "sampler_config": {
+        "temperature": 1.0,
+        "top_n_sigma": 1.5,
+        "max_tokens": 512
+      },
+      "generated_text": " This should be a fantasy or sci-fi story.\n\n**Title: \"The Blackout Bonds\"**\n\nThe city was never meant to go dark. Not like this. The streetlights flickered, then died, casting the urban landscape into an eerie, moonlit silhouette. Skyscrapers stood as silent sentinels, their usual glow extinguished. Car horns blared in confusion, their drivers cursing the sudden halt of traffic lights. Phones buzzed with frantic messages, but data signals had vanished like mist.\n\nAmid the chaos, two strangers found themselves on the same corner of an empty subway station.\n\nThe first was a woman named Liora, a historian with a fondness for forgotten stories. She had been researching an obscure 19th-century astronomer when the lights went out. Her flashlight flickered weakly in her hand.\n\nThe second was a man named Kael, a scientist who studied cosmic anomalies. He had been monitoring an unusual solar flare when the power grid collapsed. His tablet was now just a lifeless rectangle in his pocket.\n\n\"You think this is just a power outage?\" Kael asked, his voice laced with skepticism.\n\nLiora shook her head. \"No. Something feels\u2026 different. Like the air itself is humming.\"\n\nAs if in response, a soft, golden light began to pulse from the ceiling. The glow wasn\u2019t electric\u2014it was something older, something alive. The station\u2019s old tiles shimmered, revealing hidden symbols etched into the walls.\n\nKael\u2019s breath caught. \"Those markings\u2026 they\u2019re identical to the ones in my research. They\u2019re coordinates to a lost observatory.\"\n\nLiora\u2019s eyes widened. \"The one from my books\u2014the one that vanished overnight in 1893.\"\n\nA deep rumble shook the station, and a hidden door slid open, revealing a spiral staircase descending into darkness. The golden light pulsed again, as if beckoning them forward.\n\nKael hesitated. \"This could be dangerous.\"\n\nLiora smiled. \"Or the beginning of something no one else will ever see.\"\n\nWithout another word, they stepped into the unknown together, their fates intertwined by the blackout\u2014and something far older.\n\nAs they descended, the air grew colder, and the walls hummed with energy. The staircase opened into a vast chamber, where a massive telescope stood, pointed at the sky. Stars swirled above them in a galaxy unlike their own.\n\nKael reached out, his fingers brushing",
+      "word_count": 368,
+      "repetition": 2,
+      "timestamp": "2025-07-03T09:25:59.076769"
+    },
+    {
+      "sample_id": 39,
+      "prompt": "Write a story about two strangers who meet during a citywide power outage and discover an unexpected connection.",
+      "sampler_name": "creative_sigma",
+      "sampler_config": {
+        "temperature": 1.0,
+        "top_n_sigma": 1.5,
+        "max_tokens": 512
+      },
+      "generated_text": " The tone should be be lighthearted and fun, but also romantic.\n\nTitle: **Lights Out, Love On**\n\nThe city\u2019s usually unshakable power grid had just given up the ghost\u2014just as Claire\u2019s phone died.\n\n\"Come on!\" she groaned, shaking her dead device like it might magically reboot. The dim glow of her laptop screen flickered and died, leaving her alone in the near-darkness of her tiny apartment.\n\nOutside, the hum of traffic had dwindled to a confused murmur. Car horns beeped sporadically, their drivers apparently just as disoriented as Claire. She sighed, running a hand through her curly hair.\n\n\"Well, this is perfect timing.\"\n\nShe had been working late, determined to finish a project before the weekend. Now, she\u2019d have to wait until the power came back on\u2014or go track down a coffee shop with a generator. Claire weighed her options. The coffee shop might have Wi-Fi, at least.\n\nGrabbing her purse, she headed out into the night. The sidewalks were busier than usual, people milling about in small groups, phones held aloft like lanterns. Claire ducked into a convenience store, where the cashier shrugged.\n\n\"Power\u2019s out everywhere, ma\u2019am. No idea when it\u2019ll be back.\"\n\nClaire nodded, thanking him, and stepped back outside. Maybe she could at least walk to a friend\u2019s place.\n\nAs she rounded a corner, she nearly collided with someone stepping out of an alley.\n\n\"Whoa, sorry!\" a deep voice said.\n\nClaire looked up into the face of a tall, lanky man with tousled dark hair and a startled expression.\n\n\"Oh! I\u2019m so sorry,\" she said, instinctively stepping back. \"Didn\u2019t see you there.\"\n\n\"No, my fault,\" he said, smiling. \"I was just\u2026 well, you know. Power\u2019s out.\"\n\nClaire laughed. \"Yeah, I noticed.\"\n\nHe rubbed the back of his neck, grinning. \"Name\u2019s Jake, by the way.\"\n\n\"Claire,\" she said. \"So, what\u2019s the plan? I was thinking about trying to find somewhere with Wi-Fi.\"\n\nJake\u2019s face lit up. \"Wait\u2014are you heading to *The Daily Grind*? They always have backup power.\"\n\nClaire\u2019s eyebrows shot up. \"You know about that?\"\n\n\"Best coffee in the city,\" Jake said. \"Also, my sister works there.",
+      "word_count": 349,
+      "repetition": 3,
+      "timestamp": "2025-07-03T09:26:10.609655"
+    },
+    {
+      "sample_id": 40,
+      "prompt": "Write a tale about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours.",
+      "sampler_name": "creative_sigma",
+      "sampler_config": {
+        "temperature": 1.0,
+        "top_n_sigma": 1.5,
+        "max_tokens": 512
+      },
+      "generated_text": " How would your character react to knowing that what they\u2019re thinking can\u2019t be hidden? Try to do this in alliteration of words starting with the 'H'.\n\nHeidi hurried home, her head hazy and heart hammering. An hour ago, an odd hum had hummed behind her forehead. Her hair hurtled through the hallway, humming and howling. Her hands shook as she hunted for her habitual hot cocoa.\n\n\"Hush!\" Heidi hissed, hearing her mother\u2019s hushed words. Her mother spoke, \"Helen had horrible haircuts.\" Heidi halted, her heart stopping. Her mother's words wafted through her head. Heidi heard her mother\u2019s haphazard opinions.\n\nHeidi hastily harbored her head between her hands. Her head hurt horribly. Every head-turning, horrifying thought hit her heart hard. Her humanity was revealed. Her head heard horrific honesty.\n\nHeidi hurriedly huddled in her hiding haven. Her head hurt like hell. Her heart hurt horribly. Her humanity had been hushed for too long. Her horrible honesty haunted her.\n\nHeidi had a horrifying hour. Her head heard horrid, harsh, hidden truths. Her heart hurt horribly. Her humanity was humbled. Her horrible honesty haunts her still. Heidi huddles in her haven, her head heavy with horrors.",
+      "word_count": 193,
+      "repetition": 1,
+      "timestamp": "2025-07-03T09:26:18.428773"
+    },
+    {
+      "sample_id": 41,
+      "prompt": "Write a tale about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours.",
+      "sampler_name": "creative_sigma",
+      "sampler_config": {
+        "temperature": 1.0,
+        "top_n_sigma": 1.5,
+        "max_tokens": 512
+      },
+      "generated_text": " When the world thinks they're a prophet.\n\nHe woke up with a sudden throbbing in his temples. The pain wasn't the worst part, though\u2014it was the voices. At first, he thought he was dreaming, but the noise was relentless, a chaotic symphony of thoughts and words crashing into his mind.\n\n\"Damn, I'm late for work again...\"\n\n\"Remember to pick up milk on the way home...\"\n\n\"God, I hope my boss doesn't notice I forgot to finish that report...\"\n\nHe sat up, pressing his palms to his forehead, as if he could physically block out the noise. The voices were coming from all directions, overlapping, competing for space in his skull. He groaned, trying to focus on one at a time, but it was like trying to listen to a hundred radio stations at once.\n\nWhat was happening to him?\n\nHe stumbled out of bed, tripping over his own feet in his haste to escape the noise. The bathroom mirror showed a man he barely recognized\u2014haggard, wide-eyed, sweat beading on his brow. He splashed cold water on his face, but it did nothing to quiet the voices.\n\n\"Did he hear that? He's acting weird...\"\n\n\"Maybe he's sick?\"\n\nHe looked around, realizing the voices were coming from his neighbors. He could hear their thoughts, clear as day. Panic clawed at his chest. Was this some kind of curse? A side effect of a medication he wasn't even taking? He had to find a way to make it stop.\n\nBut then, an idea struck him. If he could hear other people's thoughts, maybe he could use it to his advantage. Maybe he could become someone important.\n\nHe left his apartment, the voices following him like a shadow. He walked to the park, where a small crowd had gathered for a morning protest. He listened to their thoughts\u2014anger, frustration, desperation\u2014and stepped forward.\n\n\"People of this city,\" he called out, his voice barely above a whisper. The crowd turned to look at him. He took a deep breath and spoke again, louder this time. \"I can hear you. I hear all of you.\"\n\nThe crowd murmured, some in confusion, others in intrigue. He closed his eyes, focusing on the thoughts around him. He spoke words that weren't his own, but theirs. \"You want change. You want justice. You want someone to listen to you.\"\n\nThe crowd erupted into cheers. Someone called him",
+      "word_count": 397,
+      "repetition": 2,
+      "timestamp": "2025-07-03T09:26:30.165442"
+    },
+    {
+      "sample_id": 42,
+      "prompt": "Write a tale about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours.",
+      "sampler_name": "creative_sigma",
+      "sampler_config": {
+        "temperature": 1.0,
+        "top_n_sigma": 1.5,
+        "max_tokens": 512
+      },
+      "generated_text": " One person's thoughts during that time change the character's life forever.\n\n**The Gift of Hearing**\n\nLena sat at her desk, staring at the blurry text on her computer screen. The office hummed with the usual Monday morning chatter, but something felt different today. A faint, rhythmic tapping echoed in her head, like a distant metronome. She pressed her fingers to her temples, massaging gently.\n\n\"Ugh, the coffee machine is broken again,\" muttered a voice in her head.\n\nLena\u2019s eyes widened. That wasn\u2019t her voice. She glanced around, but no one seemed to notice her shock. The voice continued, \"Mark always takes the last donut. I swear, I\u2019m going to\u2014\"\n\nIt was the thought of the man sitting across from her, Jason. Lena could hear his thoughts.\n\nAt first, she thought she was hallucinating. But as the day went on, the voices grew clearer. A coworker\u2019s frustration about a personal issue, her boss\u2019s worries about a project, even the intern\u2019s nervousness about a presentation. Every thought was as loud as if it were her own.\n\nLena stumbled through her tasks, trying to focus. The constant barrage was overwhelming, but she couldn\u2019t ignore it. She needed to know\u2014why was this happening?\n\nThen she heard *her*.\n\n\"Lena\u2019s been so quiet lately. I wonder if she\u2019s still upset about the promotion. Maybe I should talk to her, see if she\u2019s okay.\"\n\nIt was Sarah, her best friend. The words weren\u2019t anything new\u2014Sarah had always been kind\u2014but the underlying concern was different. Lena had been feeling distant, lost in her own worries, and now she heard the truth: Sarah *cared*.\n\nThat night, as Lena lay in bed, the voices faded one by one. By midnight, the metronome in her head slowed, then stopped. The silence was deafening. But something had changed.\n\nThe next morning, Lena sought out Sarah. \"Hey,\" she said softly. \"Can we talk?\"\n\nSarah\u2019s eyes lit up. \"Of course!\"\n\nLena had always taken their friendship for granted, but now she understood how rare it was. The next time Sarah asked how she was doing, Lena didn\u2019t brush it off. She told her the truth.\n\nAnd that changed everything.\n\nThe 24 hours of hearing others\u2019 thoughts had passed, but the gift remained\u2014the realization of how much she meant to the people around her. It was a reminder",
+      "word_count": 383,
+      "repetition": 3,
+      "timestamp": "2025-07-03T09:26:41.930089"
+    },
+    {
+      "sample_id": 43,
+      "prompt": "Write a short story about a mysterious package that appears on someone's doorstep one rainy evening.",
+      "sampler_name": "creative_sigma",
+      "sampler_config": {
+        "temperature": 1.0,
+        "top_n_sigma": 1.5,
+        "max_tokens": 512
+      },
+      "generated_text": " The package is wrapped in plain brown paper with a note that reads, \"To be opened at midnight.\"\n\n**The Midnight Package**\n\nThe rain pattered softly against the windows as Clara pulled her shawl tighter around her shoulders. The cozy warmth of her living room was the perfect refuge from the storm outside. She sipped her tea, lost in the pages of a well-worn book, when a sharp knock at the door startled her.\n\nFrowning, she set her book aside and approached the entrance. No one ever visited her this late, especially not in such terrible weather. Another knock, more insistent this time, made her hurry.\n\nShe flipped the latch and opened the door just wide enough to peek outside. The rain had slowed to a drizzle, but the porch was still empty except for a lone, unmarked package resting at her feet.\n\nClara\u2019s breath hitched. She hadn\u2019t ordered anything. No one knew she was here.\n\nWith cautious fingers, she picked up the small parcel. It was wrapped in plain brown paper, tied with a simple twine. There was no address, no stamp\u2014just a single note scrawled in elegant, looping handwriting:\n\n*\"To be opened at midnight.\"*\n\nHer pulse quickened. Midnight was still hours away. The package was light, yet somehow heavy with mystery. She brought it inside, setting it on the kitchen table before pouring herself another cup of tea, hoping to calm her racing thoughts.\n\nThe minutes ticked by. The storm outside rumbled, but inside, the house was eerily quiet. Every creak of the floorboards made her jump.\n\nAt last, the clock struck twelve. Clara\u2019s hands trembled as she untied the twine. The paper peeled away easily, revealing a small velvet box.\n\nShe hesitated, her heart pounding in her chest. Whatever was inside, she was about to find out.\n\nWith a deep breath, she lifted the lid.\n\nInside lay a single, silver key. And tucked beneath it, another note:\n\n*\"Now you have the choice.\"*\n\nThe words sent a chill down her spine. What choice? What was the key for?\n\nBefore she could puzzle it out, a faint knocking echoed through the house. Not at the door\u2014deeper. From somewhere inside.\n\nClara\u2019s blood ran cold.\n\nThe knocking came again, louder now. A rhythmic, deliberate sound.\n\nAnd then, from the shadows of her hallway, a voice whispered:\n\n*\"Are you ready to open the door?\"*",
+      "word_count": 391,
+      "repetition": 1,
+      "timestamp": "2025-07-03T09:26:54.903837"
+    },
+    {
+      "sample_id": 44,
+      "prompt": "Write a short story about a mysterious package that appears on someone's doorstep one rainy evening.",
+      "sampler_name": "creative_sigma",
+      "sampler_config": {
+        "temperature": 1.0,
+        "top_n_sigma": 1.5,
+        "max_tokens": 512
+      },
+      "generated_text": " Describe the package in detail, and then reveal the true origin of the package in a surprising twist ending.\n\n---\n\nThe rain tapped a steady rhythm against the windowpane as Emma wiped down the last of the kitchen counters. The clock on the wall ticked past ten, and the house was quiet\u2014too quiet for her liking. She had just settled onto the couch with a book when a sharp *thud* echoed from the front door.\n\nHer breath hitched. Who would be out in this weather?\n\nCautiously, she crept to the door, peeking through the peephole. The porch was empty save for a single package, wrapped in plain brown paper and tied with twine. No return address. No label. Just her name, *Emma*, scrawled in smudged ink.\n\nFrowning, she unlatched the deadbolt and stepped outside, the rain instantly soaking the sleeves of her sweater. The box was heavy for its size, about the dimensions of a hardcover book. When she brought it inside, she noticed something odd\u2014the twine seemed to move on its own, as if something beneath it were shifting.\n\nHer pulse quickened. Had someone made a mistake? Or was this some kind of prank?\n\nWith trembling hands, she sliced through the twine and peeled back the wrapping. Inside lay a journal, its cover worn with age, its pages yellowed. But what made her gasp wasn\u2019t the journal\u2014it was the photograph tucked inside, its edges brittle with time.\n\nIt was of her.\n\nNot as she was now, but as she had been at twelve years old, standing in front of the same house she lived in today.\n\nHer breath caught. She didn\u2019t own a copy of this picture. No one in her family did.\n\nShe flipped to the first page of the journal, and the words sent a chill down her spine:\n\n*\"I\u2019ve been waiting for you, Emma. I knew you\u2019d come back to the house where it happened.\"*\n\nHer fingers trembled as she turned the page. The next entry was dated exactly twenty-five years in the future. And the handwriting was hers.\n\nA knock at the door made her jump. Heart hammering, she stood and approached, peeking through the peephole again.\n\nA woman stood there, her face shadowed by the porch light. But Emma would recognize that coat anywhere\u2014it was the same one she\u2019d buried her mother in all those years ago.\n\nThe woman lifted her hand in a wave",
+      "word_count": 401,
+      "repetition": 2,
+      "timestamp": "2025-07-03T09:27:06.455684"
+    },
+    {
+      "sample_id": 45,
+      "prompt": "Write a short story about a mysterious package that appears on someone's doorstep one rainy evening.",
+      "sampler_name": "creative_sigma",
+      "sampler_config": {
+        "temperature": 1.0,
+        "top_n_sigma": 1.5,
+        "max_tokens": 512
+      },
+      "generated_text": " The package is wrapped in brown paper and twine. The recipient, a reclusive writer named Elias, is perplexed by its origins. As he unties the string, he finds a cryptic note that reads: \"The world is not as it seems.\" The package contains a peculiar artifact\u2014a pocket watch with no hands, but instead, a compass-like needle that spins wildly. The needle eventually settles on a single direction.\n\nTitle: **The Unseen Compass**\n\nThe rain tapped softly against the windowpanes of Elias's study, a steady rhythm that matched the cadence of his typing. He lived in a secluded cottage at the edge of town, where the only visitors were the occasional delivery driver and the neighbor\u2019s persistent cat.\n\nAs the storm outside intensified, a sharp knock echoed through the house. Elias frowned\u2014no one ever came unannounced. He set his pen down and made his way to the door, pulling it open to find nothing but an empty porch. A single package rested on the welcome mat, wrapped in worn brown paper and tied with frayed twine.\n\nElias hesitated before bending down to pick it up. There was no return address, no label\u2014just his name scrawled in ink across the center. The paper was damp from the rain, but the contents inside felt strangely dry. He carried it back to his desk, the weight of it heavier than it should have been for something so small.\n\nCarefully, he untied the string and peeled back the paper. Inside lay a pocket watch, its brass casing tarnished with age. But where the clock face should have been were no hands\u2014only a single, slender needle that spun in frantic circles.\n\nA folded note rested beneath it. Elias unfolded it with cautious fingers. Three words stared back at him:\n\n**\"The world is not as it seems.\"**\n\nHis pulse quickened. He had never believed in coincidences, especially not ones as eerie as this. He picked up the watch again, and the needle stilled for a moment before swinging wildly. Then, as if guided by an unseen force, it settled on a single direction: northeast.\n\nElias pressed his finger to the glass over the needle, as if to stop its movement. But it didn\u2019t budge. The direction held firm.\n\nA shiver ran down his spine. He had always been a man of logic, of words and reason. But this\u2014this defied explanation.\n\nOutside, the rain poured harder, the wind howling like a",
+      "word_count": 402,
+      "repetition": 3,
+      "timestamp": "2025-07-03T09:27:17.944689"
+    }
+  ],
+  "metadata": {
+    "max_length": 512,
+    "total_samplers": 5,
+    "total_prompts": 3,
+    "repetitions": 3,
+    "total_samples": 45,
+    "completed_samples": 45,
+    "failed_samples": 0
+  }
+}
