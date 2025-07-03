@@ -95,6 +95,8 @@ model_defaults:
   "mistral": "mistral_default"
   "mistral-small": "mistral_small_default"
   "mistral-small-24b": "mistral_small_default"
+  "mistral-nemo": "mistral_default"
+  "mistral-nemo-12b": "mistral_default"
   "ministral": "mistral_default"
   "ministral-8b": "mistral_default"
   
@@ -102,6 +104,8 @@ model_defaults:
   "qwen": "qwen_default"
   "qwen2": "qwen_default"
   "qwen2.5": "qwen_default"
+  "qwen-2.5-8b": "qwen_default"
+  "qwen-2.5-14b": "qwen_default"
   
   # Fallback for unknown models
   "default": "llama_default"
