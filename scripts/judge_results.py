@@ -17,6 +17,7 @@ from datetime import datetime
 sys.path.append(str(Path(__file__).parent.parent / "backend"))
 
 from evaluation.llm_judge import CreativeWritingJudge, JudgmentResult, JudgmentScore
+from evaluation.multi_judge import create_judge
 from evaluation.quality_aggregator import EnhancedQualityAggregator
 
 def load_benchmark_results(filepath: str) -> Dict[str, Any]:
@@ -57,15 +58,25 @@ def judge_benchmark_results(results_file: str,
         print(f"❌ Failed to load results: {e}")
         return None
     
-    # Initialize judge
-    print(f"\n⚖️ Initializing LLM judge...")
+    # Initialize judge (multi-judge if enabled, single judge otherwise)
+    print(f"\n⚖️ Initializing judge system...")
     try:
-        judge = CreativeWritingJudge(api_key=api_key, model=judge_model)
-        print(f"✅ Judge initialized: {judge.model}")
+        judge = create_judge()  # Auto-detects multi-judge mode from environment
+        
+        # Check if it's multi-judge or single judge
+        if hasattr(judge, 'judge_models'):
+            print(f"✅ Multi-judge initialized with {len(judge.judge_models)} judges:")
+            for i, model in enumerate(judge.judge_models, 1):
+                print(f"   {i}. {model}")
+            print(f"📊 Consensus method: {judge.consensus_method}")
+        else:
+            print(f"✅ Single judge initialized: {judge.model}")
+        
         print(f"📋 Evaluation criteria: {', '.join(judge.get_criteria_info().keys())}")
     except Exception as e:
         print(f"❌ Failed to initialize judge: {e}")
-        print("💡 Tip: Make sure you have OPENAI_API_KEY in your .env file")
+        print("💡 Tip: Make sure you have OPENROUTER_API_KEY in your .env file for multi-judge")
+        print("💡 Or OPENAI_API_KEY for single-judge mode")
         return None
     
     # Initialize aggregator for quality tracking
@@ -106,16 +117,34 @@ def judge_benchmark_results(results_file: str,
         print(f"   📊 Progress: {completed}/{total} samples evaluated...")
     
     try:
-        # Use batch judging for efficiency
-        judgments = judge.judge_batch(
-            samples=batch_samples,
-            batch_size=5,  # Process 5 samples per API call
-            progress_callback=progress_callback
-        )
+        # Handle both multi-judge and single-judge evaluation
+        if hasattr(judge, 'judge_models'):
+            # Multi-judge evaluation (one sample at a time)
+            print(f"   Using multi-judge evaluation...")
+            judgments = []
+            
+            for i, batch_sample in enumerate(batch_samples):
+                print(f"   📊 Evaluating sample {i+1}/{len(batch_samples)}...")
+                
+                judgment = judge.evaluate_text(
+                    text=batch_sample['text'],
+                    prompt=batch_sample['prompt'],
+                    sampler_config=batch_sample['sampler_config']
+                )
+                judgments.append(judgment)
+                progress_callback(i+1, len(batch_samples))
+        else:
+            # Single-judge batch evaluation
+            print(f"   Using single-judge batch evaluation...")
+            judgments = judge.judge_batch(
+                samples=batch_samples,
+                batch_size=5,  # Process 5 samples per API call
+                progress_callback=progress_callback
+            )
         
-        print(f"\n✅ Completed batch evaluation of {len(judgments)} samples")
+        print(f"\n✅ Completed evaluation of {len(judgments)} samples")
         
-        # Process the judgment results
+        # Process the judgment results (unified handling for both judge types)
         for i, (judgment, batch_sample) in enumerate(zip(judgments, batch_samples)):
             original_sample = batch_sample['original_sample']
             
@@ -124,10 +153,34 @@ def judge_benchmark_results(results_file: str,
             print(f"   Prompt: {original_sample.get('prompt', 'N/A')[:60]}...")
             print(f"   📊 Quality score: {judgment.overall_score:.2f}/10")
             
-            # Create enhanced sample with judgment
-            enhanced_sample = {
-                **original_sample,  # Keep all original data
-                'judgment': {
+            # Handle different result structures (multi-judge vs single-judge)
+            if hasattr(judge, 'judge_models'):
+                # Multi-judge result structure
+                judgment_data = {
+                    'overall_score': judgment.overall_score,
+                    'overall_std': judgment.overall_std,
+                    'criterion_scores': [
+                        {
+                            'criterion': cs.criterion,
+                            'score': cs.mean_score,
+                            'std': cs.std_score,
+                            'reasoning': f"Consensus across {len(cs.judge_models)} judges",
+                            'individual_scores': cs.individual_scores,
+                            'consensus_strength': cs.consensus_strength
+                        }
+                        for cs in judgment.criterion_scores
+                    ],
+                    'summary': judgment.summary,
+                    'evaluation_time': judgment.evaluation_time,
+                    'judge_models': judgment.judge_models,
+                    'judge_count': judgment.judge_count,
+                    'consensus_method': judgment.consensus_method,
+                    'individual_results': judgment.individual_results,
+                    'judged_at': datetime.now().isoformat()
+                }
+            else:
+                # Single-judge result structure
+                judgment_data = {
                     'overall_score': judgment.overall_score,
                     'criterion_scores': [
                         {
@@ -142,6 +195,11 @@ def judge_benchmark_results(results_file: str,
                     'model_used': judgment.model_used,
                     'judged_at': datetime.now().isoformat()
                 }
+            
+            # Create enhanced sample with judgment
+            enhanced_sample = {
+                **original_sample,  # Keep all original data
+                'judgment': judgment_data
             }
             
             judged_samples.append(enhanced_sample)
@@ -176,7 +234,10 @@ def judge_benchmark_results(results_file: str,
         **data,  # Keep all original metadata
         'samples': judged_samples,
         'judgment_metadata': {
-            'judge_model': judge.model,
+            'judge_type': 'multi_judge' if hasattr(judge, 'judge_models') else 'single_judge',
+            'judge_model': getattr(judge, 'judge_models', [getattr(judge, 'model', 'unknown')]),
+            'judge_count': getattr(judge, 'judge_count', 1),
+            'consensus_method': getattr(judge, 'consensus_method', 'single'),
             'judged_at': datetime.now().isoformat(),
             'total_samples': len(valid_samples),
             'successfully_judged': len(valid_samples) - evaluation_failures,

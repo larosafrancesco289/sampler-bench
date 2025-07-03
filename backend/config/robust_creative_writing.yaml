@@ -54,11 +54,14 @@ benchmark_config:
 
 # Evaluation Framework - Judge configurable via .env
 evaluation_framework:
-  # Judge configuration from environment
+  # Multi-judge configuration from environment  
   judge_config:
-    model: "${LLM_JUDGE_MODEL}"  # From .env (e.g., gpt-4-turbo, claude-3-opus)
-    api_key: "${LLM_JUDGE_API_KEY}"  # From .env
-    batch_size: 5  # Batch judge calls for efficiency
+    multi_judge_enabled: "${MULTI_JUDGE_ENABLED}"  # Enable multi-judge evaluation
+    judge_models: "${LLM_JUDGE_MODELS}"           # Comma-separated list of OpenRouter models
+    api_key: "${OPENROUTER_API_KEY}"              # OpenRouter API key
+    consensus_method: "${JUDGE_CONSENSUS_METHOD}" # How to combine scores (average, weighted_average)
+    temperature: 0.2                              # Conservative temperature for consistent judging
+    batch_size: 3  # Reduced for multi-judge parallel processing
     
   # Refined evaluation criteria
   criteria:

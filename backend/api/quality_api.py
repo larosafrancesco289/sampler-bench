@@ -13,6 +13,7 @@ import requests
 
 try:
     from ..evaluation.llm_judge import CreativeWritingJudge
+    from ..evaluation.multi_judge import create_judge
     from ..evaluation.quality_aggregator import QualityAggregator
 except ImportError:
     # Fallback for when running from different directories
@@ -21,6 +22,7 @@ except ImportError:
     backend_dir = Path(__file__).parent.parent
     sys.path.insert(0, str(backend_dir))
     from evaluation.llm_judge import CreativeWritingJudge
+    from evaluation.multi_judge import create_judge
     from evaluation.quality_aggregator import QualityAggregator
 
 class SamplerBenchAPI:
@@ -82,15 +84,32 @@ class SamplerBenchAPI:
         # Return best match or fallback
         return best_match if best_match else self.model_defaults.get('default', 'llama_default')
     
-    def initialize_judge(self, api_key: str = None, model: str = None) -> Dict[str, Any]:
-        """Initialize the LLM judge."""
+    def initialize_judge(self, api_key: str = None, model: str = None, multi_judge_enabled: bool = None) -> Dict[str, Any]:
+        """Initialize the LLM judge (single or multi-judge)."""
         try:
-            self.judge = CreativeWritingJudge(api_key=api_key, model=model)
-            return {
-                'success': True,
-                'model': self.judge.model,
-                'criteria': self.judge.get_criteria_info()
-            }
+            # Use environment variable or parameter to determine multi-judge mode
+            if multi_judge_enabled is None:
+                import os
+                multi_judge_enabled = os.getenv('MULTI_JUDGE_ENABLED', 'false').lower() == 'true'
+            
+            if multi_judge_enabled:
+                # Initialize multi-judge system
+                self.judge = create_judge(multi_judge_enabled=True)
+                return {
+                    'success': True,
+                    'judge_type': 'multi_judge',
+                    'judge_models': getattr(self.judge, 'judge_models', ['unknown']),
+                    'criteria': self.judge.get_criteria_info()
+                }
+            else:
+                # Initialize single judge (legacy mode)
+                self.judge = CreativeWritingJudge(api_key=api_key, model=model)
+                return {
+                    'success': True,
+                    'judge_type': 'single_judge',
+                    'model': self.judge.model,
+                    'criteria': self.judge.get_criteria_info()
+                }
         except Exception as e:
             return {
                 'success': False,
