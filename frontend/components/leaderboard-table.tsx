@@ -2,10 +2,10 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { useBenchmarkData } from "@/hooks/use-benchmark-data"
+import { useBenchmarkContext } from "@/contexts/benchmark-context"
 
 export function LeaderboardTable() {
-  const { data, loading, error, refetch } = useBenchmarkData()
+  const { data, loading, error, refetch, hasActiveFilters } = useBenchmarkContext()
 
   if (loading) {
     return (
@@ -35,11 +35,21 @@ export function LeaderboardTable() {
     )
   }
 
+  if (data.length === 0) {
+    return (
+      <div className="text-center py-8">
+        <div className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+          {hasActiveFilters ? 'No results match the current filters' : 'No benchmark data available'}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-4">
       {data.map((entry, index) => (
         <div
-          key={entry.sampler_name}
+          key={`${entry.sampler_name}-${entry.model_name || 'unknown'}-${index}`}
           className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-md dark:hover:shadow-lg transition-all duration-300 hover:scale-[1.02] bg-white dark:bg-gray-800/50"
         >
           <div className="flex items-start justify-between mb-4">
@@ -50,6 +60,11 @@ export function LeaderboardTable() {
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 transition-colors duration-300">{entry.sampler_name}</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-300">{entry.description}</p>
+                {entry.model_name && (
+                  <p className="text-xs text-blue-600 dark:text-blue-400 font-medium transition-colors duration-300">
+                    Model: {entry.model_name}
+                  </p>
+                )}
               </div>
             </div>
             <div className="text-right">

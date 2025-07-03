@@ -1,10 +1,10 @@
 "use client"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { useBenchmarkData } from "@/hooks/use-benchmark-data"
+import { useBenchmarkContext } from "@/contexts/benchmark-context"
 
 export function DynamicStats() {
-  const { summary, loading, error } = useBenchmarkData()
+  const { summary, loading, error } = useBenchmarkContext()
 
   if (loading) {
     return (
@@ -72,7 +72,7 @@ export function DynamicStats() {
           <CardDescription className="transition-colors duration-300">Overall writing quality (1-10)</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 transition-all duration-300 group-hover:scale-110">{summary.avg_quality_score}</div>
+          <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 transition-all duration-300 group-hover:scale-110">{summary.avg_quality_score.toFixed(2)}</div>
         </CardContent>
       </Card>
 

@@ -165,54 +165,113 @@ async def load_existing_results(request: LoadResultsRequest):
 @app.get("/api/results")
 async def get_results():
     """Get benchmark results in the format expected by the frontend."""
-    # Look for the most recent results file
+    # Look for results files
     results_dir = Path("results")
     if not results_dir.exists():
         raise HTTPException(status_code=404, detail="No results directory found")
     
-    # Find the most recent .json file in results directory
-    json_files = list(results_dir.glob("*.json"))
-    if not json_files:
-        raise HTTPException(status_code=404, detail="No benchmark results found")
-    
-    # Get the most recent file
-    latest_file = max(json_files, key=lambda f: f.stat().st_mtime)
+    # Find all judged results files (these have quality evaluations)
+    judged_files = list(results_dir.glob("*_judged_*.json"))
+    if not judged_files:
+        # Fallback to any .json file if no judged files found
+        json_files = list(results_dir.glob("*.json"))
+        if not json_files:
+            raise HTTPException(status_code=404, detail="No benchmark results found")
+        judged_files = [max(json_files, key=lambda f: f.stat().st_mtime)]
     
     try:
-        with open(latest_file, 'r') as f:
-            data = json.load(f)
+        # Initialize variables for combining data
+        all_samples = []
+        all_data = []
+        latest_timestamp = None
+        
+        for file_path in judged_files:
+            with open(file_path, 'r') as f:
+                data = json.load(f)
+                all_data.append(data)
+                
+                # Track the latest timestamp
+                file_timestamp = file_path.stat().st_mtime
+                if latest_timestamp is None or file_timestamp > latest_timestamp:
+                    latest_timestamp = file_timestamp
+                
+                # Extract samples from the loaded data
+                samples = data.get('samples', [])
+                if not samples:
+                    # Try to extract from results structure if it exists
+                    samples = data.get('results', {}).get('samples', [])
+                
+                # Add model name to each sample for tracking
+                model_name = data.get('model_name', 'Unknown Model')
+                for sample in samples:
+                    sample['_model_name'] = model_name
+                    all_samples.append(sample)
+        
+        if not all_samples:
+            raise HTTPException(status_code=404, detail="No samples found in results files")
         
         # Transform the data to match the frontend's expected format
         leaderboard = []
         
-        # Extract samples from the loaded data
-        samples = data.get('samples', [])
-        if not samples:
-            # Try to extract from results structure if it exists
-            samples = data.get('results', {}).get('samples', [])
-        
-        # Group by sampler and calculate average scores
+        # Group by sampler + model combination and calculate average scores
         sampler_stats = {}
-        for sample in samples:
+        for sample in all_samples:
             sampler_name = sample.get('sampler_name', 'Unknown')
+            model_name = sample.get('_model_name', 'Unknown Model')
+            # Create unique key for sampler + model combination
+            combo_key = f"{sampler_name}_{model_name}"
             score = sample.get('judgment', {}).get('overall_score', 0)
             
-            if sampler_name not in sampler_stats:
-                sampler_stats[sampler_name] = {
+            if combo_key not in sampler_stats:
+                sampler_stats[combo_key] = {
+                    'sampler_name': sampler_name,
+                    'model_name': model_name,
                     'scores': [],
+                    'samples': [],
                     'total_samples': 0,
                     'config': sample.get('sampler_config', {})
                 }
             
-            sampler_stats[sampler_name]['scores'].append(score)
-            sampler_stats[sampler_name]['total_samples'] += 1
+            sampler_stats[combo_key]['scores'].append(score)
+            sampler_stats[combo_key]['samples'].append(sample)
+            sampler_stats[combo_key]['total_samples'] += 1
         
         # Create leaderboard entries
-        for sampler_name, stats in sampler_stats.items():
+        for combo_key, stats in sampler_stats.items():
             avg_score = sum(stats['scores']) / len(stats['scores']) if stats['scores'] else 0
+            
+            # Calculate criteria breakdown
+            criteria_breakdown = {}
+            if stats['samples']:
+                for sample in stats['samples']:
+                    judgment = sample.get('judgment', {})
+                    criterion_scores = judgment.get('criterion_scores', [])
+                    for criterion_score in criterion_scores:
+                        criterion = criterion_score.get('criterion', '')
+                        score = criterion_score.get('score', 0)
+                        if criterion not in criteria_breakdown:
+                            criteria_breakdown[criterion] = []
+                        criteria_breakdown[criterion].append(score)
+                
+                # Average the scores for each criterion
+                for criterion, scores in criteria_breakdown.items():
+                    criteria_breakdown[criterion] = sum(scores) / len(scores) if scores else 0
+            
+            # Calculate average word count
+            word_counts = [sample.get('word_count', 0) for sample in stats['samples']]
+            avg_word_count = round(sum(word_counts) / len(word_counts)) if word_counts else 0
+            
             leaderboard.append({
                 'rank': 0,  # Will be set after sorting
-                'sampler_name': sampler_name,
+                'sampler_name': stats['sampler_name'],
+                'average_score': round(avg_score, 2),
+                'total_samples': stats['total_samples'],
+                'criteria_breakdown': criteria_breakdown,
+                'description': f"Sampler configuration: {stats['sampler_name']}",
+                'parameters': stats['config'],
+                'avg_word_count': avg_word_count,
+                'model_name': stats['model_name'],
+                # Legacy fields for backward compatibility
                 'avg_quality_score': round(avg_score, 2),
                 'samples_count': stats['total_samples'],
                 'config_preview': str(stats['config'])[:100] + "..." if len(str(stats['config'])) > 100 else str(stats['config']),
@@ -221,23 +280,23 @@ async def get_results():
             })
         
         # Sort by average score and assign ranks
-        leaderboard.sort(key=lambda x: x['avg_quality_score'], reverse=True)
+        leaderboard.sort(key=lambda x: x['average_score'], reverse=True)
         for i, entry in enumerate(leaderboard):
             entry['rank'] = i + 1
         
         # Create summary
         summary = {
-            'total_samples': len(samples),
-            'unique_samplers': len(sampler_stats),
-            'avg_quality_score': round(sum(s['avg_quality_score'] for s in leaderboard) / len(leaderboard), 2) if leaderboard else 0,
-            'models_tested': 1,  # Placeholder
-            'last_updated': datetime.fromtimestamp(latest_file.stat().st_mtime).isoformat()
+            'total_samples': len(all_samples),
+            'unique_samplers': len(set(stats['sampler_name'] for stats in sampler_stats.values())),
+            'avg_quality_score': round(sum(s['average_score'] for s in leaderboard) / len(leaderboard), 2) if leaderboard else 0,
+            'models_tested': len(set(stats['model_name'] for stats in sampler_stats.values())),
+            'last_updated': datetime.fromtimestamp(latest_timestamp).isoformat() if latest_timestamp else datetime.now().isoformat()
         }
         
         return {
             'leaderboard': leaderboard,
             'summary': summary,
-            'raw_data': [data]  # Include the original data
+            'raw_data': all_data  # Include all original data
         }
         
     except Exception as e:

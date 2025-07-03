@@ -1,11 +1,23 @@
+"use client"
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { LeaderboardTable } from "@/components/leaderboard-table"
 import { ScoreChart } from "@/components/score-chart"
 import { QualityCriteriaChart } from "@/components/quality-criteria-chart"
 import { DynamicStats } from "@/components/dynamic-stats"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { FilterControls } from "@/components/filter-controls"
+import { BenchmarkProvider, useBenchmarkContext } from "@/contexts/benchmark-context"
 
-export default function Dashboard() {
+function DashboardContent() {
+  const {
+    filterOptions,
+    selectedModels,
+    selectedSamplers,
+    setSelectedModels,
+    setSelectedSamplers,
+    resetFilters
+  } = useBenchmarkContext()
   return (
     <div className="container mx-auto py-8 px-4">
       {/* Header */}
@@ -20,6 +32,17 @@ export default function Dashboard() {
         </div>
         <ThemeToggle />
       </div>
+
+      {/* Filter Controls */}
+      <FilterControls
+        modelOptions={filterOptions.modelOptions}
+        samplerOptions={filterOptions.samplerOptions}
+        selectedModels={selectedModels}
+        selectedSamplers={selectedSamplers}
+        onModelChange={setSelectedModels}
+        onSamplerChange={setSelectedSamplers}
+        onReset={resetFilters}
+      />
 
       {/* Dynamic Stats Overview */}
       <div className="animate-fade-in">
@@ -64,5 +87,13 @@ export default function Dashboard() {
         </Card>
       </div>
     </div>
+  )
+}
+
+export default function Dashboard() {
+  return (
+    <BenchmarkProvider>
+      <DashboardContent />
+    </BenchmarkProvider>
   )
 } 

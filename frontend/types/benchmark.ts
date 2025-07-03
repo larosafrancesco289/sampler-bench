@@ -61,6 +61,12 @@ export interface LeaderboardEntry {
   parameters: Record<string, any>;
   avg_word_count: number;
   model_name?: string;
+  // Legacy fields for backward compatibility
+  avg_quality_score?: number;
+  samples_count?: number;
+  config_preview?: string;
+  strengths?: string[];
+  badges?: string[];
 }
 
 export interface ApiResponse {
