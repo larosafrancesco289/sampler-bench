@@ -105,10 +105,123 @@ class MultiJudgeEvaluator:
             }
         }
         
+        # JSON Schema for structured outputs
+        self.evaluation_schema = {
+            "type": "object",
+            "properties": {
+                "criterion_scores": {
+                    "type": "object",
+                    "properties": {
+                        "narrative_structure": {
+                            "type": "object",
+                            "properties": {
+                                "score": {"type": "number", "minimum": 1.0, "maximum": 10.0},
+                                "reasoning": {"type": "string"}
+                            },
+                            "required": ["score", "reasoning"],
+                            "additionalProperties": False
+                        },
+                        "creativity_execution": {
+                            "type": "object", 
+                            "properties": {
+                                "score": {"type": "number", "minimum": 1.0, "maximum": 10.0},
+                                "reasoning": {"type": "string"}
+                            },
+                            "required": ["score", "reasoning"],
+                            "additionalProperties": False
+                        },
+                        "character_voice": {
+                            "type": "object",
+                            "properties": {
+                                "score": {"type": "number", "minimum": 1.0, "maximum": 10.0},
+                                "reasoning": {"type": "string"}
+                            },
+                            "required": ["score", "reasoning"],
+                            "additionalProperties": False
+                        },
+                        "prose_quality": {
+                            "type": "object",
+                            "properties": {
+                                "score": {"type": "number", "minimum": 1.0, "maximum": 10.0},
+                                "reasoning": {"type": "string"}
+                            },
+                            "required": ["score", "reasoning"],
+                            "additionalProperties": False
+                        },
+                        "engagement": {
+                            "type": "object",
+                            "properties": {
+                                "score": {"type": "number", "minimum": 1.0, "maximum": 10.0},
+                                "reasoning": {"type": "string"}
+                            },
+                            "required": ["score", "reasoning"],
+                            "additionalProperties": False
+                        }
+                    },
+                    "required": ["narrative_structure", "creativity_execution", "character_voice", "prose_quality", "engagement"],
+                    "additionalProperties": False
+                },
+                "overall_score": {
+                    "type": "number",
+                    "minimum": 1.0,
+                    "maximum": 10.0,
+                    "description": "Overall weighted score based on all criteria"
+                },
+                "summary": {
+                    "type": "string",
+                    "description": "Brief 2-3 sentence assessment of the text's overall quality and notable strengths/weaknesses"
+                }
+            },
+            "required": ["criterion_scores", "overall_score", "summary"],
+            "additionalProperties": False
+        }
+        
+        # Models that support structured outputs (based on OpenRouter documentation)
+        self.structured_output_models = {
+            # OpenAI models (GPT-4o and later)
+            'openai/gpt-4o',
+            'openai/gpt-4o-mini', 
+            'openai/gpt-4o-2024-08-06',
+            'openai/gpt-4o-2024-11-20',
+            'openai/gpt-4-turbo',
+            'openai/gpt-4-turbo-2024-04-09',
+            'openai/gpt-4.1-nano',  # This one we're currently using
+            'openai/chatgpt-4o-latest',
+            # Google Gemini models that support structured outputs
+            'google/gemini-2.0-flash-001',
+            'google/gemini-2.0-flash-lite-001',
+            'google/gemini-2.5-flash-preview',
+            'google/gemini-2.5-flash-preview-04-17',
+            'google/gemini-2.5-flash-preview-05-20',
+            'google/gemini-2.5-pro-preview',
+            'google/gemini-2.5-pro-preview-03-25',
+            # Mistral models (newer models likely support structured outputs)
+            'mistralai/mistral-small-3.2-24b-instruct',
+            'mistralai/mistral-small-24b-instruct-2501',
+            'mistralai/mistral-medium-3',
+            'mistralai/ministral-8b',
+            # Fireworks models (all Fireworks models support it)
+            'fireworks/',  # Any model starting with fireworks/
+        }
+        
         print(f"🔧 MultiJudge initialized with {len(self.judge_models)} judges:")
         for i, model in enumerate(self.judge_models, 1):
-            print(f"   {i}. {model}")
+            structured = self._supports_structured_outputs(model)
+            print(f"   {i}. {model} {'(structured)' if structured else '(text)'}")
         print(f"📊 Consensus method: {self.consensus_method}")
+    
+    def _supports_structured_outputs(self, model: str) -> bool:
+        """Check if a model supports structured outputs."""
+        # Exact match first
+        if model in self.structured_output_models:
+            return True
+        
+        # Check prefixes (like fireworks/)
+        for supported_model in self.structured_output_models:
+            if supported_model.endswith('/') and model.startswith(supported_model):
+                return True
+                
+        return False
     
     def evaluate_text(self, 
                      text: str, 
@@ -187,21 +300,39 @@ class MultiJudgeEvaluator:
         judgment_prompt = self._create_judgment_prompt(text, prompt, sampler_config)
         
         try:
-            response = self.client.chat.completions.create(
-                model=model,
-                messages=[
+            # Prepare base request parameters
+            request_params = {
+                "model": model,
+                "messages": [
                     {"role": "system", "content": self._get_system_prompt()},
                     {"role": "user", "content": judgment_prompt}
                 ],
-                temperature=self.temperature,
-                max_tokens=1500
-            )
+                "temperature": self.temperature,
+                "max_tokens": 1500
+            }
+            
+            # Add structured outputs if supported by the model
+            if self._supports_structured_outputs(model):
+                request_params["response_format"] = {
+                    "type": "json_schema",
+                    "json_schema": {
+                        "name": "creative_writing_evaluation",
+                        "strict": True,
+                        "schema": self.evaluation_schema
+                    }
+                }
+                print(f"   🔧 Using structured outputs for {model}")
+            else:
+                print(f"   📝 Using text parsing for {model}")
+            
+            response = self.client.chat.completions.create(**request_params)
             
             judgment_text = response.choices[0].message.content
             result = self._parse_judgment(judgment_text, model)
             return result
             
         except Exception as e:
+            print(f"   ❌ {model} failed: {str(e)}")
             # Return fallback result for this judge
             return self._create_fallback_result(model, str(e))
     
@@ -341,29 +472,117 @@ Respond ONLY in the specified JSON format with no additional text."""
     def _parse_judgment(self, judgment_text: str, model: str) -> Dict[str, Any]:
         """Parse the judgment response from an LLM judge."""
         try:
-            # Try to extract JSON from the response
+            # First try direct JSON parsing (for structured outputs)
             judgment_data = json.loads(judgment_text)
             
-            # Build result structure
-            result = {
-                'judge_model': model,
-                'overall_score': float(judgment_data.get('overall_score', 5.0)),
-                'criterion_scores': {},
-                'summary': judgment_data.get('summary', 'No summary provided')
-            }
-            
-            # Extract criterion scores
-            for criterion, details in judgment_data.get('criterion_scores', {}).items():
-                result['criterion_scores'][criterion] = {
-                    'score': float(details.get('score', 5.0)),
-                    'reasoning': details.get('reasoning', 'No reasoning provided')
-                }
-            
-            return result
-            
         except json.JSONDecodeError:
-            # If JSON parsing fails, create a fallback result
-            return self._create_fallback_result(model, "Invalid JSON response")
+            # Try to extract JSON from text (for models without structured outputs)
+            judgment_data = self._extract_json_from_text(judgment_text)
+            
+            if judgment_data is None:
+                # If all parsing fails, create a fallback result
+                return self._create_fallback_result(model, "Invalid JSON response")
+        
+        # Build result structure
+        result = {
+            'judge_model': model,
+            'overall_score': float(judgment_data.get('overall_score', 5.0)),
+            'criterion_scores': {},
+            'summary': judgment_data.get('summary', 'No summary provided')
+        }
+        
+        # Extract criterion scores
+        for criterion, details in judgment_data.get('criterion_scores', {}).items():
+            result['criterion_scores'][criterion] = {
+                'score': float(details.get('score', 5.0)),
+                'reasoning': details.get('reasoning', 'No reasoning provided')
+            }
+        
+        return result
+    
+    def _extract_json_from_text(self, text: str) -> Optional[Dict[str, Any]]:
+        """Extract JSON from text that might contain code blocks or extra text."""
+        import re
+        
+        # Strategy 1: Look for JSON in code blocks
+        code_block_patterns = [
+            r'```json\s*(\{.*?\})\s*```',
+            r'```\s*(\{.*?\})\s*```',
+            r'`(\{.*?\})`',
+        ]
+        
+        for pattern in code_block_patterns:
+            match = re.search(pattern, text, re.DOTALL | re.IGNORECASE)
+            if match:
+                try:
+                    return json.loads(match.group(1))
+                except json.JSONDecodeError:
+                    continue
+        
+        # Strategy 2: Look for JSON object patterns in the text
+        json_patterns = [
+            r'\{(?:[^{}]|{[^{}]*})*\}',  # Basic nested JSON pattern
+        ]
+        
+        for pattern in json_patterns:
+            matches = re.findall(pattern, text, re.DOTALL)
+            for match in matches:
+                try:
+                    parsed = json.loads(match)
+                    # Validate it has the expected structure
+                    if (isinstance(parsed, dict) and 
+                        ('criterion_scores' in parsed or 'overall_score' in parsed)):
+                        return parsed
+                except json.JSONDecodeError:
+                    continue
+        
+        # Strategy 3: Try to find and repair common JSON issues
+        # Look for something that looks like JSON and try to fix it
+        json_like = re.search(r'\{.*\}', text, re.DOTALL)
+        if json_like:
+            json_text = json_like.group(0)
+            
+            # Common fixes for malformed JSON
+            fixes = [
+                # Fix missing quotes around keys
+                (r'(\w+):', r'"\1":'),
+                # Fix single quotes to double quotes
+                (r"'([^']*)'", r'"\1"'),
+                # Fix trailing commas
+                (r',(\s*[}\]])', r'\1'),
+            ]
+            
+            for find, replace in fixes:
+                json_text = re.sub(find, replace, json_text)
+            
+            try:
+                return json.loads(json_text)
+            except json.JSONDecodeError:
+                pass
+        
+        # Strategy 4: Create a minimal valid response from text analysis
+        # Look for scores in the text even if JSON is completely broken
+        score_matches = re.findall(r'(\d+(?:\.\d+)?)/10', text)
+        if score_matches:
+            try:
+                scores = [float(s) for s in score_matches]
+                avg_score = sum(scores) / len(scores) if scores else 5.0
+                
+                return {
+                    'overall_score': avg_score,
+                    'criterion_scores': {
+                        criterion: {
+                            'score': avg_score,
+                            'reasoning': f'Extracted from text analysis: {avg_score:.1f}/10'
+                        }
+                        for criterion in self.criteria.keys()
+                    },
+                    'summary': 'Score extracted from malformed response text'
+                }
+            except (ValueError, TypeError):
+                pass
+        
+        return None
     
     def get_criteria_info(self) -> Dict[str, Any]:
         """Get information about evaluation criteria."""

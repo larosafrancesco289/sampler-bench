@@ -18,7 +18,7 @@ sys.path.append(str(Path(__file__).parent.parent / "backend"))
 
 from evaluation.llm_judge import CreativeWritingJudge, JudgmentResult, JudgmentScore
 from evaluation.multi_judge import create_judge
-from evaluation.quality_aggregator import EnhancedQualityAggregator
+from evaluation.quality_aggregator import QualityAggregator
 
 def load_benchmark_results(filepath: str) -> Dict[str, Any]:
     """Load benchmark results from JSON file."""
@@ -80,7 +80,7 @@ def judge_benchmark_results(results_file: str,
         return None
     
     # Initialize aggregator for quality tracking
-    aggregator = EnhancedQualityAggregator()
+    aggregator = QualityAggregator()
     
     # Process samples
     samples = data.get('samples', [])

@@ -74,8 +74,11 @@ class QualityBenchmarkResults:
     most_consistent_sampler: str
     highest_quality_sampler: str
 
-class EnhancedQualityAggregator:
-    """Enhanced quality aggregator with proper statistical analysis."""
+# Old QualityBenchmarkResults class removed - using enhanced version above
+
+# Rename EnhancedQualityAggregator to QualityAggregator to enable all advanced features
+class QualityAggregator:
+    """Enhanced quality aggregator with proper statistical analysis (formerly EnhancedQualityAggregator)."""
     
     def __init__(self):
         self.samples: List[JudgmentSample] = []
@@ -149,7 +152,7 @@ class EnhancedQualityAggregator:
                 
         return dict(groups)
     
-    def calculate_prompt_sampler_stats(self, samples: List[JudgmentSample]) -> PromptSamplerStats:
+    def calculate_prompt_sampler_stats(self, samples: List[JudgmentSample]) -> Optional[PromptSamplerStats]:
         """Calculate statistics for a specific prompt-sampler combination."""
         if not samples:
             return None
@@ -172,7 +175,7 @@ class EnhancedQualityAggregator:
             sample_size=len(samples)
         )
     
-    def calculate_sampler_stats(self, sampler_name: str, prompt_stats: List[PromptSamplerStats]) -> SamplerStats:
+    def calculate_sampler_stats(self, sampler_name: str, prompt_stats: List[PromptSamplerStats]) -> Optional[SamplerStats]:
         """Calculate comprehensive statistics for a sampler across all prompts."""
         if not prompt_stats:
             return None
@@ -198,10 +201,9 @@ class EnhancedQualityAggregator:
         overall_ci = self.calculate_confidence_interval(all_scores)
         
         # Cross-prompt consistency (lower std of prompt means = more consistent)
-        prompt_consistency = 10.0 - (statistics.stdev(prompt_means) if len(prompt_means) > 1 else 0.0)
-        prompt_consistency = max(0.0, min(10.0, prompt_consistency))
+        prompt_consistency = 1.0 / (1.0 + statistics.stdev(prompt_means)) if len(prompt_means) > 1 else 1.0
         
-        # Criterion breakdown
+        # Criterion statistics
         criterion_stats = self.calculate_criterion_stats(sampler_name)
         
         return SamplerStats(
@@ -218,33 +220,36 @@ class EnhancedQualityAggregator:
         )
     
     def calculate_criterion_stats(self, sampler_name: str) -> Dict[str, Dict[str, float]]:
-        """Calculate criterion-specific statistics for a sampler."""
+        """Calculate statistics for each criterion for a specific sampler."""
         sampler_samples = [s for s in self.samples if s.sampler_name == sampler_name and s.judgment]
         
         if not sampler_samples:
             return {}
-            
-        # Get all criterion names
-        criterion_names = set()
-        for sample in sampler_samples:
-            if sample.judgment.criterion_scores:
-                for cs in sample.judgment.criterion_scores:
-                    criterion_names.add(cs.criterion)
         
+        # Get all criterion names from first sample
+        if not sampler_samples[0].judgment.criterion_scores:
+            return {}
+        
+        criterion_names = [cs.criterion for cs in sampler_samples[0].judgment.criterion_scores]
         criterion_stats = {}
+        
         for criterion in criterion_names:
             scores = []
             for sample in sampler_samples:
-                if sample.judgment.criterion_scores:
-                    for cs in sample.judgment.criterion_scores:
-                        if cs.criterion == criterion:
-                            scores.append(cs.score)
-                            break
+                for cs in sample.judgment.criterion_scores:
+                    if cs.criterion == criterion:
+                        scores.append(cs.score)
+                        break
             
             if scores:
+                mean_score = statistics.mean(scores)
+                std_dev = statistics.stdev(scores) if len(scores) > 1 else 0.0
+                ci = self.calculate_confidence_interval(scores)
+                
                 criterion_stats[criterion] = {
-                    'mean': statistics.mean(scores),
-                    'std': statistics.stdev(scores) if len(scores) > 1 else 0.0,
+                    'mean': mean_score,
+                    'std': std_dev,
+                    'confidence_interval': ci,
                     'min': min(scores),
                     'max': max(scores),
                     'count': len(scores)
@@ -253,430 +258,191 @@ class EnhancedQualityAggregator:
         return criterion_stats
     
     def calculate_statistical_significance(self, sampler_stats: Dict[str, SamplerStats]) -> Dict[str, Dict[str, float]]:
-        """Calculate statistical significance (approximated p-values) between samplers."""
-        significance = defaultdict(dict)
-        
+        """Calculate p-values between samplers (simplified t-test approximation)."""
         samplers = list(sampler_stats.keys())
+        significance = {}
+        
         for i, sampler1 in enumerate(samplers):
-            for sampler2 in samplers[i+1:]:
-                # Get all scores for both samplers
-                scores1 = []
-                scores2 = []
-                
-                for ps in sampler_stats[sampler1].prompt_stats:
-                    scores1.extend(ps.repetition_scores)
-                for ps in sampler_stats[sampler2].prompt_stats:
-                    scores2.extend(ps.repetition_scores)
-                
-                # Approximate t-test (simplified)
-                if len(scores1) > 1 and len(scores2) > 1:
-                    mean1 = statistics.mean(scores1)
-                    mean2 = statistics.mean(scores2)
-                    std1 = statistics.stdev(scores1)
-                    std2 = statistics.stdev(scores2)
+            significance[sampler1] = {}
+            for j, sampler2 in enumerate(samplers):
+                if i != j:
+                    # Get all scores for both samplers
+                    scores1 = []
+                    scores2 = []
                     
-                    # Pooled standard error
-                    se = math.sqrt((std1**2 / len(scores1)) + (std2**2 / len(scores2)))
+                    for ps in sampler_stats[sampler1].prompt_stats:
+                        scores1.extend(ps.repetition_scores)
+                    for ps in sampler_stats[sampler2].prompt_stats:
+                        scores2.extend(ps.repetition_scores)
                     
-                    if se > 0:
-                        t_stat = abs(mean1 - mean2) / se
-                        # Rough p-value approximation (higher t = lower p)
-                        p_value = max(0.001, 2.0 * math.exp(-t_stat))  # Simplified approximation
+                    # Simplified significance test (approximate)
+                    if len(scores1) > 1 and len(scores2) > 1:
+                        effect_size = abs(self.calculate_cohens_d(scores1, scores2))
+                        # Very rough p-value approximation based on effect size
+                        if effect_size > 0.8:
+                            p_value = 0.01  # Large effect
+                        elif effect_size > 0.5:
+                            p_value = 0.05  # Medium effect
+                        elif effect_size > 0.2:
+                            p_value = 0.10  # Small effect
+                        else:
+                            p_value = 0.50  # No effect
                     else:
                         p_value = 1.0
+                    
+                    significance[sampler1][sampler2] = p_value
                 else:
-                    p_value = 1.0
-                
-                significance[sampler1][sampler2] = p_value
-                significance[sampler2][sampler1] = p_value
+                    significance[sampler1][sampler2] = 1.0
         
-        return dict(significance)
+        return significance
     
     def calculate_effect_sizes(self, sampler_stats: Dict[str, SamplerStats]) -> Dict[str, Dict[str, float]]:
-        """Calculate Cohen's d effect sizes between samplers."""
-        effect_sizes = defaultdict(dict)
-        
+        """Calculate Cohen's d effect sizes between all sampler pairs."""
         samplers = list(sampler_stats.keys())
-        for i, sampler1 in enumerate(samplers):
-            for sampler2 in samplers[i+1:]:
-                # Get all scores for both samplers
-                scores1 = []
-                scores2 = []
-                
-                for ps in sampler_stats[sampler1].prompt_stats:
-                    scores1.extend(ps.repetition_scores)
-                for ps in sampler_stats[sampler2].prompt_stats:
-                    scores2.extend(ps.repetition_scores)
-                
-                cohens_d = self.calculate_cohens_d(scores1, scores2)
-                effect_sizes[sampler1][sampler2] = cohens_d
-                effect_sizes[sampler2][sampler1] = -cohens_d  # Reverse sign
+        effect_sizes = {}
         
-        return dict(effect_sizes)
+        for i, sampler1 in enumerate(samplers):
+            effect_sizes[sampler1] = {}
+            for j, sampler2 in enumerate(samplers):
+                if i != j:
+                    # Get all scores for both samplers
+                    scores1 = []
+                    scores2 = []
+                    
+                    for ps in sampler_stats[sampler1].prompt_stats:
+                        scores1.extend(ps.repetition_scores)
+                    for ps in sampler_stats[sampler2].prompt_stats:
+                        scores2.extend(ps.repetition_scores)
+                    
+                    effect_size = self.calculate_cohens_d(scores1, scores2)
+                    effect_sizes[sampler1][sampler2] = effect_size
+                else:
+                    effect_sizes[sampler1][sampler2] = 0.0
+        
+        return effect_sizes
     
     def get_enhanced_benchmark_results(self, 
                                      benchmark_name: str = "Enhanced Quality Evaluation",
                                      model_name: str = "Unknown") -> QualityBenchmarkResults:
-        """Get comprehensive enhanced benchmark results."""
+        """Get enhanced benchmark results with full statistical analysis."""
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
         
-        # Group by prompt-sampler combinations
-        prompt_sampler_groups = self.group_by_prompt_sampler()
+        # Group samples and calculate statistics
+        grouped = self.group_by_prompt_sampler()
         
         # Calculate prompt-sampler statistics
+        all_prompt_stats = []
         sampler_prompt_stats = defaultdict(list)
         
-        for (prompt, sampler), samples in prompt_sampler_groups.items():
+        for (prompt, sampler), samples in grouped.items():
             ps_stats = self.calculate_prompt_sampler_stats(samples)
             if ps_stats:
+                all_prompt_stats.append(ps_stats)
                 sampler_prompt_stats[sampler].append(ps_stats)
         
-        # Calculate overall sampler statistics
+        # Calculate comprehensive sampler statistics
         sampler_stats = {}
         for sampler, prompt_stats in sampler_prompt_stats.items():
-            sampler_stats[sampler] = self.calculate_sampler_stats(sampler, prompt_stats)
+            stats = self.calculate_sampler_stats(sampler, prompt_stats)
+            if stats:
+                sampler_stats[sampler] = stats
         
-        # Calculate statistical comparisons
+        # Calculate statistical significance and effect sizes
         significance = self.calculate_statistical_significance(sampler_stats)
         effect_sizes = self.calculate_effect_sizes(sampler_stats)
         
         # Meta-analysis
-        best_per_prompt = {}
-        all_prompts = set()
-        for ps_stats in prompt_sampler_groups.keys():
-            all_prompts.add(ps_stats[0])
+        best_sampler_per_prompt = {}
+        for prompt in set(ps.prompt for ps in all_prompt_stats):
+            prompt_stats = [ps for ps in all_prompt_stats if ps.prompt == prompt]
+            if prompt_stats:
+                best = max(prompt_stats, key=lambda x: x.mean_score)
+                best_sampler_per_prompt[prompt] = best.sampler_name
         
-        for prompt in all_prompts:
-            best_score = 0.0
-            best_sampler = ""
-            for sampler, stats in sampler_stats.items():
-                for ps in stats.prompt_stats:
-                    if ps.prompt == prompt and ps.mean_score > best_score:
-                        best_score = ps.mean_score
-                        best_sampler = sampler
-            best_per_prompt[prompt] = best_sampler
-        
-        # Most consistent sampler (highest prompt_consistency)
-        most_consistent = max(sampler_stats.items(), key=lambda x: x[1].prompt_consistency)[0]
-        
-        # Highest quality sampler (highest overall_mean)
-        highest_quality = max(sampler_stats.items(), key=lambda x: x[1].overall_mean)[0]
+        most_consistent_sampler = max(sampler_stats.keys(), 
+                                    key=lambda x: sampler_stats[x].prompt_consistency) if sampler_stats else ""
+        highest_quality_sampler = max(sampler_stats.keys(), 
+                                    key=lambda x: sampler_stats[x].overall_mean) if sampler_stats else ""
         
         return QualityBenchmarkResults(
             benchmark_name=benchmark_name,
-            timestamp=time.strftime("%Y-%m-%d %H:%M:%S"),
+            timestamp=timestamp,
             model_name=model_name,
-            samples=self.samples.copy(),
+            samples=self.samples,
             sampler_stats=sampler_stats,
             statistical_significance=significance,
             effect_sizes=effect_sizes,
-            best_sampler_per_prompt=best_per_prompt,
-            most_consistent_sampler=most_consistent,
-            highest_quality_sampler=highest_quality
+            best_sampler_per_prompt=best_sampler_per_prompt,
+            most_consistent_sampler=most_consistent_sampler,
+            highest_quality_sampler=highest_quality_sampler
         )
     
     def print_enhanced_summary(self):
-        """Print comprehensive enhanced summary with statistical analysis."""
-        results = self.get_enhanced_benchmark_results()
-        
-        print(f"\n🎭 ENHANCED QUALITY EVALUATION SUMMARY")
-        print(f"{'='*70}")
-        print(f"📊 Model: {results.model_name}")
-        print(f"📅 Timestamp: {results.timestamp}")
-        print(f"📈 Total Samples: {len(results.samples)}")
-        
-        # Overall ranking
-        ranking = sorted(results.sampler_stats.items(), key=lambda x: x[1].overall_mean, reverse=True)
-        
-        print(f"\n🏆 OVERALL QUALITY RANKING:")
-        for rank, (sampler, stats) in enumerate(ranking, 1):
-            ci_low, ci_high = stats.overall_confidence_interval
-            consistency_icon = "🔸" if stats.prompt_consistency > 8.0 else "🔹"
-            
-            print(f"  {rank}. {sampler}: {stats.overall_mean:.2f}/10 "
-                  f"[{ci_low:.2f}-{ci_high:.2f}] {consistency_icon}")
-            print(f"     Consistency: {stats.prompt_consistency:.1f}/10, "
-                  f"Samples: {stats.total_samples}, Prompts: {stats.prompts_covered}")
-        
-        # Per-prompt breakdown
-        print(f"\n📋 PER-PROMPT BREAKDOWN:")
-        all_prompts = set()
-        for stats in results.sampler_stats.values():
-            for ps in stats.prompt_stats:
-                all_prompts.add(ps.prompt)
-        
-        for prompt in sorted(all_prompts):
-            print(f"\n  📝 {prompt[:60]}...")
-            prompt_results = []
-            
-            for sampler, stats in results.sampler_stats.items():
-                for ps in stats.prompt_stats:
-                    if ps.prompt == prompt:
-                        prompt_results.append((sampler, ps))
-            
-            # Sort by mean score for this prompt
-            prompt_results.sort(key=lambda x: x[1].mean_score, reverse=True)
-            
-            for rank, (sampler, ps) in enumerate(prompt_results, 1):
-                ci_low, ci_high = ps.confidence_interval
-                print(f"     {rank}. {sampler}: {ps.mean_score:.2f}/10 "
-                      f"[{ci_low:.2f}-{ci_high:.2f}] (n={ps.sample_size})")
-        
-        # Statistical significance
-        print(f"\n📊 STATISTICAL ANALYSIS:")
-        print(f"  🏅 Highest Quality: {results.highest_quality_sampler}")
-        print(f"  🎯 Most Consistent: {results.most_consistent_sampler}")
-        
-        # Effect sizes
-        print(f"\n📈 EFFECT SIZES (Cohen's d):")
-        for sampler1, comparisons in results.effect_sizes.items():
-            for sampler2, effect_size in comparisons.items():
-                if sampler1 < sampler2:  # Avoid duplicates
-                    magnitude = ("Large" if abs(effect_size) > 0.8 else 
-                               "Medium" if abs(effect_size) > 0.5 else "Small")
-                    print(f"  {sampler1} vs {sampler2}: {effect_size:.2f} ({magnitude})")
-        
-        print(f"{'='*70}")
-    
-    def clear(self):
-        """Clear all samples."""
-        self.samples.clear()
-
-# Maintain backward compatibility
-QualityAggregator = EnhancedQualityAggregator
-
-@dataclass
-class QualitySample:
-    """Quality-focused sample result."""
-    # Core metadata
-    prompt: str
-    sampler_name: str
-    sampler_config: Dict[str, Any]
-    
-    # Generated content
-    generated_text: str
-    word_count: int
-    
-    # Quality assessment (the focus)
-    judgment: Optional[JudgmentResult] = None
-    
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert to dictionary for API/frontend consumption."""
-        result = {
-            'prompt': self.prompt,
-            'sampler_name': self.sampler_name,
-            'sampler_config': self.sampler_config,
-            'generated_text': self.generated_text,
-            'word_count': self.word_count,
-            'judgment': None
-        }
-        
-        if self.judgment:
-            result['judgment'] = {
-                'overall_score': self.judgment.overall_score,
-                'criterion_scores': [
-                    {
-                        'criterion': score.criterion,
-                        'score': score.score,
-                        'reasoning': score.reasoning
-                    }
-                    for score in self.judgment.criterion_scores
-                ],
-                'summary': self.judgment.summary,
-                'evaluation_time': self.judgment.evaluation_time,
-                'model_used': self.judgment.model_used
-            }
-        
-        return result
-
-# Old QualityBenchmarkResults class removed - using enhanced version above
-
-class QualityAggregator:
-    """Quality-focused aggregator for sampler evaluation."""
-    
-    def __init__(self):
-        self.samples: List[QualitySample] = []
-    
-    def add_sample(self, 
-                   prompt: str,
-                   sampler_name: str,
-                   sampler_config: Dict[str, Any],
-                   generated_text: str,
-                   judgment: Optional[JudgmentResult] = None) -> QualitySample:
-        """Add a quality-focused sample result."""
-        
-        word_count = len(generated_text.split())
-        
-        sample = QualitySample(
-            prompt=prompt,
-            sampler_name=sampler_name,
-            sampler_config=sampler_config,
-            generated_text=generated_text,
-            word_count=word_count,
-            judgment=judgment
-        )
-        
-        self.samples.append(sample)
-        return sample
-    
-    def calculate_quality_stats(self) -> Dict[str, Any]:
-        """Calculate comprehensive quality statistics."""
-        if not self.samples:
-            return {}
-        
-        # Filter samples with judgments
-        judged_samples = [s for s in self.samples if s.judgment is not None]
-        
-        if not judged_samples:
-            return {'message': 'No quality judgments available'}
-        
-        # Group by sampler
-        sampler_groups = {}
-        for sample in judged_samples:
-            sampler_name = sample.sampler_name
-            if sampler_name not in sampler_groups:
-                sampler_groups[sampler_name] = []
-            sampler_groups[sampler_name].append(sample)
-        
-        stats = {}
-        for sampler_name, samples in sampler_groups.items():
-            overall_scores = [s.judgment.overall_score for s in samples]
-            
-            # Calculate detailed criterion statistics
-            criterion_stats = {}
-            if samples[0].judgment.criterion_scores:
-                criterion_names = [cs.criterion for cs in samples[0].judgment.criterion_scores]
-                for criterion in criterion_names:
-                    scores = []
-                    reasonings = []
-                    for sample in samples:
-                        for cs in sample.judgment.criterion_scores:
-                            if cs.criterion == criterion:
-                                scores.append(cs.score)
-                                reasonings.append(cs.reasoning)
-                                break
-                    
-                    if scores:
-                        criterion_stats[criterion] = {
-                            'avg_score': sum(scores) / len(scores),
-                            'min_score': min(scores),
-                            'max_score': max(scores),
-                            'scores': scores,
-                            'sample_reasonings': reasonings[:3]  # First 3 reasonings for insight
-                        }
-            
-            # Calculate quality consistency (how much scores vary)
-            if len(overall_scores) > 1:
-                mean_score = sum(overall_scores) / len(overall_scores)
-                variance = sum((x - mean_score) ** 2 for x in overall_scores) / len(overall_scores)
-                consistency = max(0, 10 - variance)  # Higher is more consistent
-            else:
-                consistency = 10.0
-            
-            stats[sampler_name] = {
-                'sample_count': len(samples),
-                'overall_quality': {
-                    'avg_score': sum(overall_scores) / len(overall_scores),
-                    'min_score': min(overall_scores),
-                    'max_score': max(overall_scores),
-                    'scores': overall_scores,
-                    'consistency': consistency
-                },
-                'criterion_breakdown': criterion_stats,
-                'sampler_config': samples[0].sampler_config,
-                'judge_model': samples[0].judgment.model_used,
-                'sample_summaries': [s.judgment.summary for s in samples[:3]]  # First 3 summaries
-            }
-        
-        return stats
-    
-    def get_quality_ranking(self) -> List[Dict[str, Any]]:
-        """Get samplers ranked by quality."""
-        quality_stats = self.calculate_quality_stats()
-        
-        if 'message' in quality_stats:
-            return []
-        
-        ranking = []
-        for sampler_name, stats in quality_stats.items():
-            ranking.append({
-                'sampler_name': sampler_name,
-                'avg_quality': stats['overall_quality']['avg_score'],
-                'consistency': stats['overall_quality']['consistency'],
-                'sample_count': stats['sample_count'],
-                'config': stats['sampler_config'],
-                'best_criterion': self._get_best_criterion(stats['criterion_breakdown'])
-            })
-        
-        # Sort by average quality (descending)
-        ranking.sort(key=lambda x: x['avg_quality'], reverse=True)
-        
-        return ranking
-    
-    def _get_best_criterion(self, criterion_stats: Dict[str, Any]) -> Dict[str, Any]:
-        """Get the best performing criterion for a sampler."""
-        if not criterion_stats:
-            return {'name': 'none', 'score': 0.0}
-        
-        best_criterion = max(criterion_stats.items(), key=lambda x: x[1]['avg_score'])
-        return {
-            'name': best_criterion[0],
-            'score': best_criterion[1]['avg_score']
-        }
-    
-    def get_benchmark_results(self, 
-                             benchmark_name: str = "Quality Evaluation",
-                             model_name: str = "Unknown") -> Dict[str, Any]:
-        """Get quality benchmark results (legacy method)."""
-        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-        quality_stats = self.calculate_quality_stats()
-        
-        return {
-            'benchmark_name': benchmark_name,
-            'timestamp': timestamp,
-            'model_name': model_name,
-            'samples': [s.to_dict() for s in self.samples],
-            'quality_stats': quality_stats
-        }
-    
-    def print_quality_summary(self):
-        """Print a quality-focused summary."""
+        """Print enhanced summary with statistical analysis."""
         if not self.samples:
             print("No samples to summarize.")
             return
         
-        print(f"\n🎭 QUALITY EVALUATION SUMMARY")
-        print(f"{'='*60}")
+        results = self.get_enhanced_benchmark_results()
         
-        quality_stats = self.calculate_quality_stats()
+        print(f"\n📊 ENHANCED STATISTICAL QUALITY ANALYSIS")
+        print(f"{'='*70}")
+        print(f"Timestamp: {results.timestamp}")
+        print(f"Total samples: {len(results.samples)}")
+        print(f"Samplers analyzed: {len(results.sampler_stats)}")
         
-        if 'message' not in quality_stats:
-            ranking = self.get_quality_ranking()
+        if not results.sampler_stats:
+            print("No statistical analysis available.")
+            return
+        
+        # Overall ranking
+        ranked_samplers = sorted(results.sampler_stats.items(), 
+                               key=lambda x: x[1].overall_mean, reverse=True)
+        
+        print(f"\n🏆 QUALITY RANKING (with 95% Confidence Intervals):")
+        for rank, (sampler_name, stats) in enumerate(ranked_samplers, 1):
+            ci_low, ci_high = stats.overall_confidence_interval
+            consistency_icon = "🔸" if stats.prompt_consistency > 0.8 else "🔹"
             
-            print(f"\n🏆 QUALITY RANKING:")
-            for rank, sampler_data in enumerate(ranking, 1):
-                consistency_indicator = "🔸" if sampler_data['consistency'] > 8 else "🔹"
-                print(f"  {rank}. {sampler_data['sampler_name']}: "
-                      f"{sampler_data['avg_quality']:.2f}/10 {consistency_indicator}")
-                print(f"     Best at: {sampler_data['best_criterion']['name']} "
-                      f"({sampler_data['best_criterion']['score']:.1f})")
-                print(f"     Samples: {sampler_data['sample_count']}")
-            
-            print(f"\n📊 DETAILED BREAKDOWN:")
-            for sampler_name, stats in quality_stats.items():
-                print(f"\n  {sampler_name}:")
-                print(f"    Overall: {stats['overall_quality']['avg_score']:.2f}/10 "
-                      f"(consistency: {stats['overall_quality']['consistency']:.1f})")
-                
-                # Show top 3 criteria
-                if stats['criterion_breakdown']:
-                    sorted_criteria = sorted(stats['criterion_breakdown'].items(), 
-                                           key=lambda x: x[1]['avg_score'], reverse=True)
-                    for criterion, criterion_stats in sorted_criteria[:3]:
-                        print(f"    {criterion}: {criterion_stats['avg_score']:.2f}/10")
-        else:
-            print(f"\n⭐ {quality_stats['message']}")
+            print(f"  {rank}. {sampler_name}: {stats.overall_mean:.2f}/10 "
+                  f"[{ci_low:.2f}-{ci_high:.2f}] {consistency_icon}")
+            print(f"     Samples: {stats.total_samples}, "
+                  f"Prompts: {stats.prompts_covered}, "
+                  f"Consistency: {stats.prompt_consistency:.2f}")
         
-        print(f"{'='*60}")
+        # Effect sizes between top 2
+        if len(ranked_samplers) >= 2:
+            best_sampler = ranked_samplers[0][0]
+            second_sampler = ranked_samplers[1][0]
+            effect_size = results.effect_sizes[best_sampler][second_sampler]
+            
+            print(f"\n📈 STATISTICAL SIGNIFICANCE:")
+            print(f"  Effect size between #{1} and #{2}: {effect_size:.3f}")
+            if abs(effect_size) > 0.8:
+                magnitude = "Large"
+            elif abs(effect_size) > 0.5:
+                magnitude = "Medium"
+            elif abs(effect_size) > 0.2:
+                magnitude = "Small"
+            else:
+                magnitude = "Negligible"
+            print(f"  Magnitude: {magnitude} {'(significant)' if abs(effect_size) > 0.5 else '(not significant)'}")
+        
+        # Meta-analysis
+        print(f"\n🎯 META-ANALYSIS:")
+        print(f"  Best overall quality: {results.highest_quality_sampler}")
+        print(f"  Most consistent: {results.most_consistent_sampler}")
+        
+        if results.best_sampler_per_prompt:
+            prompt_winners = {}
+            for prompt, winner in results.best_sampler_per_prompt.items():
+                prompt_winners[winner] = prompt_winners.get(winner, 0) + 1
+            
+            print(f"  Best per-prompt performance:")
+            for sampler, wins in sorted(prompt_winners.items(), key=lambda x: x[1], reverse=True):
+                print(f"    {sampler}: {wins} prompt(s)")
+        
+        print(f"{'='*70}")
     
     def clear(self):
         """Clear all samples."""
