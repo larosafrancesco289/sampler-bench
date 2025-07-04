@@ -4,13 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Sampler Bench is a professional quality-focused benchmarking platform for evaluating LLM sampling strategies on creative writing tasks. It consists of a FastAPI backend for benchmarking and a Next.js frontend for visualization.
+Sampler Bench is a professional quality-focused benchmarking platform for evaluating LLM sampling strategies on creative writing tasks. It consists of a Next.js application for visualization and data processing.
 
 ## Key Commands
 
-### Backend Development
-- **Start backend server**: `python start_backend.py`
-- **Install Python dependencies**: `pip install -r requirements.txt`
+### Data Generation
 - **Run complete benchmark**: `python scripts/run_full_benchmark.py`
 - **Run generation only**: `python scripts/run_benchmark.py`
 - **Judge existing results**: `python scripts/judge_results.py --auto-find`
@@ -30,18 +28,8 @@ Sampler Bench is a professional quality-focused benchmarking platform for evalua
 ### Testing and Quality
 - **Single model test**: `python scripts/run_full_benchmark.py --model [model-name] --samplers [sampler1] [sampler2]`
 - **Custom prompts**: `python scripts/run_full_benchmark.py --custom-prompts "Your prompt here" --max-length 500`
-- **API health check**: `curl http://localhost:8000/health`
-- **View API docs**: Visit `http://localhost:8000/docs` when backend is running
 
 ## Architecture
-
-### Backend (`/backend/`)
-- **FastAPI Server** (`fastapi_server.py`): Main web server with REST API
-- **API Layer** (`api/`): API interfaces and request/response models
-- **Configuration** (`config/`): YAML configs for models, samplers, and tasks
-- **Evaluation** (`evaluation/`): LLM-as-a-Judge quality assessment system
-- **Inference** (`inference/`): Text generation interfaces
-- **Utils** (`utils/`): Utilities including hyperparameter search
 
 ### Frontend (`/frontend/`)
 - **Next.js App Router** (`app/`): Next.js 15 application with App Router
@@ -53,12 +41,12 @@ Sampler Bench is a professional quality-focused benchmarking platform for evalua
 ### Core Workflow
 1. **Model Server**: KoboldCpp server hosts the LLM model
 2. **Generation**: Scripts generate text samples using various sampling strategies
-3. **Evaluation**: OpenAI GPT-4 judges text quality on 5 criteria
-4. **Visualization**: Frontend displays results with interactive charts and tables
+3. **Evaluation**: OpenAI GPT-4 judges text quality on 5 criteria  
+4. **Visualization**: Next.js frontend reads results directly from JSON files and displays with interactive charts and tables
 
 ## Configuration System
 
-### Sampler Configurations (`backend/config/samplers.yaml`)
+### Sampler Configurations (`config/samplers.yaml`)
 - **Model-specific defaults**: Dynamic selection based on model type (llama_default, mistral_default, qwen_default)
 - **Min-p sampling**: Various temperature levels with min_p threshold (standard_minp, creative_minp, ultra_minp)
 - **Top-n-sigma sampling**: Standard deviation based sampling (standard_sigma, creative_sigma)
@@ -73,7 +61,7 @@ Sampler Bench is a professional quality-focused benchmarking platform for evalua
 4. **Engagement & Readability** (20%): Reader interest and accessibility
 5. **Stylistic Quality** (10%): Writing technique and language use
 
-#### Multi-Judge System (`backend/evaluation/multi_judge.py`)
+#### Multi-Judge System
 1. **Narrative Structure** (30%): Story organization, pacing, and plot coherence
 2. **Creativity Execution** (25%): Creative premise handling and original elements
 3. **Character Voice** (20%): Character development and authentic voice
@@ -84,17 +72,8 @@ The multi-judge system uses parallel evaluation with multiple LLM judges and con
 
 ## API Endpoints
 
-### Core Endpoints
-- `GET /api/models`: List available models
-- `GET /api/samplers`: List available samplers
-- `GET /api/results`: Get benchmark results for frontend
-- `POST /api/benchmark/run`: Run complete benchmark
-- `POST /api/generate`: Generate single text sample
-- `POST /api/evaluate`: Evaluate text quality
-
-### Documentation
-- `GET /docs`: Swagger UI documentation
-- `GET /redoc`: Alternative API documentation
+### Next.js API Routes
+- `GET /api/results`: Get benchmark results for frontend (reads from local JSON files)
 
 ## Development Workflow
 
@@ -107,9 +86,9 @@ The multi-judge system uses parallel evaluation with multiple LLM judges and con
 4. Results stored in `results/` directory as JSON files
 
 ### Adding New Samplers
-1. Define sampler in `backend/config/samplers.yaml` under `presets` section
+1. Define sampler in `config/samplers.yaml` under `presets` section
 2. Add model-specific defaults in `model_defaults` section if needed
-3. Update sampler implementation in inference layer
+3. Update sampler implementation in generation scripts
 4. Test with benchmark scripts
 
 ### Frontend Development
@@ -121,15 +100,14 @@ The multi-judge system uses parallel evaluation with multiple LLM judges and con
 - Real-time data fetching with custom hooks
 
 ### Common Development Tasks
-- **Debug API issues**: Check FastAPI logs and visit `/docs` endpoint
-- **Add new models**: Update `backend/config/models.yaml` and sampler configs
-- **Modify evaluation criteria**: Edit judge classes in `backend/evaluation/`
+- **Add new models**: Update `config/models.yaml` and sampler configs
+- **Modify evaluation criteria**: Edit judge classes in evaluation scripts
 - **Update frontend components**: Modify files in `frontend/components/`
+- **Debug data issues**: Check Next.js API route at `frontend/app/api/results/route.ts`
 
 ## Key Dependencies
 
-### Backend
-- **FastAPI**: Web framework for API server
+### Data Generation Scripts
 - **OpenAI**: LLM-as-a-Judge evaluation (single and multi-judge via OpenRouter)
 - **PyYAML**: Configuration management
 - **Requests**: HTTP client for KoboldCpp API

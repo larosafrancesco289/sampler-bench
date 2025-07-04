@@ -2,6 +2,9 @@ export interface CriterionScore {
   criterion: string;
   score: number;
   reasoning: string;
+  std?: number;
+  consensus_strength?: number;
+  individual_scores?: number[];
 }
 
 export interface Judgment {
@@ -11,6 +14,10 @@ export interface Judgment {
   evaluation_time: number;
   model_used: string;
   judged_at: string;
+  overall_std?: number;
+  judge_count?: number;
+  consensus_method?: string;
+  judge_models?: string[];
 }
 
 export interface Sample {
@@ -61,6 +68,12 @@ export interface LeaderboardEntry {
   parameters: Record<string, any>;
   avg_word_count: number;
   model_name?: string;
+  // Consistency metrics
+  overall_std?: number;
+  avg_consensus_strength?: number;
+  criteria_std?: Record<string, number>;
+  judge_count?: number;
+  judge_models?: string[];
   // Legacy fields for backward compatibility
   avg_quality_score?: number;
   samples_count?: number;

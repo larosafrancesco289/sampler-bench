@@ -30,6 +30,22 @@ interface BenchmarkContextType {
   // Aggregation controls
   aggregateAcrossModels: boolean
   setAggregateAcrossModels: (aggregate: boolean) => void
+  // Quality filter controls
+  criteriaFilters: Record<string, number>
+  wordCountRange: [number, number]
+  scoreRange: [number, number]
+  activePreset: string | null
+  handleCriteriaFilterChange: (criterion: string, minScore: number) => void
+  setWordCountRange: (range: [number, number]) => void
+  setScoreRange: (range: [number, number]) => void
+  handleQuickPresetChange: (preset: string) => void
+  resetQualityFilters: () => void
+  dataBounds: {
+    maxWordCount: number
+    minWordCount: number
+    minScore: number
+    maxScore: number
+  }
 }
 
 const BenchmarkContext = createContext<BenchmarkContextType | undefined>(undefined)

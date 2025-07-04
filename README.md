@@ -1,29 +1,12 @@
 # Sampler Bench
 
-A professional quality-focused benchmarking platform for evaluating LLM sampling strategies on creative writing tasks. Now with a modern FastAPI backend and Next.js frontend!
+A professional quality-focused benchmarking platform for evaluating LLM sampling strategies on creative writing tasks. Built with Next.js for a modern, streamlined experience!
 
 ## 🚀 Quick Start
 
-### Option 1: Web Interface (Recommended)
+### Web Interface
 
-1. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. **Set up environment:**
-   ```bash
-   cp .env.example .env
-   # Add your OPENAI_API_KEY to .env
-   ```
-
-3. **Start the FastAPI backend:**
-   ```bash
-   python start_backend.py
-   ```
-   The API will be available at http://localhost:8000 with docs at http://localhost:8000/docs
-
-4. **Start the frontend (in a new terminal):**
+1. **Start the frontend:**
    ```bash
    cd frontend
    npm install
@@ -31,14 +14,20 @@ A professional quality-focused benchmarking platform for evaluating LLM sampling
    ```
    The web interface will be available at http://localhost:3000
 
-### Option 2: Command Line Interface
-
-1. **Install dependencies:**
+2. **Generate benchmark data (optional):**
+   To create new benchmark results, use the Python scripts:
    ```bash
-   pip install -r requirements.txt
+   # Set up environment
+   cp .env.example .env
+   # Add your OPENAI_API_KEY to .env
+   
+   # Run benchmarks
+   python scripts/run_full_benchmark.py
    ```
 
-2. **Set up environment:**
+### Command Line Interface
+
+1. **Set up environment:**
    ```bash
    cp .env.example .env
    # Add your OPENAI_API_KEY to .env
