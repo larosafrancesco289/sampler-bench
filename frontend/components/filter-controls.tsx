@@ -20,6 +20,8 @@ interface FilterControlsProps {
   onModelChange: (models: string[]) => void
   onSamplerChange: (samplers: string[]) => void
   onReset: () => void
+  aggregateAcrossModels: boolean
+  onAggregateChange: (aggregate: boolean) => void
 }
 
 export function FilterControls({
@@ -29,7 +31,9 @@ export function FilterControls({
   selectedSamplers,
   onModelChange,
   onSamplerChange,
-  onReset
+  onReset,
+  aggregateAcrossModels,
+  onAggregateChange
 }: FilterControlsProps) {
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -130,7 +134,7 @@ export function FilterControls({
           <div>
             <div className="flex items-center justify-between mb-2">
               <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Samplers ({samplerOptions.length})
+                Sampling Strategies ({samplerOptions.length})
               </h4>
               {selectedSamplers.length > 0 && (
                 <Button
@@ -159,6 +163,28 @@ export function FilterControls({
             </div>
           </div>
 
+          {/* Aggregation Toggle */}
+          <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Aggregate Across Models
+                </h4>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Combine scores from all models to compare sampling strategies directly
+                </p>
+              </div>
+              <Button
+                variant={aggregateAcrossModels ? "default" : "outline"}
+                size="sm"
+                onClick={() => onAggregateChange(!aggregateAcrossModels)}
+                className="ml-4"
+              >
+                {aggregateAcrossModels ? "Aggregated" : "Per Model"}
+              </Button>
+            </div>
+          </div>
+
           {/* Active Filters Summary */}
           {hasActiveFilters && (
             <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
@@ -175,7 +201,7 @@ export function FilterControls({
                 ))}
                 {selectedSamplers.map((sampler) => (
                   <Badge key={`sampler-${sampler}`} variant="secondary" className="text-xs">
-                    Sampler: {sampler}
+                    Strategy: {sampler}
                     <X
                       className="h-3 w-3 ml-1 cursor-pointer"
                       onClick={() => toggleSampler(sampler)}

@@ -3,7 +3,16 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from 'recharts'
 import { useBenchmarkContext } from "@/contexts/benchmark-context"
 
-const colors = ['#10b981', '#f59e0b', '#8b5cf6', '#06b6d4', '#ef4444', '#f97316', '#84cc16']
+// Theme-aware colors that work in both light and dark modes
+const getChartColors = () => [
+  'hsl(var(--chart-1))',
+  'hsl(var(--chart-2))', 
+  'hsl(var(--chart-3))',
+  'hsl(var(--chart-4))',
+  'hsl(var(--chart-5))',
+  'hsl(var(--chart-6))',
+  'hsl(var(--chart-7))'
+]
 
 export function ScoreChart() {
   const { data, loading, error } = useBenchmarkContext()
@@ -26,15 +35,12 @@ export function ScoreChart() {
 
   // Transform data for the chart
   const chartData = data.map((entry, index) => {
-    const displayName = entry.model_name ? 
-      `${entry.sampler_name} (${entry.model_name})` : 
-      entry.sampler_name
+    const displayName = entry.sampler_name
     
     return {
-      name: displayName.length > 25 ? displayName.substring(0, 22) + '...' : displayName,
-      fullName: displayName,
+      name: displayName,
       score: Number(entry.average_score.toFixed(2)),
-      fill: colors[index % colors.length]
+      fill: getChartColors()[index % getChartColors().length]
     }
   })
 
@@ -45,10 +51,10 @@ export function ScoreChart() {
           <CartesianGrid strokeDasharray="3 3" stroke="currentColor" opacity={0.1} />
           <XAxis 
             dataKey="name" 
-            tick={{ fontSize: 12, fill: 'currentColor' }}
+            tick={{ fontSize: 8, fill: 'currentColor' }}
             angle={-45}
             textAnchor="end"
-            height={80}
+            height={120}
             stroke="currentColor"
             opacity={0.7}
           />
@@ -59,11 +65,19 @@ export function ScoreChart() {
             opacity={0.7}
           />
           <Tooltip
-            labelFormatter={(label) => {
-              const item = chartData.find(d => d.name === label)
-              return item?.fullName || label
-            }}
             formatter={(value: number) => [value.toFixed(2), 'Score']}
+            contentStyle={{
+              backgroundColor: 'hsl(var(--background))',
+              border: '1px solid hsl(var(--border))',
+              borderRadius: '6px',
+              color: 'hsl(var(--foreground))'
+            }}
+            labelStyle={{
+              color: 'hsl(var(--foreground))'
+            }}
+            itemStyle={{
+              color: 'hsl(var(--foreground))'
+            }}
           />
           <Bar 
             dataKey="score" 

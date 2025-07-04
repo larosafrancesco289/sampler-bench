@@ -6,7 +6,19 @@ import { useBenchmarkContext } from "@/contexts/benchmark-context"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Badge } from "@/components/ui/badge"
 
-const colors = ['#10b981', '#f59e0b', '#8b5cf6', '#06b6d4', '#ef4444', '#f97316', '#84cc16', '#ec4899', '#06b6d4', '#84cc16']
+// Theme-aware colors that work in both light and dark modes
+const getChartColors = () => [
+  'hsl(var(--chart-1))',
+  'hsl(var(--chart-2))', 
+  'hsl(var(--chart-3))',
+  'hsl(var(--chart-4))',
+  'hsl(var(--chart-5))',
+  'hsl(var(--chart-6))',
+  'hsl(var(--chart-7))',
+  'hsl(var(--chart-8))',
+  'hsl(var(--chart-9))',
+  'hsl(var(--chart-10))'
+]
 
 type ChartType = 'radar' | 'bar'
 
@@ -50,7 +62,7 @@ export function QualityCriteriaChart() {
       }
       
       displayData.forEach((entry) => {
-        const entryKey = `${entry.sampler_name}${entry.model_name ? ` (${entry.model_name})` : ''}`
+        const entryKey = entry.sampler_name
         const samplerKey = entryKey.replace(/[^a-zA-Z0-9]/g, '_')
         point[samplerKey] = entry.criteria_breakdown[criterion] || 0
       })
@@ -62,7 +74,7 @@ export function QualityCriteriaChart() {
   // Create chart data for bar chart
   const barChartData = useMemo(() => {
     return displayData.map((entry) => {
-      const entryName = `${entry.sampler_name}${entry.model_name ? ` (${entry.model_name})` : ''}`
+      const entryName = entry.sampler_name
       const dataPoint: Record<string, unknown> = {
         name: entryName.length > 20 ? entryName.substring(0, 17) + '...' : entryName,
         fullName: entryName
@@ -119,7 +131,7 @@ export function QualityCriteriaChart() {
           opacity={0.5}
         />
         {displayData.map((entry, index) => {
-          const entryKey = `${entry.sampler_name}${entry.model_name ? ` (${entry.model_name})` : ''}`
+          const entryKey = entry.sampler_name
           const samplerKey = entryKey.replace(/[^a-zA-Z0-9]/g, '_')
           const displayName = entryKey.length > 25 ? entryKey.substring(0, 22) + '...' : entryKey
           
@@ -128,8 +140,8 @@ export function QualityCriteriaChart() {
               key={samplerKey}
               name={displayName}
               dataKey={samplerKey}
-              stroke={colors[index % colors.length]}
-              fill={colors[index % colors.length]}
+              stroke={getChartColors()[index % getChartColors().length]}
+              fill={getChartColors()[index % getChartColors().length]}
               fillOpacity={0.1}
               strokeWidth={2}
               className="transition-all duration-300"
@@ -149,17 +161,21 @@ export function QualityCriteriaChart() {
   const renderBarChart = () => (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart data={barChartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-        <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+        <CartesianGrid strokeDasharray="3 3" stroke="currentColor" opacity={0.2} />
         <XAxis 
           dataKey="name" 
           angle={-45}
           textAnchor="end"
           height={60}
-          fontSize={10}
+          tick={{ fontSize: 10, fill: 'currentColor' }}
+          stroke="currentColor"
+          opacity={0.7}
         />
         <YAxis 
           domain={[0, 10]}
-          fontSize={10}
+          tick={{ fontSize: 10, fill: 'currentColor' }}
+          stroke="currentColor"
+          opacity={0.7}
         />
         <Tooltip 
           labelFormatter={(label) => {
@@ -167,12 +183,24 @@ export function QualityCriteriaChart() {
             return item?.fullName || label
           }}
           formatter={(value: number, name: string) => [value.toFixed(2), name]}
+          contentStyle={{
+            backgroundColor: 'hsl(var(--background))',
+            border: '1px solid hsl(var(--border))',
+            borderRadius: '6px',
+            color: 'hsl(var(--foreground))'
+          }}
+          labelStyle={{
+            color: 'hsl(var(--foreground))'
+          }}
+          itemStyle={{
+            color: 'hsl(var(--foreground))'
+          }}
         />
         {allCriteria.map((criterion, index) => (
           <Bar
             key={criterion}
             dataKey={formatCriterionName(criterion)}
-            fill={colors[index % colors.length]}
+            fill={getChartColors()[index % getChartColors().length]}
             opacity={0.8}
           />
         ))}
@@ -213,7 +241,7 @@ export function QualityCriteriaChart() {
               key={criterion}
               variant="outline"
               className="text-xs"
-              style={{ borderColor: colors[index % colors.length], color: colors[index % colors.length] }}
+              style={{ borderColor: getChartColors()[index % getChartColors().length], color: getChartColors()[index % getChartColors().length] }}
             >
               {formatCriterionName(criterion)}
             </Badge>

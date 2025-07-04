@@ -27,6 +27,9 @@ interface BenchmarkContextType {
   setSelectedSamplers: (samplers: string[]) => void
   resetFilters: () => void
   hasActiveFilters: boolean
+  // Aggregation controls
+  aggregateAcrossModels: boolean
+  setAggregateAcrossModels: (aggregate: boolean) => void
 }
 
 const BenchmarkContext = createContext<BenchmarkContextType | undefined>(undefined)

@@ -16,7 +16,9 @@ function DashboardContent() {
     selectedSamplers,
     setSelectedModels,
     setSelectedSamplers,
-    resetFilters
+    resetFilters,
+    aggregateAcrossModels,
+    setAggregateAcrossModels
   } = useBenchmarkContext()
   return (
     <div className="container mx-auto py-8 px-4">
@@ -42,6 +44,8 @@ function DashboardContent() {
         onModelChange={setSelectedModels}
         onSamplerChange={setSelectedSamplers}
         onReset={resetFilters}
+        aggregateAcrossModels={aggregateAcrossModels}
+        onAggregateChange={setAggregateAcrossModels}
       />
 
       {/* Dynamic Stats Overview */}
