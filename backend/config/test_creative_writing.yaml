@@ -1,0 +1,188 @@
+# Test Creative Writing Configuration
+# Based on robust creative writing but with only 10 samples for quick testing
+
+benchmark_config:
+  name: "Test Creative Writing Benchmark"
+  description: "Quick test configuration with 10 samples for pipeline validation"
+  
+  # Core experimental design - 10 total samples for testing
+  experimental_design:
+    # 2 prompts selected from robust creative writing for testing
+    prompts:
+      character_driven:
+        text: "Write a complete short story (300-400 words) about two strangers who meet during a citywide power outage and discover an unexpected connection. Make sure to include a proper beginning, development, and conclusion."
+        category: "character/dialogue"
+        focus: "Character interaction, relationship development, dialogue, emotional connection"
+        writing_skills: ["dialogue", "character_voice", "relationship_dynamics", "emotional_authenticity"]
+        
+      speculative_concept:
+        text: "Write a complete short tale (300-400 words) about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours. Include a clear beginning, middle, and satisfying conclusion."
+        category: "high-concept/speculative"
+        focus: "Premise exploration, creative problem-solving, consequence development, world-building"
+        writing_skills: ["premise_development", "creative_logic", "plot_progression", "conceptual_depth"]
+    
+    # Sample distribution: 5 samplers × 2 prompts × 1 repetition = 10 samples
+    repetitions_per_prompt_per_sampler: 1
+    total_samples: 10
+    samples_per_sampler: 2  # Minimal for testing
+    
+    # 5 distinct samplers covering the sampling space
+    samplers:
+      - "model_default"      # Dynamically maps to provider settings (llama_default, mistral_default, etc.)
+      - "standard_minp"      # Min-p standard (temp 0.7, min_p 0.2) - universal
+      - "creative_minp"      # Min-p creative (temp 1.0, min_p 0.2) - universal  
+      - "standard_sigma"     # Sigma standard (temp 1.5, sigma 1.0) - universal
+      - "creative_sigma"     # Sigma moderate (temp 1.0, sigma 1.5) - universal
+
+# Evaluation Framework - Judge configurable via .env
+evaluation_framework:
+  # Multi-judge configuration from environment  
+  judge_config:
+    multi_judge_enabled: "${MULTI_JUDGE_ENABLED}"  # Enable multi-judge evaluation
+    judge_models: "${LLM_JUDGE_MODELS}"           # Comma-separated list of OpenRouter models
+    api_key: "${OPENROUTER_API_KEY}"              # OpenRouter API key
+    consensus_method: "${JUDGE_CONSENSUS_METHOD}" # How to combine scores (average, weighted_average)
+    temperature: 0.2                              # Conservative temperature for consistent judging
+    batch_size: 3  # Reduced for multi-judge parallel processing
+    
+  # Refined evaluation criteria
+  criteria:
+    narrative_structure:
+      weight: 0.30
+      description: "Story organization, pacing, and plot coherence"
+      rubric:
+        excellent: "Clear arc with compelling opening, development, and resolution"
+        good: "Solid structure with minor pacing issues"
+        average: "Adequate structure but unclear progression"
+        poor: "Disjointed or incomplete narrative"
+      
+    creativity_execution:
+      weight: 0.25  
+      description: "Creative premise handling and original elements"
+      rubric:
+        excellent: "Highly original with creative premise exploration"
+        good: "Creative elements with good premise development"
+        average: "Some creative touches, standard execution"
+        poor: "Clichéd or unimaginative approach"
+      
+    character_voice:
+      weight: 0.20
+      description: "Character development and authentic voice"
+      rubric:
+        excellent: "Distinct, believable characters with clear motivations"
+        good: "Well-developed characters with consistent voice"
+        average: "Adequate characterization, some depth"
+        poor: "Flat or inconsistent characters"
+      
+    prose_quality:
+      weight: 0.15
+      description: "Writing craft, style, and language use"
+      rubric:
+        excellent: "Polished prose with strong style and word choice"
+        good: "Good writing with minor technical issues"
+        average: "Competent writing, straightforward style"
+        poor: "Awkward phrasing or technical problems"
+      
+    engagement:
+      weight: 0.10
+      description: "Reader interest and emotional impact"
+      rubric:
+        excellent: "Compelling and emotionally resonant"
+        good: "Engaging with good emotional moments"
+        average: "Moderately interesting"
+        poor: "Bland or unengaging"
+
+# Quality Control
+quality_control:
+  automated_checks:
+    minimum_length: 150  # words
+    maximum_length: 600  # words
+    prompt_adherence: true
+    basic_coherence: true
+    
+  manual_review_triggers:
+    - "judge_score_below_3"
+    - "extreme_length_deviation"
+    - "potential_prompt_miss"
+
+# Performance Optimization
+performance_config:
+  generation:
+    sequential_prompts: true  # Don't batch prompts (speed optimization)
+    parallel_samplers: true   # Process samplers in parallel for test run
+    timeout_per_sample: 90    # seconds
+    
+  evaluation:
+    batch_judge_requests: 2   # Smaller batch for testing
+    cache_enabled: true
+    concurrent_evaluations: 2 # Reduced for testing
+
+# Output Configuration
+output_config:
+  results_structure:
+    individual_samples: true
+    sampler_summaries: true
+    prompt_analysis: true
+    overall_rankings: true
+    
+  statistical_metrics:
+    descriptive_stats:
+      mean_scores: true
+      standard_deviations: true
+      median_scores: true
+      quartiles: true
+      
+    inferential_stats:
+      confidence_intervals: false    # Disabled for small sample size
+      bootstrap_samples: 100         # Reduced for testing
+      effect_sizes: false            # Disabled for small sample size
+      significance_tests: false      # Disabled for small sample size
+      
+    reliability_analysis:
+      inter_prompt_correlation: true  # Consistency across prompts
+      outlier_detection: true         # IQR method for outliers
+      sample_adequacy: false          # Disabled for small sample size
+      
+    cross_validation:
+      train_prompts: ["character_driven"]  # 1 prompt for ranking
+      holdout_prompt: "speculative_concept"  # 1 prompt for validation
+      ranking_stability: false        # Disabled for small sample size
+      expected_samplers: ["model_default", "standard_minp", "creative_minp", "creative_sigma", "standard_sigma"]
+    
+  quality_analysis:
+    best_worst_examples: true
+    criteria_breakdown: true
+    sampler_strengths: true
+    prompt_difficulty: true
+    
+  advanced_analysis:
+    sampler_consistency:
+      within_sampler_variance: true    # How consistent is each sampler?
+      prompt_specific_performance: true # Which samplers work best for which prompts?
+      
+    quality_distribution:
+      score_histograms: true
+      normality_tests: false            # Disabled for small sample size
+      
+    practical_significance:
+      minimum_detectable_effect: 0.8   # Minimum Cohen's d we care about (large effect)
+      power_analysis: false             # Disabled for small sample size
+      
+    robustness_checks:
+      sensitivity_analysis: false       # Disabled for small sample size
+      bootstrap_rankings: false         # Disabled for small sample size
+
+# Reproducibility
+reproducibility:
+  seeds:
+    generation_seed: 42
+    evaluation_order_seed: 123
+    
+  versioning:
+    config_version: "test_1.0"
+    prompt_set_version: "v1_test"
+    
+  documentation:
+    save_config_snapshot: true
+    log_generation_params: true
+    record_timing_data: true
