@@ -238,7 +238,15 @@ class QualityAggregator:
             for sample in sampler_samples:
                 for cs in sample.judgment.criterion_scores:
                     if cs.criterion == criterion:
-                        scores.append(cs.score)
+                        # Handle both single judge (score) and multi-judge (mean_score) results
+                        if hasattr(cs, 'score'):
+                            scores.append(cs.score)
+                        elif hasattr(cs, 'mean_score'):
+                            scores.append(cs.mean_score)
+                        else:
+                            # Fallback - log the structure for debugging
+                            print(f"Unknown criterion score structure: {type(cs)}, attributes: {dir(cs)}")
+                            continue
                         break
             
             if scores:

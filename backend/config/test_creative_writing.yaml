@@ -10,13 +10,13 @@ benchmark_config:
     # 2 prompts selected from robust creative writing for testing
     prompts:
       character_driven:
-        text: "Write a complete short story (300-400 words) about two strangers who meet during a citywide power outage and discover an unexpected connection. Make sure to include a proper beginning, development, and conclusion."
+        text: "You are a creative writer. Your task is to write a complete short story of exactly 300-400 words.\n\nPROMPT: Two strangers meet during a citywide power outage and discover an unexpected connection.\n\nREQUIREMENTS:\n- Exactly 300-400 words (this is critical)\n- Complete story with beginning, middle, and end\n- Focus on character interaction and connection\n- No meta-commentary, explanations, or author notes\n\nWrite the story now. Stop immediately when the story concludes."
         category: "character/dialogue"
         focus: "Character interaction, relationship development, dialogue, emotional connection"
         writing_skills: ["dialogue", "character_voice", "relationship_dynamics", "emotional_authenticity"]
         
       speculative_concept:
-        text: "Write a complete short tale (300-400 words) about a character who suddenly discovers they can hear other people's thoughts for exactly 24 hours. Include a clear beginning, middle, and satisfying conclusion."
+        text: "You are a creative writer. Your task is to write a complete short story of exactly 300-400 words.\n\nPROMPT: A character suddenly discovers they can hear other people's thoughts for exactly 24 hours.\n\nREQUIREMENTS:\n- Exactly 300-400 words (this is critical)\n- Complete story with beginning, middle, and end\n- Focus on the character's experience and transformation\n- No meta-commentary, explanations, or author notes\n\nWrite the story now. Stop immediately when the story concludes."
         category: "high-concept/speculative"
         focus: "Premise exploration, creative problem-solving, consequence development, world-building"
         writing_skills: ["premise_development", "creative_logic", "plot_progression", "conceptual_depth"]
@@ -99,6 +99,38 @@ quality_control:
     maximum_length: 600  # words
     prompt_adherence: true
     basic_coherence: true
+    
+  # Instruction following penalties
+  instruction_penalties:
+    word_count_penalty:
+      enabled: true
+      target_range: [300, 400]  # Target word count range
+      penalties:
+        severe_deviation: 
+          threshold: 100  # >100 words off target range
+          penalty: -1.5   # Subtract 1.5 points from overall score
+        moderate_deviation:
+          threshold: 50   # 50-100 words off target range
+          penalty: -1.0   # Subtract 1.0 points from overall score
+        minor_deviation:
+          threshold: 25   # 25-50 words off target range
+          penalty: -0.5   # Subtract 0.5 points from overall score
+    
+    empty_generation_penalty:
+      enabled: true
+      penalty: -3.0  # Heavy penalty for empty/failed generations
+    
+    meta_commentary_penalty:
+      enabled: true
+      detection_patterns:
+        - "word count"
+        - "let me know"
+        - "would you like"
+        - "i hope"
+        - "feedback"
+        - "revise"
+        - "(note:"
+      penalty: -0.8  # Penalty for meta-commentary
     
   manual_review_triggers:
     - "judge_score_below_3"

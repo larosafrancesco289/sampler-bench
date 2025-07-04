@@ -29,7 +29,7 @@ class InitializeGeneratorRequest(BaseModel):
 class GenerateSampleRequest(BaseModel):
     prompt: str
     sampler_name: str
-    max_length: int = 512
+    max_length: int = 1024
     seed: Optional[int] = None
     max_retries: int = 3
 
@@ -41,7 +41,7 @@ class EvaluateQualityRequest(BaseModel):
 class RunBenchmarkRequest(BaseModel):
     prompts: List[str]
     sampler_names: Optional[List[str]] = None
-    max_length: int = 512
+    max_length: int = 1024
 
 class LoadResultsRequest(BaseModel):
     filepath: str

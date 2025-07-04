@@ -183,7 +183,7 @@ class SamplerBenchAPI:
     def generate_single_sample(self, 
                               prompt: str, 
                               sampler_name: str,
-                              max_length: int = 512,
+                              max_length: int = 1024,
                               seed: int = None,
                               max_retries: int = 3) -> Dict[str, Any]:
         """Generate a single text sample."""
@@ -289,7 +289,7 @@ class SamplerBenchAPI:
     def run_quality_benchmark(self, 
                              prompts: List[str],
                              sampler_names: List[str] = None,
-                             max_length: int = 512) -> Dict[str, Any]:
+                             max_length: int = 1024) -> Dict[str, Any]:
         """Run a complete quality benchmark."""
         if not hasattr(self, 'generator_config') or not self.judge:
             return {

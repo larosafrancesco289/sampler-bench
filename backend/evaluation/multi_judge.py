@@ -44,6 +44,7 @@ class MultiJudgeResult:
     judge_count: int
     consensus_method: str
     individual_results: List[Dict[str, Any]]  # Raw individual judge results
+    instruction_penalties: Dict[str, Any] = None  # Penalty information if applied
 
 class MultiJudgeEvaluator:
     """Multi-judge evaluation system using OpenRouter for enhanced reliability."""
@@ -226,13 +227,15 @@ class MultiJudgeEvaluator:
     def evaluate_text(self, 
                      text: str, 
                      prompt: str,
-                     sampler_config: Dict[str, Any]) -> MultiJudgeResult:
+                     sampler_config: Dict[str, Any],
+                     penalty_config: Dict[str, Any] = None) -> MultiJudgeResult:
         """Evaluate text using multiple judges and combine results.
         
         Args:
             text: The generated text to evaluate
             prompt: The original prompt used for generation
             sampler_config: Configuration of the sampler used
+            penalty_config: Optional configuration for instruction penalties
             
         Returns:
             MultiJudgeResult with consensus scores and individual judge results
@@ -257,7 +260,8 @@ class MultiJudgeEvaluator:
         
         evaluation_time = time.time() - start_time
         
-        return MultiJudgeResult(
+        # Create initial result
+        result = MultiJudgeResult(
             overall_score=overall_mean,
             overall_std=overall_std,
             criterion_scores=consensus_scores,
@@ -268,6 +272,49 @@ class MultiJudgeEvaluator:
             consensus_method=self.consensus_method,
             individual_results=individual_results
         )
+        
+        # Apply instruction penalties if configured
+        if penalty_config and penalty_config.get('instruction_penalties'):
+            from evaluation.instruction_penalties import apply_instruction_penalties
+            import re
+            
+            # Calculate word count
+            word_count = len(text.split()) if text else 0
+            
+            # Convert MultiJudgeResult to dict format for penalty processing
+            result_dict = {
+                'overall_score': result.overall_score,
+                'overall_std': result.overall_std,
+                'criterion_scores': [
+                    {
+                        'criterion': cs.criterion,
+                        'score': cs.mean_score,
+                        'std': cs.std_score,
+                        'reasoning': f"Consensus across {len(cs.judge_models)} judges",
+                        'individual_scores': cs.individual_scores,
+                        'consensus_strength': cs.consensus_strength
+                    } for cs in result.criterion_scores
+                ],
+                'summary': result.summary,
+                'evaluation_time': result.evaluation_time,
+                'judge_models': result.judge_models,
+                'judge_count': result.judge_count,
+                'consensus_method': result.consensus_method,
+                'individual_results': result.individual_results
+            }
+            
+            # Apply penalties
+            penalized_result = apply_instruction_penalties(
+                result_dict, text, word_count, penalty_config['instruction_penalties']
+            )
+            
+            # Update result with penalties
+            result.overall_score = penalized_result['overall_score']
+            if 'instruction_penalties' in penalized_result:
+                result.instruction_penalties = penalized_result['instruction_penalties']
+                result.summary = penalized_result['summary']
+        
+        return result
     
     def _get_parallel_judgments(self, text: str, prompt: str, sampler_config: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Get judgments from all judges in parallel."""

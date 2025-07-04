@@ -34,7 +34,7 @@ def load_prompts_from_config() -> List[str]:
 def run_benchmark(model_name: str, 
                  sampler_names: List[str], 
                  prompts: List[str],
-                 max_length: int = 512,
+                 max_length: int = 1024,
                  output_dir: str = "results",
                  seed: int = None,
                  repetitions: int = 1) -> str:
@@ -191,8 +191,8 @@ def main():
                        help="Sampler names to test")
     parser.add_argument("--max-length", "-l",
                        type=int,
-                       default=512,
-                       help="Maximum generation length (default: 512)")
+                       default=1024,
+                       help="Maximum generation length (default: 1024)")
     parser.add_argument("--output-dir", "-o",
                        default="results",
                        help="Output directory (default: results)")

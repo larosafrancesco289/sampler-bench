@@ -12,6 +12,8 @@ import sys
 from pathlib import Path
 from typing import Dict, Any, List
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import os
 
 # Add backend to path
 sys.path.append(str(Path(__file__).parent.parent / "backend"))
@@ -31,7 +33,8 @@ def load_benchmark_results(filepath: str) -> Dict[str, Any]:
 def judge_benchmark_results(results_file: str, 
                           output_dir: str = "results",
                           judge_model: str = None,
-                          api_key: str = None) -> str:
+                          api_key: str = None,
+                          config_file: str = None) -> str:
     """
     Judge existing benchmark results and save enhanced results.
     
@@ -57,6 +60,29 @@ def judge_benchmark_results(results_file: str,
     except Exception as e:
         print(f"❌ Failed to load results: {e}")
         return None
+    
+    # Load config file for penalty configuration if provided
+    penalty_config = None
+    if config_file:
+        try:
+            import yaml
+            
+            config_path = Path(config_file)
+            if config_path.exists():
+                with open(config_path, 'r') as f:
+                    config_data = yaml.safe_load(f)
+                    
+                # Extract penalty configuration
+                if 'quality_control' in config_data and 'instruction_penalties' in config_data['quality_control']:
+                    penalty_config = config_data['quality_control']
+                    print(f"📋 Loaded penalty configuration from {config_file}")
+                else:
+                    print(f"ℹ️ No penalty configuration found in {config_file}")
+            else:
+                print(f"⚠️ Config file not found: {config_file}")
+        except Exception as e:
+            print(f"❌ Error loading config file: {e}")
+            penalty_config = None
     
     # Initialize judge (multi-judge if enabled, single judge otherwise)
     print(f"\n⚖️ Initializing judge system...")
@@ -117,22 +143,50 @@ def judge_benchmark_results(results_file: str,
         print(f"   📊 Progress: {completed}/{total} samples evaluated...")
     
     try:
+        # Get max concurrent evaluations from environment (default to 5)
+        max_concurrent = int(os.getenv('MAX_CONCURRENT_EVALUATIONS', '5'))
+        
         # Handle both multi-judge and single-judge evaluation
         if hasattr(judge, 'judge_models'):
-            # Multi-judge evaluation (one sample at a time)
-            print(f"   Using multi-judge evaluation...")
-            judgments = []
+            # Multi-judge evaluation with sample-level parallelization
+            print(f"   Using multi-judge evaluation with {max_concurrent} concurrent samples...")
+            judgments = [None] * len(batch_samples)  # Pre-allocate list to maintain order
             
-            for i, batch_sample in enumerate(batch_samples):
-                print(f"   📊 Evaluating sample {i+1}/{len(batch_samples)}...")
+            def evaluate_sample(index_and_sample):
+                i, batch_sample = index_and_sample
+                try:
+                    judgment = judge.evaluate_text(
+                        text=batch_sample['text'],
+                        prompt=batch_sample['prompt'],
+                        sampler_config=batch_sample['sampler_config'],
+                        penalty_config=penalty_config
+                    )
+                    return i, judgment
+                except Exception as e:
+                    print(f"   ❌ Error evaluating sample {i+1}: {e}")
+                    return i, None
+            
+            # Process samples in parallel
+            with ThreadPoolExecutor(max_workers=max_concurrent) as executor:
+                # Submit all tasks
+                future_to_index = {
+                    executor.submit(evaluate_sample, (i, sample)): i 
+                    for i, sample in enumerate(batch_samples)
+                }
                 
-                judgment = judge.evaluate_text(
-                    text=batch_sample['text'],
-                    prompt=batch_sample['prompt'],
-                    sampler_config=batch_sample['sampler_config']
-                )
-                judgments.append(judgment)
-                progress_callback(i+1, len(batch_samples))
+                completed = 0
+                for future in as_completed(future_to_index):
+                    index, judgment = future.result()
+                    judgments[index] = judgment
+                    completed += 1
+                    progress_callback(completed, len(batch_samples))
+            
+            # Filter out None results (failed evaluations)
+            valid_judgments = [j for j in judgments if j is not None]
+            if len(valid_judgments) != len(judgments):
+                print(f"   ⚠️  Warning: {len(judgments) - len(valid_judgments)} samples failed evaluation")
+            judgments = valid_judgments
+            
         else:
             # Single-judge batch evaluation
             print(f"   Using single-judge batch evaluation...")
@@ -400,6 +454,8 @@ def main():
     parser.add_argument("--auto-find", "-a",
                        action="store_true",
                        help="Automatically find the latest results file")
+    parser.add_argument("--config", "-c",
+                       help="Configuration file for penalty settings")
     
     args = parser.parse_args()
     
@@ -429,7 +485,8 @@ def main():
         results_file=results_file,
         output_dir=args.output_dir,
         judge_model=args.judge_model,
-        api_key=args.api_key
+        api_key=args.api_key,
+        config_file=args.config
     )
     
     if judged_file:

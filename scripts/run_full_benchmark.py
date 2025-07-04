@@ -98,8 +98,8 @@ Examples:
                           help="Sampler names to test (overrides config file)")
     gen_group.add_argument("--max-length", "-l",
                           type=int,
-                          default=512,
-                          help="Maximum generation length (default: 512)")
+                          default=1024,
+                          help="Maximum generation length (default: 1024)")
     gen_group.add_argument("--custom-prompts", "-p",
                           nargs="+",
                           help="Custom prompts to use instead of defaults/config")
@@ -215,6 +215,10 @@ Examples:
         
         if args.api_key:
             judge_cmd.extend(["--api-key", args.api_key])
+        
+        # Pass config file for penalty configuration
+        if args.config:
+            judge_cmd.extend(["--config", args.config])
         
         success = run_command(judge_cmd, "Results Judging")
         

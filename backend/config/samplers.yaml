@@ -99,6 +99,8 @@ model_defaults:
   "mistral-nemo-12b": "mistral_default"
   "ministral": "mistral_default"
   "ministral-8b": "mistral_default"
+  "ministral-8b-instruct": "mistral_default"
+  "ministral-8b": "mistral_default"
   
   # Qwen family models
   "qwen": "qwen_default"
