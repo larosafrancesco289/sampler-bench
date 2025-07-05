@@ -20,11 +20,6 @@ Sampler Bench is a professional quality-focused benchmarking platform for evalua
 - **Build frontend**: `cd frontend && npm run build`
 - **Lint frontend**: `cd frontend && npm run lint`
 
-### Hyperparameter Search
-- **Setup hyperparameter search**: `python scripts/setup_hyper_search.py`
-- **Run hyperparameter search**: `python scripts/run_hyper_search.py --model [model] --config-section [section]`
-- **Analyze search results**: `python scripts/analyze_hyper_search.py --latest --export best_configs.yaml`
-
 ### Testing and Quality
 - **Single model test**: `python scripts/run_full_benchmark.py --model [model-name] --samplers [sampler1] [sampler2]`
 - **Custom prompts**: `python scripts/run_full_benchmark.py --custom-prompts "Your prompt here" --max-length 500`
