@@ -1,0 +1,865 @@
+{
+  "benchmark_name": "Creative Writing Benchmark - GPT-4.5 (Manual Baseline)",
+  "timestamp": "2025-07-05T12:00:00.000000",
+  "model_name": "gpt-4.5",
+  "model_config": {
+    "name": "GPT-4.5 via ChatGPT",
+    "provider": "OpenAI",
+    "inference_method": "manual_chatgpt",
+    "parameters": {
+      "temperature": "default",
+      "max_tokens": "unlimited"
+    }
+  },
+  "prompts": [
+    "You are a creative writer. Your task is to write a complete short story of exactly 300-400 words.\n\nPROMPT: Two strangers meet during a citywide power outage and discover an unexpected connection.\n\nREQUIREMENTS:\n- Exactly 300-400 words (this is critical)\n- Complete story with beginning, middle, and end\n- Focus on character interaction and connection\n- No meta-commentary, explanations, or author notes\n\nWrite the story now. Stop immediately when the story concludes.",
+    "You are a creative writer. Your task is to write a complete short story of exactly 300-400 words.\n\nPROMPT: A character suddenly discovers they can hear other people's thoughts for exactly 24 hours.\n\nREQUIREMENTS:\n- Exactly 300-400 words (this is critical)\n- Complete story with beginning, middle, and end\n- Focus on the character's experience and transformation\n- No meta-commentary, explanations, or author notes\n\nWrite the story now. Stop immediately when the story concludes.",
+    "You are a creative writer. Your task is to write a complete short story of exactly 300-400 words.\n\nPROMPT: A mysterious package appears on someone's doorstep one rainy evening.\n\nREQUIREMENTS:\n- Exactly 300-400 words (this is critical)\n- Complete story with beginning, middle, and end\n- Focus on mystery and discovery\n- No meta-commentary, explanations, or author notes\n\nWrite the story now. Stop immediately when the story concludes.",
+    "You are a creative writer. Your task is to write a complete short story of exactly 300-400 words.\n\nPROMPT: Someone wakes up one morning to find they have gained an unusual superpower for just one day.\n\nREQUIREMENTS:\n- Exactly 300-400 words (this is critical)\n- Complete story with beginning, middle, and end\n- Focus on character transformation and conflict\n- No meta-commentary, explanations, or author notes\n\nWrite the story now. Stop immediately when the story concludes.",
+    "You are a creative writer. Your task is to write a complete short story of exactly 300-400 words.\n\nPROMPT: A person discovers an old photograph that brings back a forgotten memory with unexpected consequences.\n\nREQUIREMENTS:\n- Exactly 300-400 words (this is critical)\n- Complete story with beginning, middle, and end\n- Focus on memory and consequence\n- No meta-commentary, explanations, or author notes\n\nWrite the story now. Stop immediately when the story concludes."
+  ],
+  "sampler_configs": {
+    "gpt45_default": {
+      "description": "GPT-4.5 default settings via ChatGPT interface",
+      "sampler": "chatgpt_default"
+    }
+  },
+  "samples": [
+    {
+      "sample_id": "gpt45_sample_001",
+      "prompt": "You are a creative writer. Your task is to write a complete short story of exactly 300-400 words.\n\nPROMPT: Two strangers meet during a citywide power outage and discover an unexpected connection.\n\nREQUIREMENTS:\n- Exactly 300-400 words (this is critical)\n- Complete story with beginning, middle, and end\n- Focus on character interaction and connection\n- No meta-commentary, explanations, or author notes\n\nWrite the story now. Stop immediately when the story concludes.",
+      "sampler_name": "gpt45_default",
+      "sampler_config": {
+        "description": "GPT-4.5 default settings via ChatGPT interface",
+        "sampler": "chatgpt_default"
+      },
+      "generated_text": "Darkness blanketed the city, erasing familiar boundaries. Marcus stood frozen on the sidewalk, his phone useless and drained. Nearby, a voice softly cursed the night. He glanced toward the sound, seeing only the dim silhouette of someone fumbling for a lighter.\n\n\"Need help?\" he called out, approaching cautiously.\n\nA flame flickered alive, revealing a woman's face briefly illuminated by its glow. She smiled sheepishly. \"Just trying to find my keys. Thought a little fire might help.\"\n\nMarcus chuckled, stepping closer. \"Where do you live?\"\n\nShe gestured vaguely upward. \"Third floor. Normally, it's easier.\"\n\nTogether they climbed the stairwell by candlelight, trading brief laughter at each stumble. As they reached her door, she paused, candlelight revealing a delicate pendant around her neck\u2014a small silver bird.\n\nMarcus stopped, momentarily breathless. \"That necklace\u2026where'd you get it?\"\n\nShe touched it gently, puzzled by his sudden intensity. \"My mother left it to me. It was handmade.\"\n\nHe reached beneath his shirt and drew out an identical pendant. \"My dad crafted it. He used to make jewelry. Said he gave the pair to someone special before he left town.\"\n\nShe blinked, disbelief turning slowly into wonder. \"You're David's son?\"\n\nHe nodded, emotion thickening his throat. \"You must be Ella's daughter.\"\n\nIn the dark hallway, silence stretched between them, filled with a lifetime of stories they'd both carried separately. Marcus leaned against the wall, stunned by the improbability of this connection. \"I always wondered who wore the other half,\" he whispered.\n\nShe smiled gently. \"Funny how the lights had to go out for us to finally meet.\"\n\nOutside, sirens wailed, and distant laughter echoed through the blackout. But in that dim corridor, illuminated by a single wavering flame, they stood quietly, two strangers bound by a past neither fully knew but now shared.\n\n\"I guess darkness isn't always a bad thing,\" Marcus finally said.\n\nShe nodded softly. \"Sometimes it just helps you see what you've missed.\"\n\nTogether, they sat down against her door, waiting for dawn, comfortable now in the closeness of the unexpected.",
+      "word_count": 337,
+      "repetition": 0.0,
+      "timestamp": "2025-07-05T12:00:00.000000",
+      "judgment": {
+        "overall_score": 7.15,
+        "overall_std": 0.9192388155425116,
+        "criterion_scores": [
+          {
+            "criterion": "narrative_structure",
+            "score": 7.5,
+            "std": 0.7071067811865476,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              8.0,
+              7.0
+            ],
+            "consensus_strength": 0.9057190958417937
+          },
+          {
+            "criterion": "creativity_execution",
+            "score": 7.0,
+            "std": 1.4142135623730951,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              8.0,
+              6.0
+            ],
+            "consensus_strength": 0.7979694910895578
+          },
+          {
+            "criterion": "character_voice",
+            "score": 6.75,
+            "std": 1.0606601717798212,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              7.5,
+              6.0
+            ],
+            "consensus_strength": 0.8428651597363228
+          },
+          {
+            "criterion": "prose_quality",
+            "score": 7.25,
+            "std": 0.3535533905932738,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              7.5,
+              7.0
+            ],
+            "consensus_strength": 0.9512340150905829
+          },
+          {
+            "criterion": "engagement",
+            "score": 7.25,
+            "std": 1.0606601717798212,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              8.0,
+              6.5
+            ],
+            "consensus_strength": 0.8537020452717488
+          }
+        ],
+        "summary": "Multi-judge consensus score: 7.15\u00b10.92/10 (2 judges). Strongest area: narrative structure (7.50/10). Weakest area: character voice (6.75/10). Judge consensus: 0.87/1.0 (high agreement).",
+        "evaluation_time": 3.6129188537597656,
+        "judge_models": [
+          "openai/gpt-4.1-nano",
+          "google/gemini-2.0-flash-001"
+        ],
+        "judge_count": 2,
+        "consensus_method": "average",
+        "individual_results": [
+          {
+            "judge_model": "openai/gpt-4.1-nano",
+            "overall_score": 7.8,
+            "criterion_scores": {
+              "narrative_structure": {
+                "score": 8.0,
+                "reasoning": "The story has a clear beginning, middle, and end, with a coherent progression of events that build emotional depth. Pacing is well-managed, though the resolution could be slightly more developed."
+              },
+              "creativity_execution": {
+                "score": 8.0,
+                "reasoning": "The premise of strangers connecting during a blackout and the symbolic jewelry add meaningful layers. The twist of shared history is a creative touch, handled with subtlety."
+              },
+              "character_voice": {
+                "score": 7.5,
+                "reasoning": "The characters' voices feel authentic and distinct, with natural dialogue. However, deeper internal monologue or more distinctive personalities could enhance their individuality."
+              },
+              "prose_quality": {
+                "score": 7.5,
+                "reasoning": "The writing is clear and stylistically smooth, with effective imagery and tone. Slightly more varied sentence structure or poetic language could elevate the prose."
+              },
+              "engagement": {
+                "score": 8.0,
+                "reasoning": "The story maintains interest through emotional stakes and relatable themes of connection and memory. It evokes a gentle, contemplative mood that resonates well."
+              }
+            },
+            "summary": "This story is a well-crafted and emotionally resonant piece with strong structure and creative handling of the premise. Minor enhancements in character depth and prose style could push it toward excellence."
+          },
+          {
+            "judge_model": "google/gemini-2.0-flash-001",
+            "overall_score": 6.5,
+            "criterion_scores": {
+              "character_voice": {
+                "score": 6.0,
+                "reasoning": "The characters are functional but lack depth. Their dialogue is somewhat generic and doesn't reveal much about their individual personalities beyond their shared connection. The emotional responses feel somewhat rushed and not fully earned."
+              },
+              "creativity_execution": {
+                "score": 6.0,
+                "reasoning": "The premise of two strangers meeting during a blackout and discovering a familial connection is somewhat clich\u00e9. The execution is adequate, but the 'small world' trope is handled predictably. The necklace reveal is a bit too convenient."
+              },
+              "engagement": {
+                "score": 6.5,
+                "reasoning": "The story maintains a moderate level of reader interest due to the mystery of the connection. However, the predictable nature of the plot and the lack of significant emotional depth limit the overall engagement. The ending is somewhat anticlimactic."
+              },
+              "narrative_structure": {
+                "score": 7.0,
+                "reasoning": "The story follows a clear beginning, middle, and end structure. The pacing is generally good, although the resolution feels somewhat rushed. The plot is coherent, but the events unfold rather predictably."
+              },
+              "prose_quality": {
+                "score": 7.0,
+                "reasoning": "The prose is clear and functional, but lacks stylistic flair. The language is simple and straightforward, without much vivid imagery or figurative language. There are no significant grammatical errors, but the writing is unremarkable."
+              }
+            },
+            "summary": "The story is a competently written but somewhat predictable tale of connection. While it fulfills the prompt's requirements, it lacks originality and emotional depth, resulting in a story that is adequate but not particularly memorable."
+          }
+        ],
+        "judged_at": "2025-07-05T11:40:33.246585"
+      }
+    },
+    {
+      "sample_id": "gpt45_sample_002",
+      "prompt": "You are a creative writer. Your task is to write a complete short story of exactly 300-400 words.\n\nPROMPT: A character suddenly discovers they can hear other people's thoughts for exactly 24 hours.\n\nREQUIREMENTS:\n- Exactly 300-400 words (this is critical)\n- Complete story with beginning, middle, and end\n- Focus on the character's experience and transformation\n- No meta-commentary, explanations, or author notes\n\nWrite the story now. Stop immediately when the story concludes.",
+      "sampler_name": "gpt45_default",
+      "sampler_config": {
+        "description": "GPT-4.5 default settings via ChatGPT interface",
+        "sampler": "chatgpt_default"
+      },
+      "generated_text": "The first voice cut through Dylan's mind as clearly as if spoken aloud. \"God, I hate Mondays,\" murmured a weary-looking woman in the coffee line, though her lips hadn't moved. Dylan blinked, convinced he'd imagined it\u2014until the next voice, sharper and louder, intruded: \"If that idiot messes up my order again, I'll scream.\" He glanced at the impatient businessman beside him, whose stony face betrayed nothing.\n\nRealization struck swiftly. He could hear their thoughts.\n\nFear swelled inside him. He abandoned his coffee, rushing outside, only to be bombarded by a dizzying chorus from strangers passing by. Anxiety, resentment, laughter, and secrets\u2014an overwhelming ocean of hidden humanity flooded his mind. He stumbled into a park, seeking solitude, yet even there, whispers of private worries from dog walkers and joggers assaulted him.\n\nAs hours passed, Dylan discovered truths he never wanted. He heard the grief of an elderly man mourning a lost wife. He glimpsed guilt behind a mother's weary smile. The world felt heavier than ever before.\n\nBut amid the chaos, Dylan noticed a timid girl on a bench, staring blankly. Her thoughts whispered softly, painfully, \"Nobody sees me. Nobody cares.\" Without hesitation, Dylan approached, cautiously offering a smile.\n\n\"Mind if I join you?\"\n\nStartled, she nodded. He sat quietly, absorbing the waves of loneliness radiating from her mind. Without revealing his secret, he simply listened, gently asking questions, responding to unspoken doubts, until her thoughts slowly turned warmer, brighter.\n\n\"Thank you,\" she said quietly, her voice barely above a whisper, \"I don't feel so invisible now.\"\n\nAs evening fell, Dylan embraced his fleeting gift. He walked the streets, offering smiles, gestures, and words precisely when people needed them most. Exhausted yet fulfilled, he understood how deeply hidden each life was, how profoundly simple acts could shift the course of someone's day.\n\nAt dawn, as suddenly as it arrived, the voices vanished, leaving behind only blissful silence. Dylan breathed deeply, profoundly grateful for the quiet\u2014yet irrevocably changed. He no longer needed supernatural powers to listen carefully, kindly, to a world full of unspoken needs.",
+      "word_count": 343,
+      "repetition": 0.0,
+      "timestamp": "2025-07-05T12:00:00.000000",
+      "judgment": {
+        "overall_score": 7.6,
+        "overall_std": 0.2828427124746186,
+        "criterion_scores": [
+          {
+            "criterion": "narrative_structure",
+            "score": 7.5,
+            "std": 0.7071067811865476,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              8.0,
+              7.0
+            ],
+            "consensus_strength": 0.9057190958417937
+          },
+          {
+            "criterion": "creativity_execution",
+            "score": 7.75,
+            "std": 0.3535533905932738,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              8.0,
+              7.5
+            ],
+            "consensus_strength": 0.954380207665384
+          },
+          {
+            "criterion": "character_voice",
+            "score": 7.0,
+            "std": 0.7071067811865476,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              7.5,
+              6.5
+            ],
+            "consensus_strength": 0.8989847455447789
+          },
+          {
+            "criterion": "prose_quality",
+            "score": 7.75,
+            "std": 0.3535533905932738,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              7.5,
+              8.0
+            ],
+            "consensus_strength": 0.954380207665384
+          },
+          {
+            "criterion": "engagement",
+            "score": 8.0,
+            "std": 0.0,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              8.0,
+              8.0
+            ],
+            "consensus_strength": 1.0
+          }
+        ],
+        "summary": "Multi-judge consensus score: 7.60\u00b10.28/10 (2 judges). Strongest area: engagement (8.00/10). Weakest area: character voice (7.00/10). Judge consensus: 0.94/1.0 (high agreement).",
+        "evaluation_time": 3.3167450428009033,
+        "judge_models": [
+          "openai/gpt-4.1-nano",
+          "google/gemini-2.0-flash-001"
+        ],
+        "judge_count": 2,
+        "consensus_method": "average",
+        "individual_results": [
+          {
+            "judge_model": "openai/gpt-4.1-nano",
+            "overall_score": 7.8,
+            "criterion_scores": {
+              "narrative_structure": {
+                "score": 8.0,
+                "reasoning": "The story has a clear beginning, middle, and end, with a logical progression of Dylan's experience and transformation. Pacing is well-managed, though some transitions could be slightly smoother."
+              },
+              "creativity_execution": {
+                "score": 8.0,
+                "reasoning": "The premise of hearing thoughts for a limited time is handled thoughtfully, exploring both chaos and compassion. The focus on human connection adds depth, though the concept is somewhat familiar."
+              },
+              "character_voice": {
+                "score": 7.5,
+                "reasoning": "Dylan's voice feels authentic and relatable, capturing his initial confusion and subsequent empathy. The girl\u2019s thoughts are subtly conveyed, but more distinctive internal voice could enhance character depth."
+              },
+              "prose_quality": {
+                "score": 7.5,
+                "reasoning": "The language is clear and effective, with some poetic moments that evoke emotion. However, occasional clich\u00e9s and straightforward descriptions limit the prose's richness."
+              },
+              "engagement": {
+                "score": 8.0,
+                "reasoning": "The story maintains interest through emotional stakes and moral reflection. The ending offers a satisfying resolution, though it could evoke a stronger emotional response earlier."
+              }
+            },
+            "summary": "This story skillfully explores the protagonist's transformation through a compelling premise, with strong character development and emotional resonance. Slight improvements in prose depth and character differentiation could elevate it further."
+          },
+          {
+            "judge_model": "google/gemini-2.0-flash-001",
+            "overall_score": 7.4,
+            "criterion_scores": {
+              "character_voice": {
+                "score": 6.5,
+                "reasoning": "Dylan's initial fear and subsequent transformation are believable, but his actions feel somewhat rushed. The girl's voice is underdeveloped, making her a plot device more than a character. More internal monologue would strengthen Dylan's voice."
+              },
+              "creativity_execution": {
+                "score": 7.5,
+                "reasoning": "The premise is well-executed, focusing on the emotional impact rather than fantastical elements. The story avoids clich\u00e9s and explores the potential for empathy and connection. However, the ending feels somewhat predictable."
+              },
+              "engagement": {
+                "score": 8.0,
+                "reasoning": "The story is emotionally resonant, particularly in its depiction of loneliness and the power of simple kindness. The initial sensory overload is effectively conveyed, drawing the reader into Dylan's experience. The ending provides a satisfying sense of closure."
+              },
+              "narrative_structure": {
+                "score": 7.0,
+                "reasoning": "The story follows a clear and logical structure, with a well-defined beginning, middle, and end. The pacing is generally good, though the middle section could benefit from more detailed exploration of Dylan's experiences. The resolution is somewhat abrupt but effective."
+              },
+              "prose_quality": {
+                "score": 8.0,
+                "reasoning": "The prose is clear, concise, and effective in conveying the story's emotional tone. There are no significant grammatical errors or awkward phrasing. The writing style is straightforward and accessible, contributing to the story's overall readability."
+              }
+            },
+            "summary": "This is a well-written and emotionally engaging short story that effectively explores the premise of hearing other people's thoughts. While the character development could be slightly stronger, the story's overall impact is positive, leaving the reader with a sense of hope and the importance of empathy."
+          }
+        ],
+        "judged_at": "2025-07-05T11:40:33.246604"
+      }
+    },
+    {
+      "sample_id": "gpt45_sample_003",
+      "prompt": "You are a creative writer. Your task is to write a complete short story of exactly 300-400 words.\n\nPROMPT: A mysterious package appears on someone's doorstep one rainy evening.\n\nREQUIREMENTS:\n- Exactly 300-400 words (this is critical)\n- Complete story with beginning, middle, and end\n- Focus on mystery and discovery\n- No meta-commentary, explanations, or author notes\n\nWrite the story now. Stop immediately when the story concludes.",
+      "sampler_name": "gpt45_default",
+      "sampler_config": {
+        "description": "GPT-4.5 default settings via ChatGPT interface",
+        "sampler": "chatgpt_default"
+      },
+      "generated_text": "The rain fell in sheets, a whispering curtain across the deserted street. Clara pressed her forehead against the cold windowpane, staring out into the twilight. She'd lived on this quiet lane for years, each evening predictably mundane. But tonight, something disrupted the monotony: a box sat on her doorstep, wrapped tightly in brown paper, edges darkened by rain.\n\nWith a sigh, Clara pulled on her coat and stepped outside, the wind biting at her skin. She carried the package inside quickly, drops of water marking her floor as she set it down on the table. There was no address, no name, just a single word scribbled hastily in black ink: Remember.\n\nShe hesitated before slicing open the package, her heart quickening inexplicably. Inside lay an ornate silver key, aged and tarnished, resting atop a faded photograph. Clara lifted the picture, her breath catching sharply. She recognized the young woman gazing back\u2014it was herself, twenty years younger, standing before a door she'd long forgotten.\n\nA shiver traveled down Clara's spine. Memories stirred, shadowed fragments surfacing from a past she'd locked away. That key\u2014the very one she'd buried alongside grief\u2014once opened the door to her childhood home, a home destroyed by fire, carrying secrets she'd never shared.\n\nCompelled by urgency, Clara drove through the rain-drenched night, arriving at a vacant lot where ashes had long since mingled with soil. She stepped carefully over charred remnants, the old foundation barely visible beneath wild growth. Instinctively, she knelt, pushing aside damp leaves until her fingers grazed cool metal\u2014a hidden lock embedded deep in stone.\n\nHolding her breath, Clara inserted the key, turning it slowly until she heard the soft click. A small panel slid open, revealing a leather-bound journal, untouched by flames or time. Hands trembling, she opened it, her mother's handwriting vivid in the darkness:\n\nForgive yourself. It wasn't your fault.\n\nTears blurred Clara's vision as relief washed over her, extinguishing guilt she'd carried secretly for decades. Above, the rain slowed, clouds parting gently to reveal a slender moon. Clara closed the journal, clutching it tightly, finally ready to reclaim the memories that had waited patiently beneath the ashes for far too long.",
+      "word_count": 360,
+      "repetition": 0.0,
+      "timestamp": "2025-07-05T12:00:00.000000",
+      "judgment": {
+        "overall_score": 7.4,
+        "overall_std": 0.5656854249492379,
+        "criterion_scores": [
+          {
+            "criterion": "narrative_structure",
+            "score": 7.75,
+            "std": 0.3535533905932738,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              8.0,
+              7.5
+            ],
+            "consensus_strength": 0.954380207665384
+          },
+          {
+            "criterion": "creativity_execution",
+            "score": 7.4,
+            "std": 0.8485281374238571,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              8.0,
+              6.8
+            ],
+            "consensus_strength": 0.8853340354832626
+          },
+          {
+            "criterion": "character_voice",
+            "score": 6.75,
+            "std": 0.3535533905932738,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              7.0,
+              6.5
+            ],
+            "consensus_strength": 0.9476217199121075
+          },
+          {
+            "criterion": "prose_quality",
+            "score": 7.5,
+            "std": 0.7071067811865476,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              8.0,
+              7.0
+            ],
+            "consensus_strength": 0.9057190958417937
+          },
+          {
+            "criterion": "engagement",
+            "score": 7.6,
+            "std": 0.5656854249492379,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              8.0,
+              7.2
+            ],
+            "consensus_strength": 0.9255677072435213
+          }
+        ],
+        "summary": "Multi-judge consensus score: 7.40\u00b10.57/10 (2 judges). Strongest area: narrative structure (7.75/10). Weakest area: character voice (6.75/10). Judge consensus: 0.92/1.0 (high agreement).",
+        "evaluation_time": 3.564039468765259,
+        "judge_models": [
+          "openai/gpt-4.1-nano",
+          "google/gemini-2.0-flash-001"
+        ],
+        "judge_count": 2,
+        "consensus_method": "average",
+        "individual_results": [
+          {
+            "judge_model": "openai/gpt-4.1-nano",
+            "overall_score": 7.8,
+            "criterion_scores": {
+              "narrative_structure": {
+                "score": 8.0,
+                "reasoning": "The story has a clear beginning, middle, and end, with a coherent progression of mystery and discovery. Pacing is well-managed, maintaining suspense until the resolution."
+              },
+              "creativity_execution": {
+                "score": 8.0,
+                "reasoning": "The premise of a mysterious package leading to uncovering past secrets is engaging and handled with effective symbolism. The use of the key and journal adds depth, though the overall concept is somewhat familiar."
+              },
+              "character_voice": {
+                "score": 7.0,
+                "reasoning": "Clara's voice feels authentic and consistent, with subtle emotional cues. However, deeper internal monologue or distinctive personality traits could enhance character development."
+              },
+              "prose_quality": {
+                "score": 8.0,
+                "reasoning": "The language is clear, evocative, and well-crafted, creating vivid imagery and mood. Minor stylistic variations could elevate the prose further."
+              },
+              "engagement": {
+                "score": 8.0,
+                "reasoning": "The story effectively draws the reader into the mystery and emotional resolution, maintaining interest through suspense and emotional payoff."
+              }
+            },
+            "summary": "This story is well-structured and engaging, with strong imagery and a compelling mystery. It could benefit from deeper character insight and more original twists, but overall it demonstrates solid creative execution and craft."
+          },
+          {
+            "judge_model": "google/gemini-2.0-flash-001",
+            "overall_score": 7.0,
+            "criterion_scores": {
+              "character_voice": {
+                "score": 6.5,
+                "reasoning": "Clara's voice is adequately established, conveying a sense of quiet introspection and lingering grief. However, it lacks distinctive traits or nuances that would make her truly memorable. Her actions are driven more by plot necessity than deep-seated character motivations."
+              },
+              "creativity_execution": {
+                "score": 6.8,
+                "reasoning": "The premise of a mysterious package is intriguing, but the execution relies on familiar tropes (hidden key, buried secrets, a fire). The resolution, while emotionally resonant, feels somewhat predictable. The story lacks truly original elements that would elevate it beyond a standard mystery."
+              },
+              "engagement": {
+                "score": 7.2,
+                "reasoning": "The story maintains a decent level of reader interest through its unfolding mystery and emotional core. The reveal of the mother's message provides a satisfying resolution, creating a sense of catharsis. However, the pacing is somewhat rushed, potentially diminishing the emotional impact."
+              },
+              "narrative_structure": {
+                "score": 7.5,
+                "reasoning": "The story follows a clear and logical narrative structure with a well-defined beginning, middle, and end. The pacing is generally effective, although the climax feels slightly rushed. The plot is coherent, with each event leading logically to the next."
+              },
+              "prose_quality": {
+                "score": 7.0,
+                "reasoning": "The prose is generally well-written, employing descriptive language and evocative imagery. There are a few instances of clich\u00e9 ('rain fell in sheets') and slightly overwrought phrasing, but overall, the writing is competent and contributes to the story's atmosphere."
+              }
+            },
+            "summary": "This is a competently written short story with a clear narrative structure and engaging mystery. While it relies on some familiar tropes and lacks truly distinctive character voice, the prose is solid, and the emotional resolution is satisfying, making it an above-average piece."
+          }
+        ],
+        "judged_at": "2025-07-05T11:40:33.246612"
+      }
+    },
+    {
+      "sample_id": "gpt45_sample_004",
+      "prompt": "You are a creative writer. Your task is to write a complete short story of exactly 300-400 words.\n\nPROMPT: Someone wakes up one morning to find they have gained an unusual superpower for just one day.\n\nREQUIREMENTS:\n- Exactly 300-400 words (this is critical)\n- Complete story with beginning, middle, and end\n- Focus on character transformation and conflict\n- No meta-commentary, explanations, or author notes\n\nWrite the story now. Stop immediately when the story concludes.",
+      "sampler_name": "gpt45_default",
+      "sampler_config": {
+        "description": "GPT-4.5 default settings via ChatGPT interface",
+        "sampler": "chatgpt_default"
+      },
+      "generated_text": "Clara's Reflection\n\nClara awoke to sunlight slicing sharply across her pillow, the morning air crisp and strange. Blinking away sleep, she stumbled to the bathroom, splashed water on her face, and glanced into the mirror.\n\nShe gasped. Her own reflection had shifted slightly, moving independently. Clara stepped closer, stunned as the reflection smiled knowingly back at her.\n\n\"Good morning, Clara,\" the mirror whispered gently.\n\nShe staggered backward, heart racing. But curiosity quickly overtook fear.\n\n\"Who are you?\" Clara breathed.\n\n\"Your other self, I suppose. The parts you hide. The things you fear.\"\n\nAs the hours passed, Clara realized her newfound gift extended beyond mirrors. Every reflective surface\u2014windows, water puddles, polished steel\u2014showed her reflections of people's true selves: secret sorrows, hidden joys, shameful regrets. A tired commuter on the train appeared as a boy chasing butterflies, joyful and carefree. The cold-faced barista's reflection revealed quiet tears, heartbroken by loss.\n\nFascinated, Clara wandered through the city, discovering unexpected layers within strangers. Yet soon the burden overwhelmed her, the raw honesty becoming unbearable. She retreated to her apartment, locking the door, exhausted by the emotional chaos swirling around her.\n\nThe final revelation came unexpectedly, in the kitchen window at sunset. Her reflection stared back solemnly.\n\n\"You never looked closely at yourself,\" it whispered. Clara saw a frightened girl, avoiding risks, burying dreams beneath routine. The honesty stung deeply.\n\n\"What should I do?\" Clara asked, voice shaking.\n\n\"Live boldly,\" the reflection urged, eyes kind yet firm. \"You're capable of so much more than you believe.\"\n\nNight fell swiftly. Clara drifted into restless sleep, the reflections fading into silence.\n\nWhen dawn returned, her extraordinary power vanished. Yet the clarity remained. That day, Clara quit her monotonous job and bought a ticket to a distant city she'd always longed to explore. As the train sped forward, she gazed into the glass. Her reflection was no longer magical, but Clara saw a woman transformed\u2014someone brave enough to face herself, fully awake to life's possibilities.",
+      "word_count": 327,
+      "repetition": 0.0,
+      "timestamp": "2025-07-05T12:00:00.000000",
+      "judgment": {
+        "overall_score": 7.27,
+        "overall_std": 0.608111831820431,
+        "criterion_scores": [
+          {
+            "criterion": "narrative_structure",
+            "score": 7.6,
+            "std": 0.5656854249492379,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              8.0,
+              7.2
+            ],
+            "consensus_strength": 0.9255677072435213
+          },
+          {
+            "criterion": "creativity_execution",
+            "score": 7.4,
+            "std": 0.8485281374238571,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              8.0,
+              6.8
+            ],
+            "consensus_strength": 0.8853340354832626
+          },
+          {
+            "criterion": "character_voice",
+            "score": 7.0,
+            "std": 0.7071067811865476,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              7.5,
+              6.5
+            ],
+            "consensus_strength": 0.8989847455447789
+          },
+          {
+            "criterion": "prose_quality",
+            "score": 7.0,
+            "std": 0.0,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              7.0,
+              7.0
+            ],
+            "consensus_strength": 1.0
+          },
+          {
+            "criterion": "engagement",
+            "score": 7.35,
+            "std": 0.9192388155425116,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              8.0,
+              6.7
+            ],
+            "consensus_strength": 0.874933494484012
+          }
+        ],
+        "summary": "Multi-judge consensus score: 7.27\u00b10.61/10 (2 judges). Strongest area: narrative structure (7.60/10). Weakest area: prose quality (7.00/10). Judge consensus: 0.92/1.0 (high agreement).",
+        "evaluation_time": 3.825198173522949,
+        "judge_models": [
+          "openai/gpt-4.1-nano",
+          "google/gemini-2.0-flash-001"
+        ],
+        "judge_count": 2,
+        "consensus_method": "average",
+        "individual_results": [
+          {
+            "judge_model": "openai/gpt-4.1-nano",
+            "overall_score": 7.7,
+            "criterion_scores": {
+              "narrative_structure": {
+                "score": 8.0,
+                "reasoning": "The story has a clear beginning, middle, and end, with a logical progression of Clara's discovery, emotional struggle, and resolution. Pacing is well-maintained, though some transitions could be more seamless."
+              },
+              "creativity_execution": {
+                "score": 8.0,
+                "reasoning": "The premise of reflections revealing true selves is inventive and handled thoughtfully, adding depth to the story. The concept is fresh and explored with meaningful insight."
+              },
+              "character_voice": {
+                "score": 7.5,
+                "reasoning": "Clara's voice feels authentic and relatable, capturing her curiosity, fear, and eventual courage. Some internal dialogue could be more distinctive to deepen her personality."
+              },
+              "prose_quality": {
+                "score": 7.0,
+                "reasoning": "The writing is clear and effective, with a good command of language. However, it lacks some stylistic flair that could elevate the emotional resonance."
+              },
+              "engagement": {
+                "score": 8.0,
+                "reasoning": "The story maintains interest through its emotional stakes and relatable themes of self-discovery. The ending is satisfying and inspiring."
+              }
+            },
+            "summary": "This story is a well-crafted exploration of self-awareness and transformation, with a compelling premise and strong character development. Slight improvements in prose style and character voice could enhance its impact further."
+          },
+          {
+            "judge_model": "google/gemini-2.0-flash-001",
+            "overall_score": 6.84,
+            "criterion_scores": {
+              "character_voice": {
+                "score": 6.5,
+                "reasoning": "Clara's initial shock is believable, but her transformation feels somewhat rushed. While the reflection provides a catalyst, Clara's internal struggle isn't deeply explored, making her final decision feel slightly unearned. The reflection's voice is a bit generic, lacking a distinct personality."
+              },
+              "creativity_execution": {
+                "score": 6.8,
+                "reasoning": "The premise of seeing reflections of true selves is interesting, but the execution is somewhat predictable. The story follows a fairly standard 'superpower reveals inner truth' arc. While the concept has potential, it doesn't offer many original twists or unique insights."
+              },
+              "engagement": {
+                "score": 6.7,
+                "reasoning": "The story maintains a decent level of reader interest, particularly in the middle section where Clara observes others' reflections. However, the emotional impact is limited by the somewhat superficial character development and the predictable plot. The ending is uplifting but lacks a strong emotional punch."
+              },
+              "narrative_structure": {
+                "score": 7.2,
+                "reasoning": "The story follows a clear beginning-middle-end structure and adheres to the word count. The pacing is generally good, though the resolution feels a bit abrupt. The plot is coherent, but the conflict could be more developed to create greater tension and suspense."
+              },
+              "prose_quality": {
+                "score": 7.0,
+                "reasoning": "The prose is clean and functional, effectively conveying the story's events. However, it lacks vivid imagery and stylistic flair. The writing is competent but not particularly memorable or evocative. There are no significant grammatical or stylistic errors."
+              }
+            },
+            "summary": "This is a competently written story with a decent premise, but it lacks originality and depth. The character transformation feels somewhat rushed, and the prose is functional but not particularly engaging. The story is well-structured and adheres to the prompt's requirements."
+          }
+        ],
+        "judged_at": "2025-07-05T11:40:33.246618"
+      }
+    },
+    {
+      "sample_id": "gpt45_sample_005",
+      "prompt": "You are a creative writer. Your task is to write a complete short story of exactly 300-400 words.\n\nPROMPT: A person discovers an old photograph that brings back a forgotten memory with unexpected consequences.\n\nREQUIREMENTS:\n- Exactly 300-400 words (this is critical)\n- Complete story with beginning, middle, and end\n- Focus on memory and consequence\n- No meta-commentary, explanations, or author notes\n\nWrite the story now. Stop immediately when the story concludes.",
+      "sampler_name": "gpt45_default",
+      "sampler_config": {
+        "description": "GPT-4.5 default settings via ChatGPT interface",
+        "sampler": "chatgpt_default"
+      },
+      "generated_text": "The photograph was wedged between pages of a dusty book in her grandmother's attic. Nora turned it over, surprised by how sharply memory pierced her, instant and visceral. A playground with rusted swings, a merry-go-round frozen mid-spin, and two girls\u2014herself and another whose name she couldn't immediately grasp.\n\nBut when it came, it shook her. Ellie. How had she forgotten Ellie?\n\nFragments rushed back\u2014the summer she turned nine, the long evenings chasing fireflies, whispers under blankets about secrets they'd sworn never to tell. Ellie had vanished suddenly, and adults had said little, their silence wrapping the incident in confusion and fear.\n\nDriven by an impulse she couldn't explain, Nora took the photograph and returned to her childhood neighborhood. The playground, overgrown and abandoned, felt smaller. A chill touched her neck, whispering of hidden truths.\n\nOn a whim, she knelt at the base of an old oak tree, digging with bare fingers. She didn't know why until her nails scraped against something solid. Pulling it free, her breath caught. A tarnished bracelet engraved with Ellie's name. A bracelet she'd given Ellie herself, on a birthday celebrated beneath these very branches.\n\nMemories flooded sharply, clear now. The fight, petty and fierce, Ellie's tears, her running off into the dusk. Nora had been afraid and never told anyone Ellie had fled here, afraid of punishment, believing Ellie would come back. She hadn't.\n\nNora rose unsteadily, trembling. She remembered adults searching everywhere but here, remembered her own silence. Ellie's disappearance had remained unsolved, a ghost story whispered among children until it faded entirely.\n\nShe stared at the bracelet, the silent accusation cutting deeply. As evening shadows stretched long around her, Nora pulled out her phone, dialing a number she'd never imagined needing.\n\n\"Police,\" she whispered, voice shaking. \"I think\u2014I know where Ellie is.\"\n\nHer forgotten memory, once uncovered, had finally returned Ellie's voice. The playground, once holding only innocence, would now surrender the truth that had waited patiently beneath roots, earth, and guilt.",
+      "word_count": 329,
+      "repetition": 0.0,
+      "timestamp": "2025-07-05T12:00:00.000000",
+      "judgment": {
+        "overall_score": 7.25,
+        "overall_std": 0.3535533905932738,
+        "criterion_scores": [
+          {
+            "criterion": "narrative_structure",
+            "score": 7.5,
+            "std": 0.0,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              7.5,
+              7.5
+            ],
+            "consensus_strength": 1.0
+          },
+          {
+            "criterion": "creativity_execution",
+            "score": 7.4,
+            "std": 0.8485281374238571,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              8.0,
+              6.8
+            ],
+            "consensus_strength": 0.8853340354832626
+          },
+          {
+            "criterion": "character_voice",
+            "score": 6.75,
+            "std": 0.3535533905932738,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              7.0,
+              6.5
+            ],
+            "consensus_strength": 0.9476217199121075
+          },
+          {
+            "criterion": "prose_quality",
+            "score": 7.35,
+            "std": 0.21213203435596414,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              7.5,
+              7.2
+            ],
+            "consensus_strength": 0.9711384987270797
+          },
+          {
+            "criterion": "engagement",
+            "score": 7.5,
+            "std": 0.7071067811865476,
+            "reasoning": "Consensus across 2 judges",
+            "individual_scores": [
+              8.0,
+              7.0
+            ],
+            "consensus_strength": 0.9057190958417937
+          }
+        ],
+        "summary": "Multi-judge consensus score: 7.25\u00b10.35/10 (2 judges). Strongest area: narrative structure (7.50/10). Weakest area: character voice (6.75/10). Judge consensus: 0.94/1.0 (high agreement).",
+        "evaluation_time": 4.360033273696899,
+        "judge_models": [
+          "openai/gpt-4.1-nano",
+          "google/gemini-2.0-flash-001"
+        ],
+        "judge_count": 2,
+        "consensus_method": "average",
+        "individual_results": [
+          {
+            "judge_model": "openai/gpt-4.1-nano",
+            "overall_score": 7.5,
+            "criterion_scores": {
+              "narrative_structure": {
+                "score": 7.5,
+                "reasoning": "The story has a clear beginning, middle, and end, with a logical progression of events. The pacing is generally effective, though some transitions could be smoother to enhance flow."
+              },
+              "creativity_execution": {
+                "score": 8.0,
+                "reasoning": "The premise of uncovering a forgotten memory through a photograph and linking it to a real-world consequence is handled well, with a compelling twist that adds emotional depth."
+              },
+              "character_voice": {
+                "score": 7.0,
+                "reasoning": "Nora's voice feels authentic and consistent, capturing her emotional journey. However, deeper internal reflection could strengthen her character development."
+              },
+              "prose_quality": {
+                "score": 7.5,
+                "reasoning": "The language is clear and evocative, effectively creating mood and atmosphere. Some sentences could be more varied stylistically to elevate the prose."
+              },
+              "engagement": {
+                "score": 8.0,
+                "reasoning": "The story maintains interest through suspense and emotional stakes, culminating in a satisfying and impactful conclusion."
+              }
+            },
+            "summary": "This story demonstrates strong narrative organization and a creative premise, with effective emotional resonance. Slight improvements in prose variety and character depth could elevate it further."
+          },
+          {
+            "judge_model": "google/gemini-2.0-flash-001",
+            "overall_score": 7.0,
+            "criterion_scores": {
+              "character_voice": {
+                "score": 6.5,
+                "reasoning": "Nora's voice is somewhat passive, driven by impulse rather than clear motivation. While the guilt is evident, a stronger sense of her internal conflict would enhance the character. The shift from forgotten memory to decisive action feels a bit abrupt."
+              },
+              "creativity_execution": {
+                "score": 6.8,
+                "reasoning": "The premise of a forgotten memory leading to the discovery of a long-lost friend's fate is intriguing. The execution is adequate, but the story relies on fairly common tropes (old photograph, childhood secret). The bracelet discovery feels somewhat contrived, diminishing the overall originality."
+              },
+              "engagement": {
+                "score": 7.0,
+                "reasoning": "The story maintains a decent level of suspense, particularly in the middle section as Nora revisits her childhood neighborhood. The ending, while conclusive, could benefit from a more emotionally resonant depiction of Nora's reaction and the potential consequences of her revelation."
+              },
+              "narrative_structure": {
+                "score": 7.5,
+                "reasoning": "The story follows a clear narrative arc, with a well-defined beginning, middle, and end. The pacing is generally good, though the initial memory recall feels slightly rushed. The resolution is somewhat abrupt, leaving some emotional threads unexplored."
+              },
+              "prose_quality": {
+                "score": 7.2,
+                "reasoning": "The prose is generally clear and competent, with some evocative descriptions (e.g., 'playground, overgrown and abandoned'). However, the writing lacks a distinctive style or memorable imagery. Some phrases are slightly clich\u00e9 ('silent accusation cutting deeply')."
+              }
+            },
+            "summary": "The story is a competently written piece that fulfills the prompt's requirements. It presents an intriguing premise with a clear narrative structure, though the execution could benefit from more nuanced character development and original prose. The ending is somewhat abrupt but provides a sense of closure."
+          }
+        ],
+        "judged_at": "2025-07-05T11:40:33.246622"
+      }
+    }
+  ],
+  "metadata": {
+    "generation_method": "manual_chatgpt",
+    "total_samples": 5,
+    "avg_word_count": 339.2,
+    "instruction_compliance": "100% (all stories 300-400 words)",
+    "notes": "Manual baseline test using GPT-4.5 via ChatGPT interface for quality comparison"
+  },
+  "judgment_metadata": {
+    "judge_type": "multi_judge",
+    "judge_model": [
+      "openai/gpt-4.1-nano",
+      "google/gemini-2.0-flash-001"
+    ],
+    "judge_count": 1,
+    "consensus_method": "average",
+    "judged_at": "2025-07-05T11:40:33.246626",
+    "total_samples": 5,
+    "successfully_judged": 5,
+    "judgment_failures": 0,
+    "original_results_file": "results/gpt45_benchmark_manual.json"
+  },
+  "quality_statistics": {
+    "overall_stats": {
+      "gpt45_default": {
+        "overall_quality": {
+          "avg_score": 7.334,
+          "consistency": 0.8523029973530629
+        },
+        "sample_count": 5,
+        "sampler_config": {
+          "description": "GPT-4.5 default settings via ChatGPT interface",
+          "sampler": "chatgpt_default",
+          "type": "gpt45_default"
+        }
+      }
+    },
+    "sampler_ranking": [
+      {
+        "sampler_name": "gpt45_default",
+        "avg_quality": 7.334,
+        "consistency": 0.8523029973530629,
+        "sample_count": 5,
+        "config": {
+          "description": "GPT-4.5 default settings via ChatGPT interface",
+          "sampler": "chatgpt_default",
+          "type": "gpt45_default"
+        }
+      }
+    ]
+  },
+  "enhanced_statistics": {
+    "sampler_stats": {
+      "gpt45_default": {
+        "overall_mean": 7.334,
+        "overall_std": 0.17329166165744947,
+        "confidence_interval": [
+          7.118554483917627,
+          7.549445516082372
+        ],
+        "prompt_consistency": 0.8523029973530629,
+        "total_samples": 5,
+        "prompts_covered": 5,
+        "criterion_stats": {
+          "narrative_structure": {
+            "mean": 7.57,
+            "std": 0.1095445115010332,
+            "confidence_interval": [
+              7.433808370301255,
+              7.706191629698745
+            ],
+            "min": 7.5,
+            "max": 7.75,
+            "count": 5
+          },
+          "creativity_execution": {
+            "mean": 7.390000000000001,
+            "std": 0.26551836094703507,
+            "confidence_interval": [
+              7.059893289980346,
+              7.720106710019655
+            ],
+            "min": 7.0,
+            "max": 7.75,
+            "count": 5
+          },
+          "character_voice": {
+            "mean": 6.85,
+            "std": 0.13693063937629152,
+            "confidence_interval": [
+              6.679760462876569,
+              7.02023953712343
+            ],
+            "min": 6.75,
+            "max": 7.0,
+            "count": 5
+          },
+          "prose_quality": {
+            "mean": 7.37,
+            "std": 0.2797320146139873,
+            "confidence_interval": [
+              7.022222111111129,
+              7.717777888888871
+            ],
+            "min": 7.0,
+            "max": 7.75,
+            "count": 5
+          },
+          "engagement": {
+            "mean": 7.54,
+            "std": 0.2902585054739999,
+            "confidence_interval": [
+              7.1791350113962284,
+              7.900864988603772
+            ],
+            "min": 7.25,
+            "max": 8.0,
+            "count": 5
+          }
+        }
+      }
+    },
+    "effect_sizes": {
+      "gpt45_default": {
+        "gpt45_default": 0.0
+      }
+    },
+    "statistical_significance": {
+      "gpt45_default": {
+        "gpt45_default": 1.0
+      }
+    },
+    "best_sampler_per_prompt": {
+      "You are a creative writer. Your task is to write a complete short story of exactly 300-400 words.\n\nPROMPT: Two strangers meet during a citywide power outage and discover an unexpected connection.\n\nREQUIREMENTS:\n- Exactly 300-400 words (this is critical)\n- Complete story with beginning, middle, and end\n- Focus on character interaction and connection\n- No meta-commentary, explanations, or author notes\n\nWrite the story now. Stop immediately when the story concludes.": "gpt45_default",
+      "You are a creative writer. Your task is to write a complete short story of exactly 300-400 words.\n\nPROMPT: A character suddenly discovers they can hear other people's thoughts for exactly 24 hours.\n\nREQUIREMENTS:\n- Exactly 300-400 words (this is critical)\n- Complete story with beginning, middle, and end\n- Focus on the character's experience and transformation\n- No meta-commentary, explanations, or author notes\n\nWrite the story now. Stop immediately when the story concludes.": "gpt45_default",
+      "You are a creative writer. Your task is to write a complete short story of exactly 300-400 words.\n\nPROMPT: Someone wakes up one morning to find they have gained an unusual superpower for just one day.\n\nREQUIREMENTS:\n- Exactly 300-400 words (this is critical)\n- Complete story with beginning, middle, and end\n- Focus on character transformation and conflict\n- No meta-commentary, explanations, or author notes\n\nWrite the story now. Stop immediately when the story concludes.": "gpt45_default",
+      "You are a creative writer. Your task is to write a complete short story of exactly 300-400 words.\n\nPROMPT: A person discovers an old photograph that brings back a forgotten memory with unexpected consequences.\n\nREQUIREMENTS:\n- Exactly 300-400 words (this is critical)\n- Complete story with beginning, middle, and end\n- Focus on memory and consequence\n- No meta-commentary, explanations, or author notes\n\nWrite the story now. Stop immediately when the story concludes.": "gpt45_default",
+      "You are a creative writer. Your task is to write a complete short story of exactly 300-400 words.\n\nPROMPT: A mysterious package appears on someone's doorstep one rainy evening.\n\nREQUIREMENTS:\n- Exactly 300-400 words (this is critical)\n- Complete story with beginning, middle, and end\n- Focus on mystery and discovery\n- No meta-commentary, explanations, or author notes\n\nWrite the story now. Stop immediately when the story concludes.": "gpt45_default"
+    },
+    "most_consistent_sampler": "gpt45_default",
+    "highest_quality_sampler": "gpt45_default"
+  }
+}
