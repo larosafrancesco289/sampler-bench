@@ -34,6 +34,9 @@ function DashboardContent() {
           </p>
         </div>
         <div className="flex items-center gap-4">
+          <Link href="/findings" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+            Key Findings
+          </Link>
           <Link href="/methodology" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
             View Methodology
           </Link>
