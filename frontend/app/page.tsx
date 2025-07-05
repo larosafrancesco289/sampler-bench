@@ -1,5 +1,6 @@
 "use client"
 
+import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { LeaderboardTable } from "@/components/leaderboard-table"
 import { ScoreChart } from "@/components/score-chart"
@@ -32,7 +33,12 @@ function DashboardContent() {
             Hardware-agnostic quality evaluation of LLM sampling strategies on creative writing tasks
           </p>
         </div>
-        <ThemeToggle />
+        <div className="flex items-center gap-4">
+          <Link href="/methodology" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+            View Methodology
+          </Link>
+          <ThemeToggle />
+        </div>
       </div>
 
       {/* Filter Controls */}
