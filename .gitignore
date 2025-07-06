@@ -265,3 +265,8 @@ downloads/
 # Custom ignore patterns for this project
 # Add any project-specific patterns here 
 papers/
+
+# Allow the TypeScript utility source in the frontend lib directory
+!frontend/lib/
+# Still ignore any nested node_modules inside it if they exist
+frontend/lib/node_modules/

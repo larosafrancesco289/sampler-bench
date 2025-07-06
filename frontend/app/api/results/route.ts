@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { readdir, readFile } from 'fs/promises'
 import { join } from 'path'
-import type { BenchmarkResults, LeaderboardEntry } from '@/types/benchmark'
-import { processBenchmarkData } from '@/lib/data-processor'
+import type { BenchmarkResults, LeaderboardEntry } from '../../../types/benchmark'
+import { processBenchmarkData } from '../../../lib/data-processor'
 
 export async function GET() {
   try {
