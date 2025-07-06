@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ThemeToggle } from './theme-toggle'
 import { cn } from '@/lib/utils'
+import { Github } from 'lucide-react'
 
 const navItems = [
   { href: '/', label: 'Leaderboard' },
@@ -40,6 +41,15 @@ export function Navigation() {
             {item.label}
           </Link>
         ))}
+        <a
+          href="https://github.com/larosafrancesco289/sampler-bench"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+          title="View on GitHub"
+        >
+          <Github className="h-5 w-5" />
+        </a>
         <ThemeToggle />
       </div>
     </div>
