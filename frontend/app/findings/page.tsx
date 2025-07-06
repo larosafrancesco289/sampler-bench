@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { AlertTriangle, CheckCircle, XCircle, TrendingUp, TrendingDown, Users, BarChart3, FileText, Brain, Scale, ArrowLeft } from 'lucide-react';
+import { AlertTriangle, CheckCircle, TrendingUp, TrendingDown, Users, BarChart3, FileText, Brain, Scale, ArrowLeft } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -393,7 +393,7 @@ export default function FindingsPage() {
                     <div className="text-muted-foreground">Robust statistical foundation</div>
                   </div>
                 </div>
-                <p className="text-xs mt-2">GPT-4.5's low variance (0.155 std) suggests consistent quality across samples</p>
+                <p className="text-xs mt-2">GPT-4.5&apos;s low variance (0.155 std) suggests consistent quality across samples</p>
               </div>
             </AlertDescription>
           </Alert>

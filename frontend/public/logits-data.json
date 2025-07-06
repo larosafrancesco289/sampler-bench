@@ -1,0 +1,187 @@
+{
+  "model": "gemma3-12b-it",
+  "port": 5006,
+  "scenarios": {
+    "article_start": {
+      "prompt": "The weather today is",
+      "description": "Beginning of a factual sentence",
+      "tokens": [
+        {
+          "token": " beautiful",
+          "logit": -2.169722557067871,
+          "index": 1
+        },
+        {
+          "token": " sunny",
+          "logit": -2.4319944381713867,
+          "index": 2
+        },
+        {
+          "token": " a",
+          "logit": -2.4391565322875977,
+          "index": 3
+        },
+        {
+          "token": " expected",
+          "logit": -2.927513837814331,
+          "index": 4
+        },
+        {
+          "token": " going",
+          "logit": -3.274174690246582,
+          "index": 5
+        },
+        {
+          "token": " partly",
+          "logit": -3.3773391246795654,
+          "index": 0
+        }
+      ],
+      "raw_logits_count": 6,
+      "endpoint_used": "/api/v1/generate",
+      "data_type": "real_logprobs"
+    },
+    "story_opening": {
+      "prompt": "Once upon a time, there was a",
+      "description": "Creative story beginning",
+      "tokens": [
+        {
+          "token": " little",
+          "logit": -0.7872694730758667,
+          "index": 0
+        },
+        {
+          "token": " young",
+          "logit": -1.9677655696868896,
+          "index": 1
+        },
+        {
+          "token": " small",
+          "logit": -2.4769420623779297,
+          "index": 2
+        },
+        {
+          "token": " tiny",
+          "logit": -3.1588211059570312,
+          "index": 3
+        },
+        {
+          "token": " beautiful",
+          "logit": -3.184478521347046,
+          "index": 4
+        }
+      ],
+      "raw_logits_count": 5,
+      "endpoint_used": "/api/v1/generate",
+      "data_type": "real_logprobs"
+    },
+    "conversation": {
+      "prompt": "Hello, how are",
+      "description": "Casual conversation",
+      "tokens": [
+        {
+          "token": " you",
+          "logit": -0.003623007331043482,
+          "index": 0
+        },
+        {
+          "token": " we",
+          "logit": -6.580086708068848,
+          "index": 1
+        },
+        {
+          "token": " things",
+          "logit": -7.372448921203613,
+          "index": 2
+        },
+        {
+          "token": " doing",
+          "logit": -7.639103889465332,
+          "index": 3
+        },
+        {
+          "token": " your",
+          "logit": -8.33687686920166,
+          "index": 4
+        }
+      ],
+      "raw_logits_count": 5,
+      "endpoint_used": "/api/v1/generate",
+      "data_type": "real_logprobs"
+    },
+    "technical": {
+      "prompt": "The algorithm works by",
+      "description": "Technical explanation",
+      "tokens": [
+        {
+          "token": " repeatedly",
+          "logit": -1.6886714696884155,
+          "index": 1
+        },
+        {
+          "token": " iteratively",
+          "logit": -1.9303648471832275,
+          "index": 2
+        },
+        {
+          "token": " first",
+          "logit": -2.576775074005127,
+          "index": 3
+        },
+        {
+          "token": " maintaining",
+          "logit": -2.8446123600006104,
+          "index": 0
+        },
+        {
+          "token": " iterating",
+          "logit": -3.2421457767486572,
+          "index": 4
+        }
+      ],
+      "raw_logits_count": 5,
+      "endpoint_used": "/api/v1/generate",
+      "data_type": "real_logprobs"
+    },
+    "question": {
+      "prompt": "What is the most important",
+      "description": "Question formation",
+      "tokens": [
+        {
+          "token": " thing",
+          "logit": -0.24038594961166382,
+          "index": 0
+        },
+        {
+          "token": " ingredient",
+          "logit": -2.719782829284668,
+          "index": 1
+        },
+        {
+          "token": " piece",
+          "logit": -2.8991613388061523,
+          "index": 2
+        },
+        {
+          "token": " factor",
+          "logit": -3.260138511657715,
+          "index": 3
+        },
+        {
+          "token": " decision",
+          "logit": -4.692992210388184,
+          "index": 4
+        }
+      ],
+      "raw_logits_count": 5,
+      "endpoint_used": "/api/v1/generate",
+      "data_type": "real_logprobs"
+    }
+  },
+  "vocab_size": 0,
+  "generation_info": {
+    "timestamp": "1751792844.1231031",
+    "successful_extractions": 5,
+    "total_attempts": 5
+  }
+}

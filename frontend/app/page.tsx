@@ -40,6 +40,9 @@ function DashboardContent() {
           <Link href="/methodology" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
             View Methodology
           </Link>
+          <Link href="/visualizer" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+            Sampler Visualizer
+          </Link>
           <ThemeToggle />
         </div>
       </div>
