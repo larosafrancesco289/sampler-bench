@@ -20,6 +20,11 @@ Sampler Bench is a professional quality-focused benchmarking platform for evalua
 - **Build frontend**: `cd frontend && npm run build`
 - **Lint frontend**: `cd frontend && npm run lint`
 
+### Sampler Visualizer
+- **Generate real logits data**: `./scripts/generate_logits.sh [model-name]`
+- **View visualizer**: Navigate to `/visualizer` in the frontend
+- **Supports models**: All configured models (Gemma, Llama, Mistral, etc.)
+
 ### Testing and Quality
 - **Single model test**: `python scripts/run_full_benchmark.py --model [model-name] --samplers [sampler1] [sampler2]`
 - **Custom prompts**: `python scripts/run_full_benchmark.py --custom-prompts "Your prompt here" --max-length 500`
@@ -28,7 +33,11 @@ Sampler Bench is a professional quality-focused benchmarking platform for evalua
 
 ### Frontend (`/frontend/`)
 - **Next.js App Router** (`app/`): Next.js 15 application with App Router
+  - `/visualizer`: Interactive sampler visualization page with real model data
 - **Components** (`components/`): React components including UI components from Radix UI
+  - `probability-distribution-chart.tsx`: Real-time sampling visualization
+  - `sampler-explanation.tsx`: Educational content with LaTeX formulas
+  - `latex-math.tsx`: KaTeX-powered mathematical formula rendering
 - **Contexts** (`contexts/`): React contexts for state management
 - **Hooks** (`hooks/`): Custom React hooks for data fetching
 - **Types** (`types/`): TypeScript type definitions
@@ -37,7 +46,13 @@ Sampler Bench is a professional quality-focused benchmarking platform for evalua
 1. **Model Server**: KoboldCpp server hosts the LLM model
 2. **Generation**: Scripts generate text samples using various sampling strategies
 3. **Evaluation**: OpenAI GPT-4 judges text quality on 5 criteria  
-4. **Visualization**: Next.js frontend reads results directly from JSON files and displays with interactive charts and tables
+4. **Visualization**: Next.js frontend displays results with interactive charts and sampler visualizer
+
+### Sampler Visualizer Workflow
+1. **Data Generation**: `generate_logits.py` extracts real token distributions from KoboldCpp
+2. **Static Storage**: Real logits saved to `frontend/public/logits-data.json`
+3. **Interactive Visualization**: Shows how different sampling strategies affect real model outputs
+4. **Educational Content**: LaTeX-rendered mathematical formulas and detailed explanations
 
 ## Configuration System
 
@@ -114,10 +129,12 @@ The multi-judge system uses parallel evaluation with multiple LLM judges and con
 - **Next.js 15**: React framework with App Router
 - **Radix UI**: Accessible component library (@radix-ui/react-*)
 - **Tailwind CSS**: Utility-first styling
-- **Recharts**: Data visualization
+- **Recharts**: Data visualization and sampling charts
 - **TanStack Table**: Table management
 - **Next-themes**: Dark mode support
 - **Lucide React**: Icon library
+- **KaTeX**: LaTeX math rendering for formulas
+- **React-KaTeX**: React wrapper for mathematical notation
 
 ## Testing and Quality
 
