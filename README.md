@@ -1,267 +1,283 @@
-# Sampler Bench
+# Sampler Bench: A Comprehensive Evaluation Framework for LLM Sampling Strategies
 
-A professional quality-focused benchmarking platform for evaluating LLM sampling strategies on creative writing tasks. Built with Next.js for a modern, streamlined experience!
+## Overview
 
-## 🚀 Quick Start
+Sampler Bench is a benchmarking platform designed to systematically evaluate different text generation sampling strategies for creative writing tasks. The framework employs multi-judge LLM-as-a-Judge evaluation with statistical rigor to assess the quality impact of various sampling methods across multiple language models.
 
-### Web Interface
+## Key Features
 
-1. **Start the frontend:**
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
-   The web interface will be available at http://localhost:3000
+- **5 Core Sampling Strategies**: Comprehensive evaluation of temperature, top-p, top-k, min-p, and top-n-sigma sampling methods
+- **Multi-Judge Consensus Evaluation**: Parallel evaluation using multiple LLM judges via OpenRouter API for enhanced reliability
+- **Statistical Rigor**: 20 samples per sampler (5 prompts × 4 repetitions) with reliability metrics and standard deviation tracking
+- **Quality Control Framework**: Instruction following penalties and meta-commentary detection for objective scoring
+- **Interactive Visualization**: Next.js frontend with comprehensive charts, probability distributions, and quality breakdowns
+- **Production Architecture**: Decoupled generation and evaluation workflow with KoboldCpp integration
 
-2. **Generate benchmark data (optional):**
-   To create new benchmark results, use the Python scripts:
-   ```bash
-   # Set up environment
-   cp .env.example .env
-   # Add your OPENROUTER_API_KEY to .env for multi-judge evaluation
-   # (or OPENAI_API_KEY for legacy single-judge mode)
-   
-   # Run benchmarks
-   python scripts/run_full_benchmark.py
-   ```
+## Research Foundation
 
-### Command Line Interface
+### Sampling Methods Evaluated
 
-1. **Set up environment:**
-   ```bash
-   cp .env.example .env
-   # Add your OPENROUTER_API_KEY to .env for multi-judge evaluation
-   # (or OPENAI_API_KEY for legacy single-judge mode)
-   ```
+#### 1. Temperature Sampling
+Traditional probability temperature scaling that controls generation randomness by modifying the softmax distribution:
 
-3. **Start model server:**
-   ```bash
-   ./scripts/start_model_server.sh llama-3.1-8b-instruct
-   ```
-
-4. **Run benchmark:**
-   ```bash
-   python scripts/run_full_benchmark.py
-   ```
-
-## 📋 Available Scripts
-
-### 🎯 Complete Workflow (Recommended)
-```bash
-python scripts/run_full_benchmark.py [options]
 ```
-Runs generation + judging in one command.
+P(token_i) = exp(logit_i / T) / Σ_j exp(logit_j / T)
+```
 
-### 🔧 Decoupled Workflow
+
+#### 2. Top-p (Nucleus) Sampling
+Dynamic vocabulary selection based on cumulative probability mass:
+
+```
+V_p = {token_i : Σ_{j=1}^{i} P(token_j) ≤ p}
+```
+
+#### 3. Top-k Sampling
+Fixed vocabulary size sampling that considers only the k most probable tokens:
+
+```
+V_k = {token_1, token_2, ..., token_k}
+```
+
+#### 4. Min-p Sampling
+Adaptive threshold sampling that sets minimum probability relative to the top token:
+
+```
+V_min-p = {token_i : P(token_i) ≥ α × max_j P(token_j)}
+```
+
+#### 5. Top-n-sigma Sampling
+Statistical outlier detection in logit space using standard deviation thresholding:
+
+```
+V_n-sigma = {token_i : ℓ_i ≥ max_j(ℓ_j) - n × σ(ℓ)}
+```
+
+### Evaluation Framework
+
+#### LLM-as-a-Judge Methodology
+The evaluation system implements the LLM-as-a-Judge paradigm with multi-judge consensus for enhanced reliability:
+
+- **Single Judge Mode**: OpenAI GPT-4 evaluation on 5 weighted criteria
+- **Multi-Judge System**: Parallel evaluation using openai/gpt-4.1-nano and google/gemini-2.0-flash-001 via OpenRouter
+- **Consensus Scoring**: Statistical aggregation with reliability metrics and standard deviation tracking
+
+#### Quality Assessment Criteria
+
+**Multi-Judge System (Primary)**:
+- **Narrative Structure** (30%): Story organization, pacing, and plot coherence
+- **Creativity Execution** (25%): Creative premise handling and original elements  
+- **Character Voice** (20%): Character development and authentic voice
+- **Prose Quality** (15%): Writing craft, style, and language use
+- **Engagement** (10%): Reader interest and emotional impact
+
+**Instruction Following Penalties**:
+- Word count violations: -1.5 points
+- Meta-commentary detection: -0.8 points
+- Failed generation: -3.0 points
+
+#### Statistical Design
+- **Sample Size**: 20 samples per sampling strategy (5 prompts × 4 repetitions)
+- **Target Length**: 300-400 word creative writing samples
+- **Quality Scale**: 1-10 point scale with detailed rubrics
+- **Reliability Metrics**: Standard deviation, consensus strength, judge agreement
+
+## Architecture
+
+### Backend Components
+
+#### Core API (`backend/api/quality_api.py`)
+Central orchestration system for benchmark operations:
+- Model server initialization and management
+- Sampling strategy configuration and execution
+- Quality evaluation coordination
+- Results aggregation and export
+
+#### Evaluation System (`backend/evaluation/`)
+- **`llm_judge.py`**: Single-judge evaluation with OpenAI GPT-4
+- **`multi_judge.py`**: Multi-judge consensus system with OpenRouter integration
+- **`quality_aggregator.py`**: Statistical aggregation and consensus scoring
+- **`instruction_penalties.py`**: Objective quality control and penalty application
+
+#### Configuration (`backend/config/`)
+- **`samplers.yaml`**: Comprehensive sampling strategy definitions with model-specific defaults
+- **`robust_creative_writing.yaml`**: Experimental design and evaluation criteria
+- **Model mapping**: Dynamic resolution of optimal settings per model family
+
+### Frontend Components
+
+#### Interactive Dashboard (`frontend/`)
+Next.js application providing comprehensive visualization:
+- **Leaderboard**: Comparative sampler performance rankings
+- **Quality Analysis**: Detailed criterion breakdowns and statistical metrics
+- **Probability Distributions**: Visual analysis of sampling behavior
+- **Methodology Documentation**: Comprehensive research methodology explanation
+
+### Scripts and Workflow
+
+#### Generation Pipeline
+- **`scripts/run_benchmark.py`**: Text sample generation with configurable sampling strategies
+- **`scripts/judge_results.py`**: LLM-based quality evaluation and scoring
+- **`scripts/run_full_benchmark.py`**: Complete generation and evaluation workflow
+- **`scripts/analyze_results.py`**: Statistical analysis and results processing
+
+#### Data Processing
+- **`scripts/generate_logits_data.py`**: Logit analysis and visualization data preparation
+- **Model server management**: KoboldCpp integration for local inference
+
+## Installation and Setup
+
+### Prerequisites
+
+- Python 3.8+ with pip
+- Node.js 16+ with npm
+- KoboldCpp for local model inference
+- OpenRouter API key for multi-judge evaluation
+
+### Backend Setup
+
 ```bash
-# 1. Generate samples
-python scripts/run_benchmark.py [options]
+# Install Python dependencies
+pip install -r requirements.txt
 
-# 2. Judge results  
+# Configure environment variables
+cp env.example .env
+# Edit .env with your API keys:
+# OPENROUTER_API_KEY=your_openrouter_key
+# LLM_JUDGE_MODELS=openai/gpt-4.1-nano,google/gemini-2.0-flash-001
+```
+
+### Frontend Setup
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### Model Server Setup
+
+```bash
+# Start KoboldCpp server (example for Llama model)
+bash scripts/start_model_server.sh
+```
+
+## Usage
+
+### Basic Benchmark Execution
+
+```bash
+# Generate samples with default settings
+python scripts/run_benchmark.py --model llama-3.1-8b-instruct
+
+# Evaluate generated samples
 python scripts/judge_results.py --auto-find
+
+# Complete workflow (generation + evaluation)
+python scripts/run_full_benchmark.py --model llama-3.1-8b-instruct
 ```
 
-### 🚀 Model Server
+### Custom Configuration
+
 ```bash
-./scripts/start_model_server.sh [model-name]
-```
-
-## 🎛️ Configuration
-
-### Models (Active Testing)
-- `llama-3.1-8b-instruct` - Llama 3.1 8B (KoboldCpp, port 5002)
-- `mistral-small-24b` - Mistral Small 24B (KoboldCpp, port 5001)
-- `mistral-nemo-12b` - Mistral Nemo 12B (KoboldCpp, port 5006)
-- `gemma-3-12b-instruct` - Gemma 3 12B (KoboldCpp, port 5006)
-- `qwen-3-8b` - Qwen 3 8B (KoboldCpp)
-- `gpt-4.5` - Manual baseline (ChatGPT interface)
-
-### Core Samplers (5 strategies)
-- `model_default` - Dynamic model-specific defaults
-- `standard_minp` - Min-p sampling (temp 0.7, min_p 0.02)
-- `creative_minp` - Min-p sampling (temp 1.0, min_p 0.02)
-- `standard_sigma` - Top-n-sigma sampling (temp 1.5, sigma 1.0)
-- `creative_sigma` - Top-n-sigma sampling (temp 1.0, sigma 1.5)
-
-## 💡 Usage Examples
-
-### Basic Benchmark
-```bash
-python scripts/run_full_benchmark.py \
-  --samplers model_default standard_minp creative_sigma
-```
-
-### Custom Prompts
-```bash
-python scripts/run_full_benchmark.py \
-  --custom-prompts "Write a story about time travel" \
-  --max-length 400
-```
-
-### Different Model
-```bash
-./scripts/start_model_server.sh mistral-small-24b
-python scripts/run_full_benchmark.py --model mistral-small-24b
-```
-
-### Decoupled Testing
-```bash
-# Generate with core samplers
+# Specific sampling strategies
 python scripts/run_benchmark.py \
-  --samplers model_default standard_minp creative_minp standard_sigma creative_sigma
+  --model llama-3.1-8b-instruct \
+  --samplers model_default standard_minp creative_minp
 
-# Judge results later using multi-judge evaluation
+# Custom evaluation configuration
+python scripts/run_full_benchmark.py \
+  --config backend/config/robust_creative_writing.yaml \
+  --judge-model gpt-4o-mini
+```
+
+### Multi-Judge Evaluation
+
+```bash
+# Enable multi-judge system
+export MULTI_JUDGE_ENABLED=true
+export LLM_JUDGE_MODELS=openai/gpt-4.1-nano,google/gemini-2.0-flash-001
+
 python scripts/judge_results.py --auto-find
 ```
 
-### Complete Benchmark Pipeline
-```bash
-# Start model server
-./scripts/start_model_server.sh mistral-small-24b
+## Sampling Strategy Configuration
 
-# Run complete benchmark with all 5 core samplers
-python scripts/run_full_benchmark.py --model mistral-small-24b
+### Model-Specific Defaults
+The system automatically resolves optimal settings based on model families:
+
+- **Llama models**: temperature 0.6, top_p 0.9
+- **Mistral Small**: temperature 0.15, top_p 1.0  
+- **Mistral Nemo**: temperature 0.35, top_p 1.0
+- **Qwen models**: temperature 0.7, top_p 0.8, top_k 20
+- **Gemma models**: temperature 1.0, top_p 0.95
+
+### Research Configurations
+- **standard_minp**: temperature 0.7, min_p 0.02
+- **creative_minp**: temperature 1.0, min_p 0.02
+- **standard_sigma**: temperature 1.5, sigma 1.0 (paper settings)
+- **creative_sigma**: temperature 1.0, sigma 1.5
+
+## Data Structure
+
+### Benchmark Results
+Results are stored as JSON files in the `results/` directory:
+
+```json
+{
+  "benchmark_name": "Creative Writing Benchmark - Model Name",
+  "timestamp": "ISO timestamp",
+  "model_name": "model_identifier", 
+  "model_config": {...},
+  "prompts": [...],
+  "sampler_configs": {...},
+  "samples": [
+    {
+      "sample_id": 1,
+      "prompt": "writing prompt",
+      "sampler_name": "strategy_name",
+      "generated_text": "sample output",
+      "word_count": 350,
+      "quality_scores": {...}
+    }
+  ],
+  "metadata": {...}
+}
 ```
 
-**Methodology:**
-- **Multi-judge evaluation** provides reliable consensus scoring
-- **Quality control** includes instruction-following penalties
-- **20 samples per sampler** (5 prompts × 4 repetitions) for statistical validity
+### Evaluation Results
+Judged results include comprehensive scoring:
 
-## 📊 Output
-
-### Generation Results
-`results/MODEL_benchmark_TIMESTAMP.json` contains:
-- Generated text samples (300-400 word creative stories)
-- Sampler configurations and parameters
-- Generation metadata and timestamps
-- Performance metrics
-
-### Multi-Judge Evaluation Results  
-`results/MODEL_judged_TIMESTAMP.json` contains:
-- **Consensus scores** (1-10 scale) from multiple LLM judges
-- **Individual judge breakdowns** with per-criterion scores
-- **Statistical reliability** metrics (standard deviation, consensus strength)
-- **Quality control penalties** (instruction following, word count compliance)
-- **Detailed judge reasoning** for each evaluation
-
-## 🎭 Quality Evaluation
-
-### Multi-Judge Consensus System (Primary)
-Uses multiple LLM judges via OpenRouter for enhanced reliability:
-
-**Judge Models**: `openai/gpt-4.1-nano`, `google/gemini-2.0-flash-001` via OpenRouter
-**Evaluation Method**: Parallel evaluation with consensus scoring
-
-**Quality Criteria** (5 dimensions):
-- **Narrative Structure** (30%) - Story organization, pacing, and plot coherence
-- **Creativity Execution** (25%) - Creative premise handling and original elements
-- **Character Voice** (20%) - Character development and authentic voice
-- **Prose Quality** (15%) - Writing craft, style, and language use
-- **Engagement** (10%) - Reader interest and emotional impact
-
-**Quality Control Features**:
-- **Instruction Penalties**: -1.5 points for word count violations (>100 words off target)
-- **Meta-commentary Detection**: -0.8 points for author notes/commentary
-- **Empty Generation Penalty**: -3.0 points for failed generations
-- **Statistical Reliability**: Standard deviation and consensus strength metrics
-
-### Legacy Single Judge Mode
-Fallback mode using gpt-4.1-nano with different criteria weights.
-
-## 🔄 Workflow
-
-The benchmarking system follows a script-based workflow:
-
-### 1. Generation Phase
-- **Script**: `run_benchmark.py` or `run_full_benchmark.py`
-- **Process**: Connects to KoboldCpp servers, generates text samples using configured samplers
-- **Output**: Raw benchmark results in JSON format
-
-### 2. Evaluation Phase  
-- **Script**: `judge_results.py` (automatically called by `run_full_benchmark.py`)
-- **Process**: Multi-judge evaluation via OpenRouter API with quality control
-- **Output**: Enhanced results with consensus scores and detailed breakdowns
-
-### 3. Visualization
-- **Frontend**: Next.js application reads results directly from JSON files
-- **Features**: Interactive leaderboards, filtering, aggregation across models
-
-## 🏗️ Architecture
-
-```
-sampler-bench/
-├── scripts/              # Main execution scripts
-│   ├── start_model_server.sh    # Start KoboldCpp servers
-│   ├── run_full_benchmark.py    # Complete benchmark pipeline
-│   ├── run_benchmark.py         # Generation only
-│   ├── judge_results.py         # Multi-judge evaluation
-│   └── analyze_results.py       # Result analysis utilities
-├── backend/              # Core benchmarking system
-│   ├── config/          # YAML configurations (samplers, prompts)
-│   ├── evaluation/      # Multi-judge evaluation system
-│   │   ├── multi_judge.py       # OpenRouter multi-judge
-│   │   ├── llm_judge.py         # Legacy single judge
-│   │   ├── instruction_penalties.py # Quality control
-│   │   └── quality_aggregator.py    # Score aggregation
-│   ├── api/             # API utilities
-│   └── inference/       # Text generation utilities
-├── frontend/            # Next.js visualization interface
-│   ├── app/            # Next.js 15 App Router
-│   │   ├── api/results/ # API route for data access
-│   │   └── methodology/ # Methodology documentation page
-│   ├── components/     # React UI components
-│   ├── contexts/       # React state management
-│   ├── hooks/          # Data fetching hooks
-│   └── types/          # TypeScript definitions
-├── results/             # JSON benchmark and evaluation results
-├── requirements.txt     # Python dependencies
-└── CLAUDE.md           # Development guidelines
+```json
+{
+  "overall_score": 7.2,
+  "overall_std": 0.8,
+  "criterion_scores": [...],
+  "judge_models": ["openai/gpt-4.1-nano", "google/gemini-2.0-flash-001"],
+  "consensus_method": "average",
+  "instruction_penalties": {...}
+}
 ```
 
-## 🔧 Prerequisites
+## Research Applications
 
-1. **KoboldCpp Server** - For model inference
-2. **API Keys** - For quality evaluation:
-   - **OpenRouter API Key** (recommended) - For multi-judge evaluation
-   - **OpenAI API Key** (legacy) - For single-judge evaluation
-3. **Python 3.12+** - Runtime environment
-4. **Node.js** - For frontend development
+### Comparative Analysis
+The framework enables systematic comparison of sampling strategies across:
+- **Quality dimensions**: Narrative structure, creativity, character development, prose quality, engagement
+- **Model families**: Llama, Mistral, Qwen, Gemma architectures
+- **Temperature ranges**: From conservative (0.1) to highly creative (2.0+)
+- **Statistical reliability**: Multi-judge consensus with confidence intervals
 
-## ⚙️ Environment Configuration
+### Novel Techniques Evaluation
+- **Min-p sampling**: Assessment of adaptive threshold methods for high-temperature generation
+- **Top-n-sigma sampling**: Evaluation of statistical approaches to logit-space token selection
+- **Model-specific optimization**: Analysis of family-specific parameter tuning
 
-Required environment variables:
+### Quality Control Research
+- **Instruction following**: Quantitative assessment of adherence to length and format requirements
+- **Meta-commentary detection**: Automatic identification of authorial intrusion
+- **Consensus reliability**: Inter-judge agreement and statistical validation
 
-### Multi-Judge Mode (Recommended)
-```bash
-OPENROUTER_API_KEY=your_openrouter_api_key
-LLM_JUDGE_MODELS=openai/gpt-4.1-nano,google/gemini-2.0-flash-001
-MULTI_JUDGE_ENABLED=true
-JUDGE_CONSENSUS_METHOD=average
-```
+## License
 
-### Legacy Single Judge Mode
-```bash
-OPENAI_API_KEY=your_openai_api_key
-OPENAI_MODEL=gpt-4.1-nano
-```
-
-## 📝 Notes
-
-- **Decoupled Design**: Generation and judging are independent
-- **API-Based**: Uses KoboldCpp API for model inference
-- **Quality-Focused**: Prioritizes writing quality over speed
-- **Reproducible**: Full configuration tracking
-- **Flexible**: Easy to add new models/samplers
-
-## 🎯 Results Interpretation
-
-Higher scores indicate better quality:
-- **9-10**: Exceptional creative writing
-- **7-8**: Good quality with strong elements  
-- **5-6**: Average, adequate quality
-- **3-4**: Below average with issues
-- **1-2**: Poor quality with major problems
-
-The system provides both overall scores and detailed criterion breakdowns for comprehensive analysis. 
+MIT License

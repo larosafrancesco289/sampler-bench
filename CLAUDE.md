@@ -2,169 +2,98 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Overview
+## Architecture Overview
 
-Sampler Bench is a professional quality-focused benchmarking platform for evaluating LLM sampling strategies on creative writing tasks. It consists of a Next.js application for visualization and data processing.
+This is a **creative writing sampler benchmarking system** that evaluates different text generation sampling strategies (temperature, top-p, min-p, top-n-sigma, etc.) for creative writing tasks. The system is built with:
 
-## Key Commands
+### Backend (Python)
+- **Core API**: `backend/api/quality_api.py` - Main API for benchmark operations
+- **Evaluation**: `backend/evaluation/` - LLM-based quality judging system using OpenAI models
+- **Configuration**: `backend/config/` - YAML configs for samplers, models, and experiments
 
-### Data Generation
-- **Run complete benchmark**: `python scripts/run_full_benchmark.py`
-- **Run generation only**: `python scripts/run_benchmark.py`
-- **Judge existing results**: `python scripts/judge_results.py --auto-find`
-- **Start model server**: `./scripts/start_model_server.sh [model-name]`
+### Frontend (Next.js)
+- **Visualization**: Interactive dashboard for viewing benchmark results and sampler performance
+- **Components**: Chart components for probability distributions, quality metrics, and leaderboards
+- **Data Processing**: Client-side analysis of benchmark JSON results
 
-### Frontend Development
-- **Start frontend dev server**: `cd frontend && npm run dev`
-- **Install frontend dependencies**: `cd frontend && npm install`
-- **Build frontend**: `cd frontend && npm run build`
-- **Lint frontend**: `cd frontend && npm run lint`
+### Scripts
+- **`scripts/run_benchmark.py`**: Generate text samples using different sampling strategies
+- **`scripts/judge_results.py`**: Evaluate generated samples using LLM judges
+- **`scripts/run_full_benchmark.py`**: Combined generation + judging workflow
+- **`scripts/analyze_results.py`**: Result analysis and statistics
 
-### Sampler Visualizer
-- **Generate real logits data**: `./scripts/generate_logits.sh [model-name]`
-- **View visualizer**: Navigate to `/visualizer` in the frontend
-- **Supports models**: All configured models (Gemma, Llama, Mistral, etc.)
+## Common Development Commands
 
-### Testing and Quality
-- **Single model test**: `python scripts/run_full_benchmark.py --model [model-name] --samplers [sampler1] [sampler2]`
-- **Custom prompts**: `python scripts/run_full_benchmark.py --custom-prompts "Your prompt here" --max-length 500`
+### Backend Development
+```bash
+# Install Python dependencies
+pip install -r requirements.txt
 
-## Architecture
+# Run benchmark generation
+python scripts/run_benchmark.py --model llama-3.1-8b-instruct --samplers llama_default standard_minp creative_minp
 
-### Frontend (`/frontend/`)
-- **Next.js App Router** (`app/`): Next.js 15 application with App Router
-  - `/visualizer`: Interactive sampler visualization page with real model data
-- **Components** (`components/`): React components including UI components from Radix UI
-  - `probability-distribution-chart.tsx`: Real-time sampling visualization
-  - `sampler-explanation.tsx`: Educational content with LaTeX formulas
-  - `latex-math.tsx`: KaTeX-powered mathematical formula rendering
-- **Contexts** (`contexts/`): React contexts for state management
-- **Hooks** (`hooks/`): Custom React hooks for data fetching
-- **Types** (`types/`): TypeScript type definitions
+# Judge existing results
+python scripts/judge_results.py --auto-find
 
-### Core Workflow
-1. **Model Server**: KoboldCpp server hosts the LLM model
-2. **Generation**: Scripts generate text samples using various sampling strategies
-3. **Evaluation**: OpenAI GPT-4 judges text quality on 5 criteria  
-4. **Visualization**: Next.js frontend displays results with interactive charts and sampler visualizer
+# Full benchmark (generate + judge)
+python scripts/run_full_benchmark.py --model llama-3.1-8b-instruct
 
-### Sampler Visualizer Workflow
-1. **Data Generation**: `generate_logits.py` extracts real token distributions from KoboldCpp
-2. **Static Storage**: Real logits saved to `frontend/public/logits-data.json`
-3. **Interactive Visualization**: Shows how different sampling strategies affect real model outputs
-4. **Educational Content**: LaTeX-rendered mathematical formulas and detailed explanations
-
-## Configuration System
-
-### Sampler Configurations (`config/samplers.yaml`)
-- **Model-specific defaults**: Dynamic selection based on model type (llama_default, mistral_default, qwen_default)
-- **Min-p sampling**: Various temperature levels with min_p threshold (standard_minp, creative_minp, ultra_minp)
-- **Top-n-sigma sampling**: Standard deviation based sampling (standard_sigma, creative_sigma)
-- **Standard methods**: Top-p, top-k, temperature-only sampling
-
-### Quality Evaluation Criteria
-
-#### Single Judge (LLM Judge)
-1. **Narrative Coherence** (25%): Story flow and consistency
-2. **Creativity & Originality** (25%): Unique ideas and expression
-3. **Character Development** (20%): Character depth and believability
-4. **Engagement & Readability** (20%): Reader interest and accessibility
-5. **Stylistic Quality** (10%): Writing technique and language use
-
-#### Multi-Judge System
-1. **Narrative Structure** (30%): Story organization, pacing, and plot coherence
-2. **Creativity Execution** (25%): Creative premise handling and original elements
-3. **Character Voice** (20%): Character development and authentic voice
-4. **Prose Quality** (15%): Writing craft, style, and language use
-5. **Engagement** (10%): Reader interest and emotional impact
-
-The multi-judge system uses parallel evaluation with multiple LLM judges and consensus scoring for enhanced reliability.
-
-## API Endpoints
-
-### Next.js API Routes
-- `GET /api/results`: Get benchmark results for frontend (reads from local JSON files)
-
-## Development Workflow
-
-### Running Benchmarks
-1. Ensure KoboldCpp model server is running via `./scripts/start_model_server.sh [model-name]`
-2. Set up environment variables in `.env` file:
-   - `OPENAI_API_KEY` for single judge mode
-   - `OPENROUTER_API_KEY` and `LLM_JUDGE_MODELS` for multi-judge mode
-3. Use `run_full_benchmark.py` for complete pipeline
-4. Results stored in `results/` directory as JSON files
-
-### Adding New Samplers
-1. Define sampler in `config/samplers.yaml` under `presets` section
-2. Add model-specific defaults in `model_defaults` section if needed
-3. Update sampler implementation in generation scripts
-4. Test with benchmark scripts
+# Start model server (KoboldCpp)
+bash scripts/start_model_server.sh
+```
 
 ### Frontend Development
-- Uses Next.js 15 with App Router
-- Tailwind CSS for styling with custom dark mode
-- Radix UI components for accessible UI
-- Dark mode support with next-themes
-- TypeScript for type safety
-- Real-time data fetching with custom hooks
+```bash
+# Navigate to frontend directory
+cd frontend
 
-### Common Development Tasks
-- **Add new models**: Update `config/models.yaml` and sampler configs
-- **Modify evaluation criteria**: Edit judge classes in evaluation scripts
-- **Update frontend components**: Modify files in `frontend/components/`
-- **Debug data issues**: Check Next.js API route at `frontend/app/api/results/route.ts`
+# Install dependencies
+npm install
 
-## Key Dependencies
+# Start development server
+npm run dev
 
-### Data Generation Scripts
-- **OpenAI**: LLM-as-a-Judge evaluation (single and multi-judge via OpenRouter)
-- **PyYAML**: Configuration management
-- **Requests**: HTTP client for KoboldCpp API
-- **OmegaConf**: Advanced configuration management
-- **Rich**: Terminal formatting and progress bars
-- **Python-dotenv**: Environment variable management
+# Build production
+npm run build
 
-### Frontend
-- **Next.js 15**: React framework with App Router
-- **Radix UI**: Accessible component library (@radix-ui/react-*)
-- **Tailwind CSS**: Utility-first styling
-- **Recharts**: Data visualization and sampling charts
-- **TanStack Table**: Table management
-- **Next-themes**: Dark mode support
-- **Lucide React**: Icon library
-- **KaTeX**: LaTeX math rendering for formulas
-- **React-KaTeX**: React wrapper for mathematical notation
+# Lint code
+npm run lint
+```
 
-## Testing and Quality
+### Data Processing
+```bash
+# Generate visualization data
+python scripts/generate_logits_data.py
 
-### Model Testing
-- Supports multiple models: Llama 3.1, Mistral Small, Qwen
-- Comprehensive sampling strategy evaluation
-- Quality-focused metrics over speed
+# Analyze results
+python scripts/analyze_results.py
+```
 
-### Results Interpretation
-- Scores range 1-10 (higher is better)
-- Detailed criterion breakdowns available
-- Reproducible with full configuration tracking
+## Key Configuration Files
 
-## Environment Setup
+- **`backend/config/samplers.yaml`**: Sampling strategy definitions (temperature, top-p, min-p, etc.)
+- **`backend/config/robust_creative_writing.yaml`**: Experimental design and evaluation criteria
+- **`frontend/package.json`**: Frontend dependencies and build scripts
+- **`requirements.txt`**: Python dependencies
 
-### Required Environment Variables
-- `OPENAI_API_KEY`: For LLM-as-a-Judge evaluation (single judge mode)
-- `OPENAI_MODEL`: OpenAI model to use (defaults to gpt-4o)
-- `OPENROUTER_API_KEY`: For multi-judge evaluation via OpenRouter
-- `LLM_JUDGE_MODELS`: Comma-separated list of judge models (e.g., "openai/gpt-4o,google/gemini-2.0-flash-001")
-- `MULTI_JUDGE_ENABLED`: Set to 'true' to enable multi-judge evaluation
-- `JUDGE_CONSENSUS_METHOD`: Method for combining judge scores (default: 'average')
+## Benchmark Workflow
 
-### Prerequisites
-- Python 3.12+
-- Node.js for frontend development
-- KoboldCpp server for model inference
-- OpenAI API access for evaluation (single judge) or OpenRouter API access (multi-judge)
+1. **Generate samples**: Use `run_benchmark.py` to create text samples with different sampling strategies
+2. **Judge quality**: Use `judge_results.py` to evaluate samples using LLM judges (GPT-4, etc.)
+3. **Visualize results**: Frontend dashboard displays comparative analysis of sampling strategies
 
-### Model Server Configuration
-- Supports multiple models: Llama 3.1, Mistral Small, Qwen, etc.
-- Uses KoboldCpp API for inference to avoid CUDA issues
-- Default ports: llama-3.1-8b-instruct (5002), mistral-small-24b (5001)
+## Data Structure
+
+- **`results/`**: JSON files containing benchmark results and judgments
+- **`frontend/public/logits-data.json`**: Pre-computed visualization data
+- Benchmark results include: generated text, sampler configs, quality scores, and metadata
+
+## Working with Samplers
+
+The system supports multiple sampling strategies:
+- **Model defaults**: Provider-recommended settings for each model family
+- **Min-p sampling**: Minimum probability threshold sampling
+- **Top-n-sigma**: Standard deviation-based sampling
+- **Traditional**: Top-p, top-k, temperature-only sampling
+
+Sampler configurations are defined in `backend/config/samplers.yaml` with parameters like temperature, top_p, min_p, etc.
