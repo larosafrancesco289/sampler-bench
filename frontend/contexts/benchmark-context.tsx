@@ -15,7 +15,7 @@ interface BenchmarkContextType {
   summary: ApiResponse['summary'] | null
   loading: boolean
   error: string | null
-  refetch: () => Promise<void>
+  refetch: () => void
   // Filter controls
   filterOptions: {
     modelOptions: FilterOption[]

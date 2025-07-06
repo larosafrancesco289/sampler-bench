@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import type { ApiResponse, LeaderboardEntry } from '@/types/benchmark'
 
 interface FilterOption {
@@ -7,11 +8,30 @@ interface FilterOption {
   count: number
 }
 
+async function fetchBenchmarkData(): Promise<ApiResponse> {
+  const response = await fetch('/api/results')
+  if (!response.ok) {
+    throw new Error(`Failed to fetch results: ${response.statusText}`)
+  }
+  return response.json()
+}
+
 export function useBenchmarkData() {
-  const [rawData, setRawData] = useState<LeaderboardEntry[]>([])
-  const [summary, setSummary] = useState<ApiResponse['summary'] | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { data: apiResponse, isLoading, error, refetch: queryRefetch } = useQuery({
+    queryKey: ['benchmark-data'],
+    queryFn: fetchBenchmarkData,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+  })
+
+  const rawData = apiResponse?.leaderboard || []
+  const summary = apiResponse?.summary || null
+  const loading = isLoading
+  const errorMessage = error ? (error instanceof Error ? error.message : 'Failed to load data') : null
+  
+  const refetch = useCallback(() => {
+    queryRefetch()
+  }, [queryRefetch])
   
   // Filter states
   const [selectedModels, setSelectedModels] = useState<string[]>([])
@@ -50,30 +70,6 @@ export function useBenchmarkData() {
     setScoreRange([dataBounds.minScore, dataBounds.maxScore])
   }, [dataBounds])
 
-  const fetchData = useCallback(async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      
-      const response = await fetch('/api/results')
-      if (!response.ok) {
-        throw new Error(`Failed to fetch results: ${response.statusText}`)
-      }
-      
-      const apiResponse: ApiResponse = await response.json()
-      setRawData(apiResponse.leaderboard)
-      setSummary(apiResponse.summary)
-    } catch (err) {
-      console.error('Error fetching benchmark results:', err)
-      setError(err instanceof Error ? err.message : 'Failed to load data')
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    fetchData()
-  }, [fetchData])
 
   // Generate filter options from raw data
   const filterOptions = useMemo(() => {
@@ -399,8 +395,8 @@ export function useBenchmarkData() {
     data: processedData, 
     summary: filteredSummary, 
     loading, 
-    error, 
-    refetch: fetchData,
+    error: errorMessage, 
+    refetch,
     // Filter controls
     filterOptions,
     selectedModels,

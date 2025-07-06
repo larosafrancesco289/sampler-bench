@@ -5,9 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Slider } from "@/components/ui/slider"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { BookOpen, Settings, BarChart3, ArrowLeft } from "lucide-react"
-import Link from 'next/link'
+import { Navigation } from "@/components/navigation"
+import { BookOpen, Settings, BarChart3 } from "lucide-react"
 import { ProbabilityDistributionChart } from "@/components/probability-distribution-chart"
 import { SamplerExplanation } from "@/components/sampler-explanation"
 
@@ -63,25 +62,14 @@ export default function SamplerVisualizer() {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      {/* Header */}
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-4 mb-4">
-            <Link href="/">
-              <Button variant="outline" size="sm">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Leaderboard
-              </Button>
-            </Link>
-          </div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-            Sampler Visualizer
-          </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
-            Interactive visualization of LLM sampling strategies and their effects on token selection
-          </p>
-        </div>
-        <ThemeToggle />
+      <Navigation />
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+          Sampler Visualizer
+        </h1>
+        <p className="text-lg text-gray-600 dark:text-gray-300">
+          Interactive visualization of LLM sampling strategies and their effects on token selection
+        </p>
       </div>
 
       {/* Sampler Selection */}

@@ -1,14 +1,13 @@
 "use client"
 
-import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { LeaderboardTable } from "@/components/leaderboard-table"
 import { ScoreChart } from "@/components/score-chart"
 import { QualityCriteriaChart } from "@/components/quality-criteria-chart"
 import { DynamicStats } from "@/components/dynamic-stats"
-import { ThemeToggle } from "@/components/theme-toggle"
+import { Navigation } from "@/components/navigation"
 import { FilterControls } from "@/components/filter-controls"
-import { BenchmarkProvider, useBenchmarkContext } from "@/contexts/benchmark-context"
+import { useBenchmarkContext } from "@/contexts/benchmark-context"
 
 function DashboardContent() {
   const {
@@ -23,29 +22,7 @@ function DashboardContent() {
   } = useBenchmarkContext()
   return (
     <div className="container mx-auto py-8 px-4">
-      {/* Header */}
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-            Sampler Bench Leaderboard
-          </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
-            Hardware-agnostic quality evaluation of LLM sampling strategies on creative writing tasks
-          </p>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link href="/findings" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
-            Key Findings
-          </Link>
-          <Link href="/methodology" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
-            View Methodology
-          </Link>
-          <Link href="/visualizer" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
-            Sampler Visualizer
-          </Link>
-          <ThemeToggle />
-        </div>
-      </div>
+      <Navigation />
 
       {/* Filter Controls */}
       <FilterControls
@@ -107,9 +84,5 @@ function DashboardContent() {
 }
 
 export default function Dashboard() {
-  return (
-    <BenchmarkProvider>
-      <DashboardContent />
-    </BenchmarkProvider>
-  )
+  return <DashboardContent />
 } 

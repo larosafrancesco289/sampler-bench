@@ -1,34 +1,21 @@
 "use client"
 
-import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { ArrowLeft, Target, Brain, BarChart, Settings, Users, Zap } from "lucide-react"
+import { Navigation } from "@/components/navigation"
+import { Target, Brain, BarChart, Settings, Users, Zap } from "lucide-react"
 
 export default function MethodologyPage() {
   return (
     <div className="container mx-auto py-8 px-4">
-      {/* Header */}
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-4 mb-4">
-            <Link href="/">
-              <Button variant="outline" size="sm">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Leaderboard
-              </Button>
-            </Link>
-          </div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-            Benchmark Methodology
-          </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
-            Understanding the quality-focused evaluation framework for LLM sampling strategies
-          </p>
-        </div>
-        <ThemeToggle />
+      <Navigation />
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+          Benchmark Methodology
+        </h1>
+        <p className="text-lg text-gray-600 dark:text-gray-300">
+          Understanding the quality-focused evaluation framework for LLM sampling strategies
+        </p>
       </div>
 
       {/* Overview Section */}

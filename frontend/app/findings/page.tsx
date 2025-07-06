@@ -1,34 +1,22 @@
 'use client';
 
-import Link from 'next/link';
-import { AlertTriangle, CheckCircle, TrendingUp, TrendingDown, Users, BarChart3, FileText, Brain, Scale, ArrowLeft } from 'lucide-react';
+import { AlertTriangle, CheckCircle, TrendingUp, TrendingDown, Users, BarChart3, FileText, Brain, Scale } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { ThemeToggle } from '@/components/theme-toggle';
+import { Navigation } from '@/components/navigation';
 
 export default function FindingsPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-4 mb-4">
-            <Link href="/">
-              <Button variant="outline" size="sm">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Leaderboard
-              </Button>
-            </Link>
-          </div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">Key Findings & Insights</h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
-            Comprehensive analysis of benchmark results reveals valuable insights about model performance, 
-            instruction following capabilities, and evaluation methodology considerations.
-          </p>
-        </div>
-        <ThemeToggle />
+      <Navigation />
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">Key Findings & Insights</h1>
+        <p className="text-lg text-gray-600 dark:text-gray-300">
+          Comprehensive analysis of benchmark results reveals valuable insights about model performance, 
+          instruction following capabilities, and evaluation methodology considerations.
+        </p>
       </div>
 
       {/* Executive Summary */}
