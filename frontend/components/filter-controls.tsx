@@ -35,7 +35,7 @@ export function FilterControls({
   aggregateAcrossModels,
   onAggregateChange
 }: FilterControlsProps) {
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(true) // Default to expanded
 
   const hasActiveFilters = selectedModels.length > 0 || selectedSamplers.length > 0
 
@@ -59,15 +59,20 @@ export function FilterControls({
   const clearSamplerFilters = () => onSamplerChange([])
 
   return (
-    <Card className="mb-6 transition-all duration-300 hover:shadow-md dark:hover:shadow-lg">
+    <Card className="mb-6 transition-all duration-300 hover:shadow-md dark:hover:shadow-lg border-l-4 border-l-blue-500">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4" />
-            <CardTitle className="text-lg">Filters</CardTitle>
+            <Filter className="h-5 w-5 text-blue-600" />
+            <CardTitle className="text-lg">Data Filters</CardTitle>
             {hasActiveFilters && (
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="default" className="text-xs bg-blue-600">
                 {(selectedModels.length + selectedSamplers.length)} active
+              </Badge>
+            )}
+            {!hasActiveFilters && (
+              <Badge variant="outline" className="text-xs">
+                Showing all data
               </Badge>
             )}
           </div>
@@ -80,7 +85,7 @@ export function FilterControls({
                 className="h-8 px-2 text-xs"
               >
                 <RotateCcw className="h-3 w-3 mr-1" />
-                Reset
+                Reset All
               </Button>
             )}
             <Button
@@ -103,17 +108,29 @@ export function FilterControls({
               <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Models ({modelOptions.length})
               </h4>
-              {selectedModels.length > 0 && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={clearModelFilters}
-                  className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                >
-                  <X className="h-3 w-3 mr-1" />
-                  Clear
-                </Button>
-              )}
+              <div className="flex items-center gap-2">
+                {selectedModels.length === 0 && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onModelChange(modelOptions.map(m => m.value))}
+                    className="h-6 px-2 text-xs"
+                  >
+                    Select All
+                  </Button>
+                )}
+                {selectedModels.length > 0 && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearModelFilters}
+                    className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  >
+                    <X className="h-3 w-3 mr-1" />
+                    Clear
+                  </Button>
+                )}
+              </div>
             </div>
             <div className="flex flex-wrap gap-2">
               {modelOptions.map((option) => (
@@ -136,17 +153,29 @@ export function FilterControls({
               <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Sampling Strategies ({samplerOptions.length})
               </h4>
-              {selectedSamplers.length > 0 && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={clearSamplerFilters}
-                  className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                >
-                  <X className="h-3 w-3 mr-1" />
-                  Clear
-                </Button>
-              )}
+              <div className="flex items-center gap-2">
+                {selectedSamplers.length === 0 && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onSamplerChange(samplerOptions.map(s => s.value))}
+                    className="h-6 px-2 text-xs"
+                  >
+                    Select All
+                  </Button>
+                )}
+                {selectedSamplers.length > 0 && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearSamplerFilters}
+                    className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  >
+                    <X className="h-3 w-3 mr-1" />
+                    Clear
+                  </Button>
+                )}
+              </div>
             </div>
             <div className="flex flex-wrap gap-2">
               {samplerOptions.map((option) => (

@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useBenchmarkContext } from "@/contexts/benchmark-context"
 
 export function LeaderboardTable() {

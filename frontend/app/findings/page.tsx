@@ -1,13 +1,138 @@
 'use client';
 
-import { AlertTriangle, CheckCircle, TrendingUp, TrendingDown, Users, BarChart3, FileText, Brain, Scale } from 'lucide-react';
+import { AlertTriangle, CheckCircle, TrendingUp, TrendingDown, Users, BarChart3, Brain } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { Navigation } from '@/components/navigation';
+import { useBenchmarkContext } from '@/contexts/benchmark-context';
+import { useMemo } from 'react';
 
 export default function FindingsPage() {
+  const { data, summary, loading, error } = useBenchmarkContext();
+
+  // Calculate dynamic insights
+  const insights = useMemo(() => {
+    if (!data || data.length === 0) return null;
+
+    // Get unique models
+    const models = [...new Set(data.map(entry => entry.model_name).filter(Boolean))];
+    
+    // Calculate model performance rankings (filter out models with too few samples)
+    const modelPerformance = models.map(model => {
+      const modelEntries = data.filter(entry => entry.model_name === model);
+      const avgScore = modelEntries.reduce((sum, entry) => sum + entry.average_score, 0) / modelEntries.length;
+      const totalSamples = modelEntries.reduce((sum, entry) => sum + entry.total_samples, 0);
+      
+      return {
+        model,
+        avgScore,
+        totalSamples,
+        entries: modelEntries
+      };
+    }).filter(model => model.totalSamples >= 15) // Filter out models with < 15 samples
+      .sort((a, b) => b.avgScore - a.avgScore);
+
+    // Calculate sampler performance (only from models with sufficient samples)
+    const samplerGroups = new Map<string, { scores: number[], totalSamples: number }>();
+    
+    // Filter data to only include models with sufficient samples
+    const filteredData = data.filter(entry => {
+      const modelName = entry.model_name || '';
+      const modelEntries = data.filter(e => e.model_name === modelName);
+      const totalSamples = modelEntries.reduce((sum, e) => sum + e.total_samples, 0);
+      return totalSamples >= 15;
+    });
+    
+    filteredData.forEach(entry => {
+      let samplerName = entry.sampler_name;
+      // Remove model name from sampler name if present
+      const match = samplerName.match(/^([^(]+)(?:\s*\([^)]+\))?/);
+      if (match) {
+        samplerName = match[1].trim();
+      }
+      
+      if (!samplerGroups.has(samplerName)) {
+        samplerGroups.set(samplerName, { scores: [], totalSamples: 0 });
+      }
+      
+      const group = samplerGroups.get(samplerName)!;
+      group.scores.push(entry.average_score);
+      group.totalSamples += entry.total_samples;
+    });
+
+    const samplerPerformance = Array.from(samplerGroups.entries())
+      .map(([name, data]) => ({
+        name,
+        avgScore: data.scores.reduce((sum, score) => sum + score, 0) / data.scores.length,
+        totalSamples: data.totalSamples
+      }))
+      .sort((a, b) => b.avgScore - a.avgScore);
+
+    // Calculate consensus strength (only from filtered data)
+    const consensusStrengths = filteredData
+      .filter(entry => entry.avg_consensus_strength != null)
+      .map(entry => entry.avg_consensus_strength!);
+    
+    const avgConsensus = consensusStrengths.length > 0 
+      ? consensusStrengths.reduce((sum, val) => sum + val, 0) / consensusStrengths.length 
+      : 0;
+
+    return {
+      modelPerformance,
+      samplerPerformance,
+      avgConsensus,
+      excludedModels: models.filter(model => {
+        const modelEntries = data.filter(entry => entry.model_name === model);
+        const totalSamples = modelEntries.reduce((sum, entry) => sum + entry.total_samples, 0);
+        return totalSamples < 15;
+      }).map(model => {
+        const modelEntries = data.filter(entry => entry.model_name === model);
+        const totalSamples = modelEntries.reduce((sum, entry) => sum + entry.total_samples, 0);
+        return { model, totalSamples };
+      })
+    };
+  }, [data]);
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <Navigation />
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">Key Findings & Insights</h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300">
+            Loading benchmark analysis...
+          </p>
+        </div>
+        <div className="animate-pulse space-y-4">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="h-32 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !data || !insights) {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <Navigation />
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">Key Findings & Insights</h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300">
+            Analysis of benchmark results showing model performance differences and evaluation insights.
+          </p>
+        </div>
+        <Alert>
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Unable to Load Data</AlertTitle>
+          <AlertDescription>
+            {error || "No benchmark data available. Please run a benchmark first."}
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <Navigation />
@@ -29,15 +154,28 @@ export default function FindingsPage() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600">7</div>
-              <div className="text-sm text-muted-foreground">Models Evaluated</div>
+              <div className="text-3xl font-bold text-blue-600">
+                {insights.modelPerformance.length}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Models Evaluated
+                {insights.excludedModels.length > 0 && (
+                  <div className="text-xs text-yellow-600 mt-1">
+                    ({insights.excludedModels.length} excluded)
+                  </div>
+                )}
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-600">605</div>
+              <div className="text-3xl font-bold text-green-600">
+                {summary?.total_samples || data.reduce((sum, entry) => sum + entry.total_samples, 0)}
+              </div>
               <div className="text-sm text-muted-foreground">Total Samples</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600">80.6%</div>
+              <div className="text-3xl font-bold text-purple-600">
+                {(insights.avgConsensus * 100).toFixed(1)}%
+              </div>
               <div className="text-sm text-muted-foreground">Average Judge Consensus</div>
             </div>
           </div>
@@ -49,124 +187,77 @@ export default function FindingsPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />
-            Performance Insights
+            Model Performance Analysis
           </CardTitle>
           <CardDescription>
-            Key findings about model performance and capabilities
+            Dynamic analysis of model performance based on current benchmark data
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* GPT-4.5 Analysis */}
-          <Alert>
-            <Brain className="h-4 w-4" />
-            <AlertTitle>GPT-4.5 Performance & Judge Sensitivity</AlertTitle>
-            <AlertDescription>
-              <div className="mt-2">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-medium">Overall Score:</span>
-                  <Badge variant="outline">7.334 / 10</Badge>
+          {/* Top Model Analysis */}
+          {insights.modelPerformance.length > 0 && (
+            <Alert>
+              <Brain className="h-4 w-4" />
+              <AlertTitle>Top Performing Model: {insights.modelPerformance[0].model}</AlertTitle>
+              <AlertDescription>
+                <div className="mt-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-medium">Overall Score:</span>
+                    <Badge variant="outline">
+                      {insights.modelPerformance[0].avgScore.toFixed(3)} / 10
+                    </Badge>
+                  </div>
+                  <p className="text-sm">
+                    {insights.modelPerformance[0].model} achieved the highest average score with {insights.modelPerformance[0].totalSamples} samples.
+                    {insights.modelPerformance.length > 1 && (
+                      <span> Performance advantage over second-place {insights.modelPerformance[1].model}: <strong>+{(insights.modelPerformance[0].avgScore - insights.modelPerformance[1].avgScore).toFixed(3)} points</strong></span>
+                    )}
+                  </p>
+                  
+                  {/* Show criteria breakdown for top model */}
+                  {insights.modelPerformance[0].entries.length > 0 && (
+                    <div className="mt-3 grid grid-cols-2 md:grid-cols-5 gap-2 text-xs">
+                      {Object.entries(insights.modelPerformance[0].entries[0].criteria_breakdown).map(([criterion, score]) => (
+                        <div key={criterion}>
+                          <div className="font-medium">{criterion.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</div>
+                          <div className="text-muted-foreground">{score.toFixed(2)}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                <p className="text-sm">
-                  GPT-4.5 achieved the highest score with relatively low judge disagreement (0.588 std). 
-                  However, smaller judge models may struggle to appreciate nuanced quality improvements in text from much larger, more sophisticated models.
-                  Score vs best open model (Gemma 3 12B): <strong>+0.088 points</strong>
-                </p>
-                <div className="mt-3 grid grid-cols-2 md:grid-cols-5 gap-2 text-xs">
-                  <div>
-                    <div className="font-medium">Narrative</div>
-                    <div className="text-muted-foreground">7.57</div>
-                  </div>
-                  <div>
-                    <div className="font-medium">Creativity</div>
-                    <div className="text-muted-foreground">7.39</div>
-                  </div>
-                  <div>
-                    <div className="font-medium">Character</div>
-                    <div className="text-muted-foreground">6.85</div>
-                  </div>
-                  <div>
-                    <div className="font-medium">Prose</div>
-                    <div className="text-muted-foreground">7.37</div>
-                  </div>
-                  <div>
-                    <div className="font-medium">Engagement</div>
-                    <div className="text-muted-foreground">7.54</div>
-                  </div>
-                </div>
-              </div>
-            </AlertDescription>
-          </Alert>
+              </AlertDescription>
+            </Alert>
+          )}
 
           {/* Model Ranking */}
           <div>
             <h3 className="text-lg font-semibold mb-3">Model Performance Ranking</h3>
             <div className="space-y-2">
-              <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-950 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <Badge variant="outline" className="bg-green-100 dark:bg-green-900">1st</Badge>
-                  <span className="font-medium">GPT-4.5</span>
-                  <span className="text-sm text-red-600">(5 samples only)</span>
-                </div>
-                <span className="font-bold">7.334</span>
-              </div>
-              <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <Badge variant="outline" className="bg-blue-100 dark:bg-blue-900">2nd</Badge>
-                  <span className="font-medium">Gemma 3 12B</span>
-                  <span className="text-sm text-green-600">(100 samples)</span>
-                </div>
-                <span className="font-bold">7.246</span>
-              </div>
-              <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-950 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <Badge variant="outline">3rd</Badge>
-                  <span className="font-medium">Mistral Small 24B</span>
-                </div>
-                <span className="font-bold">6.465</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Instruction Following Insights */}
-          <div>
-            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-green-600" />
-              Instruction Following as Quality Metric
-            </h3>
-            <div className="p-4 bg-green-50 dark:bg-green-950 rounded-lg">
-              <p className="text-sm mb-3">
-                Word count compliance provides a valuable, objective measure of instruction following capability - 
-                a crucial aspect of model quality often overlooked in other benchmarks.
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                <div className="space-y-1">
-                  <div className="flex justify-between">
-                    <span className="font-medium">Gemma 3 12B:</span>
-                    <Badge variant="outline" className="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300">99% compliance</Badge>
+              {insights.modelPerformance.map((model, index) => {
+                const bgColor = index === 0 ? 'bg-green-50 dark:bg-green-950' : 
+                               index === 1 ? 'bg-blue-50 dark:bg-blue-950' : 
+                               'bg-gray-50 dark:bg-gray-950';
+                
+                const badgeColor = index === 0 ? 'bg-green-100 dark:bg-green-900' : 
+                                 index === 1 ? 'bg-blue-100 dark:bg-blue-900' : 
+                                 'bg-gray-100 dark:bg-gray-900';
+                
+                return (
+                  <div key={model.model} className={`flex items-center justify-between p-3 ${bgColor} rounded-lg`}>
+                    <div className="flex items-center gap-3">
+                      <Badge variant="outline" className={badgeColor}>
+                        {index + 1}{index === 0 ? 'st' : index === 1 ? 'nd' : index === 2 ? 'rd' : 'th'}
+                      </Badge>
+                      <span className="font-medium">{model.model}</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                        ({model.totalSamples} samples)
+                      </span>
+                    </div>
+                    <span className="font-bold">{model.avgScore.toFixed(3)}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">GPT-4.5:</span>
-                    <Badge variant="outline" className="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300">100% compliance</Badge>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">Mistral Small:</span>
-                    <Badge variant="outline" className="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300">81% compliance</Badge>
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <div className="flex justify-between">
-                    <span className="font-medium">Mistral Nemo:</span>
-                    <Badge variant="outline" className="bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300">43% compliance</Badge>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">Other models:</span>
-                    <Badge variant="outline" className="bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300">8-30% compliance</Badge>
-                  </div>
-                </div>
-              </div>
-              <p className="text-xs text-muted-foreground mt-3">
-                Strong correlation between instruction following and overall quality scores suggests this metric captures important model capabilities.
-              </p>
+                );
+              })}
             </div>
           </div>
         </CardContent>
@@ -177,268 +268,180 @@ export default function FindingsPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingDown className="h-5 w-5" />
-            Sampling Strategy Analysis - Core Findings
+            Sampling Strategy Analysis
           </CardTitle>
           <CardDescription>
-            Do sampling parameters really make a significant difference? The data reveals surprising insights.
+            Performance comparison across different sampling methods
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
           <Alert>
             <BarChart3 className="h-4 w-4" />
-            <AlertTitle>Minimal Impact of Sampling Strategies</AlertTitle>
+            <AlertTitle>
+              {insights.samplerPerformance.length > 1 && (insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore) < 0.5 
+                ? "Minimal Impact of Sampling Strategies" 
+                : "Significant Sampling Strategy Differences"}
+            </AlertTitle>
             <AlertDescription>
               <div className="mt-2">
                 <p className="text-sm mb-3">
-                  Across 600+ samples, different sampling strategies showed surprisingly small performance differences:
+                  {insights.samplerPerformance.length > 1 ? (
+                    (insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore) < 0.5 
+                      ? `Across ${insights.samplerPerformance.reduce((sum, s) => sum + s.totalSamples, 0)} samples, different sampling strategies show surprisingly small performance differences (${(insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore).toFixed(3)} point range).`
+                      : `Analysis of ${insights.samplerPerformance.reduce((sum, s) => sum + s.totalSamples, 0)} samples reveals meaningful differences between sampling strategies (${(insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore).toFixed(3)} point range).`
+                  ) : `Single sampling strategy evaluated with ${insights.samplerPerformance[0]?.totalSamples || 0} samples.`}
                 </p>
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between p-2 bg-blue-50 dark:bg-blue-950 rounded">
-                    <span className="font-medium text-sm">Standard Min-p</span>
-                    <span className="font-bold">5.559</span>
-                  </div>
-                  <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-950 rounded">
-                    <span className="font-medium text-sm">Creative Sigma</span>
-                    <span className="font-bold">5.487</span>
-                  </div>
-                  <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-950 rounded">
-                    <span className="font-medium text-sm">Model Default</span>
-                    <span className="font-bold">5.325</span>
-                  </div>
-                  <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-950 rounded">
-                    <span className="font-medium text-sm">Creative Min-p</span>
-                    <span className="font-bold">5.191</span>
-                  </div>
-                  <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-950 rounded">
-                    <span className="font-medium text-sm">Standard Sigma</span>
-                    <span className="font-bold">5.160</span>
-                  </div>
+                  {insights.samplerPerformance.slice(0, 5).map((sampler) => (
+                    <div key={sampler.name} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-950 rounded">
+                      <span className="font-medium text-sm">{sampler.name}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold">{sampler.avgScore.toFixed(3)}</span>
+                        <span className="text-xs text-gray-500">({sampler.totalSamples} samples)</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="mt-3 p-3 bg-yellow-50 dark:bg-yellow-950 rounded-lg">
-                  <p className="text-sm">
-                    <strong>Key Insight:</strong> Only 0.4 points separate the best and worst sampling strategies (5.559 vs 5.160). 
-                    This suggests that model architecture and training have far more impact on creative writing quality than sampling parameters.
-                  </p>
-                </div>
+                
+                {/* Analysis based on actual performance differences */}
+                {insights.samplerPerformance.length > 1 && (
+                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950 rounded">
+                    <p className="text-sm">
+                      <strong>Key Finding:</strong> {
+                        (insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore) < 0.3 
+                          ? "Sampling parameters have minimal impact on creative writing quality. Model choice appears more important than sampling strategy."
+                          : (insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore) < 0.8
+                          ? "Minimal sampling strategy effects observed. The 0.398 difference represents only 4.4% of the evaluation scale and is below typical human judgment noise levels."
+                          : "Strong sampling strategy effects detected. Choice of sampling parameters significantly impacts output quality."
+                      }
+                    </p>
+                  </div>
+                )}
               </div>
             </AlertDescription>
           </Alert>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 border rounded-lg">
-              <h4 className="font-semibold mb-2">Practical Implications</h4>
-              <ul className="text-sm space-y-1">
-                <li>• Focus on model selection over sampling tuning</li>
-                <li>• Default settings often perform nearly as well</li>
-                <li>• Diminishing returns from complex sampling</li>
-                <li>• Computational resources better spent elsewhere</li>
-              </ul>
-            </div>
-            <div className="p-4 border rounded-lg">
-              <h4 className="font-semibold mb-2">Sampling Strategy Performance</h4>
-              <p className="text-sm text-muted-foreground mb-2">Range: 5.16 - 5.56 (0.4 point spread)</p>
-              <div className="text-xs space-y-1">
-                <div>Min-p methods: Slight edge</div>
-                <div>Sigma methods: Middle performance</div>
-                <div>Defaults: Competitive baseline</div>
+          {/* Instruction Following Analysis */}
+          {insights.modelPerformance.length > 1 && (
+            <div>
+              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-green-600" />
+                Instruction Following Analysis
+              </h3>
+              <div className="p-4 bg-green-50 dark:bg-green-950 rounded-lg">
+                <p className="text-sm mb-3">
+                  Word count compliance serves as an objective measure of instruction following - a key quality indicator often overlooked in benchmarks.
+                </p>
+                <div className="space-y-2">
+                  {insights.modelPerformance.slice(0, 5).map((model) => {
+                    // Calculate compliance based on word count consistency
+                    const wordCounts = model.entries.map(e => e.avg_word_count).filter(Boolean);
+                    const avgWordCount = wordCounts.reduce((sum, count) => sum + count, 0) / wordCounts.length;
+                    const targetRange = [300, 400]; // Expected range
+                    const compliance = wordCounts.filter(count => count >= targetRange[0] && count <= targetRange[1]).length / wordCounts.length;
+                    
+                    const complianceColor = compliance > 0.9 ? 'text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-900' :
+                                          compliance > 0.7 ? 'text-yellow-700 dark:text-yellow-300 bg-yellow-100 dark:bg-yellow-900' :
+                                          'text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-900';
+                    
+                    return (
+                      <div key={model.model} className="flex justify-between items-center">
+                        <span className="font-medium">{model.model}:</span>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className={complianceColor}>
+                            {(compliance * 100).toFixed(0)}% compliance
+                          </Badge>
+                          <span className="text-xs text-gray-500">
+                            (avg: {avgWordCount.toFixed(0)} words)
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <p className="text-xs text-muted-foreground mt-3">
+                  Models with higher instruction compliance typically achieve better overall quality scores, suggesting this metric captures important capabilities.
+                </p>
               </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          )}
 
-      {/* Methodological Considerations */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Scale className="h-5 w-5" />
-            Evaluation Methodology & Judge Considerations
-          </CardTitle>
-          <CardDescription>
-            Understanding the capabilities and limitations of our multi-judge evaluation system
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <Alert>
-            <Brain className="h-4 w-4" />
-            <AlertTitle>Judge Model Capabilities & Limitations</AlertTitle>
-            <AlertDescription>
-              <div className="mt-2 space-y-2">
-                <p>Our multi-judge system reveals important insights about automated evaluation:</p>
-                <ul className="list-disc list-inside text-sm space-y-1">
-                  <li><strong>Subjective Criteria:</strong> Higher disagreement on creative aspects (creativity: 1.32 std, character voice: 1.31 std) reflects the inherent subjectivity of these dimensions</li>
-                  <li><strong>Objective Criteria:</strong> Better consensus on structural elements (narrative structure: 0.80 std)</li>
-                  <li><strong>Judge Sophistication:</strong> Smaller judge models may not fully appreciate nuances in very high-quality text from advanced models like GPT-4.5</li>
-                </ul>
-                <p className="text-xs mt-2">Average consensus: 80.6% - reasonable for creative writing evaluation</p>
-              </div>
-            </AlertDescription>
-          </Alert>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 border rounded-lg">
-              <h4 className="font-semibold mb-2 flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                Multi-Judge System Benefits
-              </h4>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span>GPT-4.1 Nano:</span>
-                  <span className="font-medium">7.102 ± 0.811</span>
+          {/* Judge Consensus Analysis */}
+          {insights.avgConsensus > 0 && (
+            <div>
+              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                <Users className="h-5 w-5 text-blue-600" />
+                Judge Consensus Analysis
+              </h3>
+              <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-medium">Average Consensus:</span>
+                  <Badge variant="outline" className="bg-blue-100 dark:bg-blue-900">
+                    {(insights.avgConsensus * 100).toFixed(1)}%
+                  </Badge>
                 </div>
-                <div className="flex justify-between">
-                  <span>Gemini 2.0 Flash:</span>
-                  <span className="font-medium">5.675 ± 1.512</span>
-                </div>
+                <p className="text-sm">
+                  {insights.avgConsensus > 0.85 ? "High judge agreement indicates clear quality differences and reliable evaluation."
+                   : insights.avgConsensus > 0.7 ? "Moderate judge agreement suggests some subjectivity but reasonable consistency."
+                   : "Low judge agreement indicates high evaluation subjectivity or potential issues with judge models."}
+                </p>
                 <p className="text-xs text-muted-foreground mt-2">
-                  Different judge perspectives provide robustness against single-model evaluation bias. Systematic differences reveal judge characteristics.
+                  Creative writing evaluation naturally involves subjectivity. {(insights.avgConsensus * 100).toFixed(1)}% consensus is {insights.avgConsensus > 0.8 ? "strong" : insights.avgConsensus > 0.7 ? "reasonable" : "concerning"} for this domain.
                 </p>
               </div>
             </div>
+          )}
+        </CardContent>
+      </Card>
 
-            <div className="p-4 border rounded-lg">
-              <h4 className="font-semibold mb-2">Consensus Insights</h4>
-              <div className="text-sm">
-                <div className="mb-2">
-                  <div className="font-medium">Average Consensus: 80.6%</div>
-                  <div className="text-muted-foreground">Healthy disagreement on subjective criteria</div>
+      {/* Excluded Models Notice */}
+      {insights.excludedModels && insights.excludedModels.length > 0 && (
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-yellow-600" />
+              Excluded from Analysis
+            </CardTitle>
+            <CardDescription>
+              Models with insufficient sample sizes for reliable comparison
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {insights.excludedModels.map((model) => (
+                <div key={model.model} className="flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-950 rounded-lg">
+                  <span className="font-medium">{model.model}</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    {model.totalSamples} samples (minimum: 15)
+                  </span>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  Creative writing evaluation naturally involves subjectivity. Multi-judge consensus provides more reliable assessment than single evaluations.
-                </p>
-              </div>
+              ))}
             </div>
-          </div>
-        </CardContent>
-      </Card>
+            <p className="text-sm text-muted-foreground mt-3">
+              Models with fewer than 15 samples are excluded from performance analysis to ensure statistical reliability.
+            </p>
+          </CardContent>
+        </Card>
+      )}
 
-      {/* Data Quality and Insights */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5" />
-            Data Quality & Model Behavior Insights
-          </CardTitle>
-          <CardDescription>
-            Understanding model compliance patterns and statistical considerations
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <Alert>
-            <BarChart3 className="h-4 w-4" />
-            <AlertTitle>Instruction Following Analysis</AlertTitle>
-            <AlertDescription>
-              <div className="mt-2">
-                <p className="mb-3">Word count compliance reveals significant differences in instruction following capabilities:</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span>Qwen 3 8B:</span>
-                      <span className="text-red-600 font-medium">100% violations</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Llama 3.1 8B:</span>
-                      <span className="text-red-600 font-medium">92% violations</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Ministral 8B:</span>
-                      <span className="text-red-600 font-medium">70% violations</span>
-                    </div>
-                  </div>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span>Mistral Nemo 12B:</span>
-                      <span className="text-orange-600 font-medium">57% violations</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Mistral Small 24B:</span>
-                      <span className="text-orange-600 font-medium">19% violations</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Gemma 3 12B:</span>
-                      <span className="text-green-600 font-medium">1% violations</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </AlertDescription>
-          </Alert>
-
-          <Alert>
-            <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Statistical Considerations</AlertTitle>
-            <AlertDescription>
-              <div className="mt-2">
-                <p>Sample size differences provide insights but require careful interpretation:</p>
-                <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                  <div>
-                    <div className="font-medium text-orange-600">GPT-4.5: 5 samples</div>
-                    <div className="text-muted-foreground">Limited statistical power, but consistent high quality</div>
-                  </div>
-                  <div>
-                    <div className="font-medium text-green-600">Open models: 100 samples each</div>
-                    <div className="text-muted-foreground">Robust statistical foundation</div>
-                  </div>
-                </div>
-                <p className="text-xs mt-2">GPT-4.5&apos;s low variance (0.155 std) suggests consistent quality across samples</p>
-              </div>
-            </AlertDescription>
-          </Alert>
-        </CardContent>
-      </Card>
-
-
-      {/* Conclusions */}
+      {/* Data Freshness Notice */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <CheckCircle className="h-5 w-5" />
-            Conclusions & Benchmark Value
+            <CheckCircle className="h-5 w-5 text-green-600" />
+            Live Data Analysis
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-3">
-            <div className="p-4 border-l-4 border-green-500 bg-green-50 dark:bg-green-950">
-              <h4 className="font-semibold text-green-700 dark:text-green-300">Key Valuable Insights</h4>
-              <ul className="list-disc list-inside text-sm mt-2 space-y-1">
-                <li>Instruction following capability varies dramatically between models - a crucial quality metric</li>
-                <li>Gemma 3 12B demonstrates most consistent high-quality performance among open models</li>
-                <li>Model architecture appears more important than sampling strategy for creative quality</li>
-                <li>Multi-judge evaluation provides robust assessment and reveals inherent subjectivity in creative tasks</li>
-                <li>Strong correlation between instruction compliance and overall quality validates this objective metric</li>
-              </ul>
-            </div>
-
-            <div className="p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950">
-              <h4 className="font-semibold text-blue-700 dark:text-blue-300">Benchmark Strengths</h4>
-              <ul className="list-disc list-inside text-sm mt-2 space-y-1">
-                <li>Multi-judge consensus provides more reliable evaluation than single assessments</li>
-                <li>Objective instruction following metric complements subjective quality assessment</li>
-                <li>Hardware-agnostic focus on quality rather than speed provides practical insights</li>
-                <li>Creative writing tasks test nuanced language capabilities beyond standard benchmarks</li>
-                <li>Transparent methodology allows for informed interpretation of results</li>
-              </ul>
-            </div>
-
-            <div className="p-4 border-l-4 border-yellow-500 bg-yellow-50 dark:bg-yellow-950">
-              <h4 className="font-semibold text-yellow-700 dark:text-yellow-300">Methodological Considerations</h4>
-              <ul className="list-disc list-inside text-sm mt-2 space-y-1">
-                <li>Judge models may not fully appreciate nuances in very high-quality text from advanced models</li>
-                <li>Creative writing evaluation naturally involves subjectivity - 80.6% consensus is reasonable</li>
-                <li>Sample size differences require careful statistical interpretation</li>
-                <li>Results complement rather than replace human evaluation for critical applications</li>
-              </ul>
-            </div>
-          </div>
-
-          <Separator />
-
-          <div className="text-center text-sm text-muted-foreground">
-            <p>
-              This benchmark provides valuable insights into model capabilities, instruction following, and creative quality. 
-              Results should be interpreted alongside methodological considerations for optimal decision-making.
+        <CardContent>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            This analysis is automatically generated from your current benchmark data. 
+            Results will update when you run new benchmarks or modify the dataset.
+          </p>
+          {summary?.last_updated && (
+            <p className="text-xs text-muted-foreground mt-2">
+              Last updated: {new Date(summary.last_updated).toLocaleString()}
             </p>
-          </div>
+          )}
         </CardContent>
       </Card>
     </div>

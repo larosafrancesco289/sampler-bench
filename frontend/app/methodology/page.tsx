@@ -2,10 +2,14 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Navigation } from "@/components/navigation"
-import { Target, Brain, BarChart, Settings, Users, Zap } from "lucide-react"
+import { Target, BarChart, Settings, Zap, ChevronDown } from "lucide-react"
+import { useState } from "react"
 
 export default function MethodologyPage() {
+  const [isPromptsOpen, setIsPromptsOpen] = useState(false)
+  
   return (
     <div className="container mx-auto py-8 px-4">
       <Navigation />
@@ -121,11 +125,112 @@ export default function MethodologyPage() {
             <p className="text-sm">
               <strong>Rationale:</strong> Creative writing quality is multifaceted and subjective. We use structured criteria 
               to make evaluation more consistent and transparent. These dimensions capture the key elements that differentiate 
-              good from poor creative writing, as validated by creative writing pedagogy and literary criticism.
+              good from poor creative writing. The specific judging prompts and criteria implementations can be found in the 
+              backend evaluation pipeline at <code>backend/evaluation/llm_judge.py</code>.
             </p>
           </div>
+
+          {/* Judging Prompts Dropdown */}
+          <div className="mt-6">
+            <Button 
+              variant="outline" 
+              className="w-full justify-between"
+              onClick={() => setIsPromptsOpen(!isPromptsOpen)}
+            >
+              View Actual Judging Prompts Used in Pipeline
+              <ChevronDown className={`h-4 w-4 transition-transform ${isPromptsOpen ? 'rotate-180' : ''}`} />
+            </Button>
+            
+            {isPromptsOpen && (
+              <div className="mt-4 space-y-4">
+                <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <h4 className="font-medium mb-2">System Prompt</h4>
+                  <pre className="text-xs text-gray-700 dark:text-gray-300 whitespace-pre-wrap overflow-x-auto">
+{`You are an expert literary critic and creative writing evaluator. Your task is to objectively assess creative writing samples based on specific criteria.
+
+You will evaluate texts on a 1-10 scale for each criterion, where:
+- 1-2: Poor quality with major issues
+- 3-4: Below average with notable problems  
+- 5-6: Average quality, adequate but unremarkable
+- 7-8: Good quality with strong elements
+- 9-10: Excellent quality, exceptional work
+
+Be objective, consistent, and provide specific reasoning for your scores. Focus on the writing quality rather than personal preferences about content or themes.
+
+Respond ONLY in the specified JSON format with no additional text.`}
+                  </pre>
+                </div>
+                
+                <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <h4 className="font-medium mb-2">Evaluation Criteria (with weights)</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span><strong>Narrative Coherence:</strong> How well the story flows and maintains logical consistency</span>
+                      <Badge variant="outline">25%</Badge>
+                    </div>
+                    <div className="flex justify-between">
+                      <span><strong>Creativity Originality:</strong> Uniqueness of ideas, plot elements, and creative expression</span>
+                      <Badge variant="outline">25%</Badge>
+                    </div>
+                    <div className="flex justify-between">
+                      <span><strong>Character Development:</strong> Depth and believability of characters and their development</span>
+                      <Badge variant="outline">20%</Badge>
+                    </div>
+                    <div className="flex justify-between">
+                      <span><strong>Engagement Readability:</strong> How engaging and readable the text is for the audience</span>
+                      <Badge variant="outline">20%</Badge>
+                    </div>
+                    <div className="flex justify-between">
+                      <span><strong>Stylistic Quality:</strong> Writing style, language use, and literary technique</span>
+                      <Badge variant="outline">10%</Badge>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <h4 className="font-medium mb-2">User Prompt Template</h4>
+                  <pre className="text-xs text-gray-700 dark:text-gray-300 whitespace-pre-wrap overflow-x-auto">
+{`**TASK**: Evaluate the following creative writing sample based on the specified criteria.
+
+**ORIGINAL PROMPT**: [Original writing prompt]
+
+**GENERATED TEXT**:
+[Generated text to evaluate]
+
+**SAMPLING CONFIGURATION**: [Temperature and sampler info]
+
+**EVALUATION CRITERIA**:
+- **Narrative Coherence**: How well the story flows and maintains logical consistency
+- **Creativity Originality**: Uniqueness of ideas, plot elements, and creative expression
+- **Character Development**: Depth and believability of characters and their development
+- **Engagement Readability**: How engaging and readable the text is for the audience
+- **Stylistic Quality**: Writing style, language use, and literary technique
+
+**INSTRUCTIONS**: 
+1. Score each criterion on a 1-10 scale
+2. Provide specific reasoning for each score
+3. Calculate an overall weighted score
+4. Give a brief summary assessment
+
+**REQUIRED JSON RESPONSE FORMAT**:
+{
+    "criterion_scores": {
+        "narrative_coherence": {"score": X.X, "reasoning": "detailed explanation"},
+        "creativity_originality": {"score": X.X, "reasoning": "detailed explanation"},
+        "character_development": {"score": X.X, "reasoning": "detailed explanation"},
+        "engagement_readability": {"score": X.X, "reasoning": "detailed explanation"},
+        "stylistic_quality": {"score": X.X, "reasoning": "detailed explanation"}
+    },
+    "overall_score": X.X,
+    "summary": "Brief 2-3 sentence assessment of the text&apos;s overall quality and notable strengths/weaknesses"
+}`}
+                  </pre>
+                </div>
+              </div>
+            )}
+          </div>
           
-          <div className="space-y-6">
+          <div className="space-y-6 mt-8">
             <div>
               <h3 className="font-semibold mb-4">Core Evaluation Dimensions</h3>
               
@@ -141,7 +246,7 @@ export default function MethodologyPage() {
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
                     <strong>Why it matters:</strong> Fundamental to readable fiction. Poor structure confuses readers and 
-                    undermines other story elements. Highest weight because it's essential for story comprehension.
+                    undermines other story elements. Highest weight because it&apos;s essential for story comprehension.
                   </p>
                 </div>
 
@@ -156,7 +261,7 @@ export default function MethodologyPage() {
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
                     <strong>Why it matters:</strong> Distinguishes memorable from forgettable writing. Creative stories engage 
-                    readers more effectively and demonstrate the model's ability to generate novel content.
+                    readers more effectively and demonstrate the model&apos;s ability to generate novel content.
                   </p>
                 </div>
 
@@ -167,7 +272,7 @@ export default function MethodologyPage() {
                   </div>
                   <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
                     <strong>What it measures:</strong> Character development, authentic dialogue, and distinct character voices. 
-                    Are characters believable and well-developed within the story's scope?
+                    Are characters believable and well-developed within the story&apos;s scope?
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
                     <strong>Why it matters:</strong> Characters drive reader engagement. Strong character voices indicate 
@@ -186,7 +291,7 @@ export default function MethodologyPage() {
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
                     <strong>Why it matters:</strong> Technical writing quality affects readability and aesthetic appeal. 
-                    Shows the model's mastery of language mechanics and stylistic variation.
+                    Shows the model&apos;s mastery of language mechanics and stylistic variation.
                   </p>
                 </div>
 
@@ -200,7 +305,7 @@ export default function MethodologyPage() {
                     and evoke emotional responses?
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
-                    <strong>Why it matters:</strong> Ultimate goal of creative writing. Lower weight because it's the most 
+                    <strong>Why it matters:</strong> Ultimate goal of creative writing. Lower weight because it&apos;s the most 
                     subjective criterion and often emerges from the other dimensions.
                   </p>
                 </div>

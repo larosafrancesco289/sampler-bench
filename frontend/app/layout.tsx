@@ -4,6 +4,7 @@ import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { QueryProvider } from '@/components/query-provider'
 import { BenchmarkProvider } from '@/contexts/benchmark-context'
+import { PageTransition } from '@/components/page-transition'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -29,7 +30,9 @@ export default function RootLayout({
               disableTransitionOnChange
             >
               <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-                {children}
+                <PageTransition>
+                  {children}
+                </PageTransition>
               </div>
             </ThemeProvider>
           </BenchmarkProvider>
