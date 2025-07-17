@@ -14,7 +14,7 @@ export default function MethodologyPage() {
           Benchmark Methodology
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-300">
-          Understanding the quality-focused evaluation framework for LLM sampling strategies
+          How we evaluate LLM sampling strategies for creative writing
         </p>
       </div>
 
@@ -23,98 +23,87 @@ export default function MethodologyPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Target className="h-5 w-5" />
-            Project Overview
+            Overview
           </CardTitle>
           <CardDescription>
-            Sampler Bench is a professional benchmarking platform designed to evaluate LLM sampling strategies on creative writing tasks
+            Comparing 5 sampling strategies across multiple models using LLM judges
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm leading-relaxed">
-            A production-quality benchmarking system that evaluates 5 core sampling strategies across multiple LLM models 
-            using sophisticated multi-judge consensus evaluation. The platform prioritizes statistical rigor and writing quality 
-            over speed, with comprehensive quality control and reliability measures.
+            This benchmark generates creative writing samples using different sampling strategies, then evaluates them 
+            using multiple LLM judges. We focus on 5 proven sampling methods across various models, with 20 samples 
+            per strategy to ensure statistical reliability.
           </p>
           <div className="flex flex-wrap gap-2">
-            <Badge variant="secondary">5 Core Sampling Methods</Badge>
-            <Badge variant="secondary">Multi-Judge Consensus</Badge>
-            <Badge variant="secondary">Quality Control</Badge>
-            <Badge variant="secondary">Statistical Rigor</Badge>
-            <Badge variant="secondary">Production-Ready</Badge>
+            <Badge variant="secondary">5 Sampling Methods</Badge>
+            <Badge variant="secondary">20 Samples Each</Badge>
+            <Badge variant="secondary">Multi-Judge Evaluation</Badge>
+            <Badge variant="secondary">Creative Writing Focus</Badge>
           </div>
         </CardContent>
       </Card>
 
-      {/* Methodology Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        
-        {/* Generation Process */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Settings className="h-5 w-5" />
-              Generation Process
-            </CardTitle>
-            <CardDescription>How text samples are generated using various sampling strategies</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-3">
-              <div>
-                <h4 className="font-medium mb-1">1. Model Server</h4>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  KoboldCpp server hosts the LLM model for local inference
-                </p>
-              </div>
-              <div>
-                <h4 className="font-medium mb-1">2. Prompt Processing</h4>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  Creative writing prompts are processed with configured sampling parameters
-                </p>
-              </div>
-              <div>
-                <h4 className="font-medium mb-1">3. Sample Generation</h4>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  Multiple samples generated per strategy with full configuration tracking
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Evaluation Framework */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Brain className="h-5 w-5" />
-              Evaluation Framework
-            </CardTitle>
-            <CardDescription>Multi-judge LLM-as-a-Judge quality assessment system</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-3">
-              <div>
-                <h4 className="font-medium mb-1">Single Judge Mode</h4>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  OpenAI GPT-4 evaluates on 5 weighted criteria (legacy mode)
-                </p>
-              </div>
-              <div>
-                <h4 className="font-medium mb-1">Multi-Judge System</h4>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  Multiple LLM judges via OpenRouter with consensus scoring for enhanced reliability
-                </p>
-              </div>
-              <div>
-                <h4 className="font-medium mb-1">Score Aggregation</h4>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  Weighted average across criteria with detailed breakdowns (1-10 scale)
-                </p>
+      {/* Process Overview */}
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Settings className="h-5 w-5" />
+            Process
+          </CardTitle>
+          <CardDescription>How samples are generated and evaluated</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 className="font-medium mb-3">Generation</h4>
+              <div className="space-y-3">
+                <div>
+                  <h5 className="font-medium mb-1">Model Setup</h5>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    Local inference using KoboldCpp server
+                  </p>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-1">Sampling</h5>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    20 samples per strategy using 5 creative writing prompts (4 repetitions each)
+                  </p>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-1">Target Length</h5>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    300-400 words per story with compliance scoring
+                  </p>
+                </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
-
-      </div>
+            <div>
+              <h4 className="font-medium mb-3">Evaluation</h4>
+              <div className="space-y-3">
+                <div>
+                  <h5 className="font-medium mb-1">Judge Models</h5>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    GPT-4.1-nano and Gemini-2.0-flash via OpenRouter
+                  </p>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-1">Consensus Scoring</h5>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    Multiple judges evaluate each sample, scores averaged with reliability metrics
+                  </p>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-1">Quality Control</h5>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    Penalties for word count violations (-1.5), meta-commentary (-0.8), failed generation (-3.0)
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Quality Criteria */}
       <Card className="mb-8">
@@ -124,102 +113,107 @@ export default function MethodologyPage() {
             Quality Evaluation Criteria
           </CardTitle>
           <CardDescription>
-            Comprehensive assessment framework with two evaluation modes
+            Why these metrics matter for creative writing evaluation
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
-            {/* Single Judge Criteria */}
+          <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <p className="text-sm">
+              <strong>Rationale:</strong> Creative writing quality is multifaceted and subjective. We use structured criteria 
+              to make evaluation more consistent and transparent. These dimensions capture the key elements that differentiate 
+              good from poor creative writing, as validated by creative writing pedagogy and literary criticism.
+            </p>
+          </div>
+          
+          <div className="space-y-6">
             <div>
-              <h3 className="font-semibold mb-3 text-sm">Single Judge System (Legacy)</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="font-medium text-sm">Narrative Coherence</h4>
-                    <p className="text-xs text-gray-600 dark:text-gray-300">Story flow and consistency</p>
+              <h3 className="font-semibold mb-4">Core Evaluation Dimensions</h3>
+              
+              <div className="space-y-4">
+                <div className="p-4 border rounded-lg">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="font-medium">Narrative Structure</h4>
+                    <Badge variant="outline" className="text-xs">30%</Badge>
                   </div>
-                  <Badge variant="outline" className="text-xs">25%</Badge>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                    <strong>What it measures:</strong> Story organization, pacing, plot coherence, and logical progression. 
+                    Does the story have a clear beginning, middle, and end? Are events well-sequenced?
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <strong>Why it matters:</strong> Fundamental to readable fiction. Poor structure confuses readers and 
+                    undermines other story elements. Highest weight because it's essential for story comprehension.
+                  </p>
                 </div>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="font-medium text-sm">Creativity & Originality</h4>
-                    <p className="text-xs text-gray-600 dark:text-gray-300">Unique ideas and expression</p>
+
+                <div className="p-4 border rounded-lg">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="font-medium">Creativity Execution</h4>
+                    <Badge variant="outline" className="text-xs">25%</Badge>
                   </div>
-                  <Badge variant="outline" className="text-xs">25%</Badge>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                    <strong>What it measures:</strong> Originality of ideas, creative premise handling, and unexpected elements. 
+                    Does the story offer fresh perspectives or novel approaches?
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <strong>Why it matters:</strong> Distinguishes memorable from forgettable writing. Creative stories engage 
+                    readers more effectively and demonstrate the model's ability to generate novel content.
+                  </p>
                 </div>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="font-medium text-sm">Character Development</h4>
-                    <p className="text-xs text-gray-600 dark:text-gray-300">Character depth and believability</p>
+
+                <div className="p-4 border rounded-lg">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="font-medium">Character Voice</h4>
+                    <Badge variant="outline" className="text-xs">20%</Badge>
                   </div>
-                  <Badge variant="outline" className="text-xs">20%</Badge>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                    <strong>What it measures:</strong> Character development, authentic dialogue, and distinct character voices. 
+                    Are characters believable and well-developed within the story's scope?
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <strong>Why it matters:</strong> Characters drive reader engagement. Strong character voices indicate 
+                    sophisticated language modeling and understanding of human psychology.
+                  </p>
                 </div>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="font-medium text-sm">Engagement & Readability</h4>
-                    <p className="text-xs text-gray-600 dark:text-gray-300">Reader interest and accessibility</p>
+
+                <div className="p-4 border rounded-lg">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="font-medium">Prose Quality</h4>
+                    <Badge variant="outline" className="text-xs">15%</Badge>
                   </div>
-                  <Badge variant="outline" className="text-xs">20%</Badge>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                    <strong>What it measures:</strong> Writing craft, style, sentence variety, and language use. 
+                    Is the prose well-crafted and pleasant to read?
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <strong>Why it matters:</strong> Technical writing quality affects readability and aesthetic appeal. 
+                    Shows the model's mastery of language mechanics and stylistic variation.
+                  </p>
                 </div>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="font-medium text-sm">Stylistic Quality</h4>
-                    <p className="text-xs text-gray-600 dark:text-gray-300">Writing technique and language use</p>
+
+                <div className="p-4 border rounded-lg">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="font-medium">Engagement</h4>
+                    <Badge variant="outline" className="text-xs">10%</Badge>
                   </div>
-                  <Badge variant="outline" className="text-xs">10%</Badge>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                    <strong>What it measures:</strong> Reader interest and emotional impact. Does the story hold attention 
+                    and evoke emotional responses?
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <strong>Why it matters:</strong> Ultimate goal of creative writing. Lower weight because it's the most 
+                    subjective criterion and often emerges from the other dimensions.
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* Multi-Judge Criteria */}
-            <div>
-              <h3 className="font-semibold mb-3 text-sm">Multi-Judge System (Primary)</h3>
-              <div className="space-y-3">
-                <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded text-xs mb-3">
-                  <strong>Judge Models:</strong> openai/gpt-4.1-nano, google/gemini-2.0-flash-001 via OpenRouter
-                </div>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="font-medium text-sm">Narrative Structure</h4>
-                    <p className="text-xs text-gray-600 dark:text-gray-300">Story organization, pacing, and plot coherence</p>
-                  </div>
-                  <Badge variant="outline" className="text-xs">30%</Badge>
-                </div>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="font-medium text-sm">Creativity Execution</h4>
-                    <p className="text-xs text-gray-600 dark:text-gray-300">Creative premise handling and original elements</p>
-                  </div>
-                  <Badge variant="outline" className="text-xs">25%</Badge>
-                </div>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="font-medium text-sm">Character Voice</h4>
-                    <p className="text-xs text-gray-600 dark:text-gray-300">Character development and authentic voice</p>
-                  </div>
-                  <Badge variant="outline" className="text-xs">20%</Badge>
-                </div>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="font-medium text-sm">Prose Quality</h4>
-                    <p className="text-xs text-gray-600 dark:text-gray-300">Writing craft, style, and language use</p>
-                  </div>
-                  <Badge variant="outline" className="text-xs">15%</Badge>
-                </div>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="font-medium text-sm">Engagement</h4>
-                    <p className="text-xs text-gray-600 dark:text-gray-300">Reader interest and emotional impact</p>
-                  </div>
-                  <Badge variant="outline" className="text-xs">10%</Badge>
-                </div>
-                <div className="mt-3 p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-xs">
-                  <strong>Quality Control:</strong> -1.5 pts word count violations, -0.8 pts meta-commentary, -3.0 pts failed generation
-                </div>
-              </div>
+            <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+              <h4 className="font-medium mb-2">Judge Models</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                <strong>GPT-4.1-nano and Gemini-2.0-flash:</strong> Selected for their strong performance on creative tasks 
+                and ability to provide detailed, structured feedback. Multiple judges reduce individual model bias.
+              </p>
             </div>
-
           </div>
         </CardContent>
       </Card>
@@ -229,10 +223,10 @@ export default function MethodologyPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Zap className="h-5 w-5" />
-            Core Sampling Strategies (5 Methods)
+            Sampling Strategies
           </CardTitle>
           <CardDescription>
-            Research-focused evaluation of proven sampling methods with quality-oriented configurations
+            The 5 sampling methods we compare in this benchmark
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -295,60 +289,6 @@ export default function MethodologyPage() {
         </CardContent>
       </Card>
 
-      {/* Technical Implementation */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5" />
-            Technical Implementation
-          </CardTitle>
-          <CardDescription>
-            Production-quality architecture with sophisticated evaluation framework
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-medium mb-2">Infrastructure & Workflow</h4>
-              <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
-                <li>• <strong>KoboldCpp servers</strong> for local model inference (multiple ports)</li>
-                <li>• <strong>Script-based workflow</strong> with generation and evaluation phases</li>
-                <li>• <strong>OpenRouter API</strong> for multi-judge consensus evaluation</li>
-                <li>• <strong>Next.js frontend</strong> reading JSON results directly</li>
-                <li>• <strong>Parallel processing</strong> for multi-judge evaluation efficiency</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-medium mb-2">Quality & Reliability Features</h4>
-              <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
-                <li>• <strong>Dynamic model resolution</strong> with family-specific defaults</li>
-                <li>• <strong>Instruction following penalties</strong> (-1.5 for word count violations)</li>
-                <li>• <strong>Meta-commentary detection</strong> (-0.8 for author notes)</li>
-                <li>• <strong>Statistical reliability</strong> metrics (std dev, consensus strength)</li>
-                <li>• <strong>Structured JSON outputs</strong> for compatible judge models</li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-md">
-            <h4 className="font-medium mb-2 text-sm">Sample Scale & Statistical Rigor</h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-              <div>
-                <strong>20 samples per sampler</strong><br/>
-                5 creative writing prompts × 4 repetitions each
-              </div>
-              <div>
-                <strong>300-400 word stories</strong><br/>
-                Target length with compliance scoring
-              </div>
-              <div>
-                <strong>Multi-judge consensus</strong><br/>
-                Parallel evaluation with reliability metrics
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Score Interpretation */}
       <Card className="mb-8">

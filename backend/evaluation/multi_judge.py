@@ -52,19 +52,16 @@ class MultiJudgeEvaluator:
     def __init__(self, 
                  api_key: Optional[str] = None,
                  judge_models: Optional[List[str]] = None,
-                 consensus_method: str = "average",
-                 temperature: float = 0.2):
+                 consensus_method: str = "average"):
         """Initialize the multi-judge system.
         
         Args:
             api_key: OpenRouter API key (defaults to env OPENROUTER_API_KEY)
             judge_models: List of models to use as judges (defaults to env LLM_JUDGE_MODELS)
             consensus_method: How to combine scores ('average', 'weighted_average', 'majority_vote')
-            temperature: Sampling temperature for consistent judging
         """
         self.api_key = api_key or os.getenv('OPENROUTER_API_KEY') or os.getenv('LLM_JUDGE_API_KEY')
         self.consensus_method = consensus_method or os.getenv('JUDGE_CONSENSUS_METHOD', 'average')
-        self.temperature = temperature
         
         # Parse judge models from environment or parameter
         if judge_models:
@@ -116,46 +113,41 @@ class MultiJudgeEvaluator:
                         "narrative_structure": {
                             "type": "object",
                             "properties": {
-                                "score": {"type": "number", "minimum": 1.0, "maximum": 10.0},
-                                "reasoning": {"type": "string"}
+                                "score": {"type": "number", "minimum": 1.0, "maximum": 10.0}
                             },
-                            "required": ["score", "reasoning"],
+                            "required": ["score"],
                             "additionalProperties": False
                         },
                         "creativity_execution": {
                             "type": "object", 
                             "properties": {
-                                "score": {"type": "number", "minimum": 1.0, "maximum": 10.0},
-                                "reasoning": {"type": "string"}
+                                "score": {"type": "number", "minimum": 1.0, "maximum": 10.0}
                             },
-                            "required": ["score", "reasoning"],
+                            "required": ["score"],
                             "additionalProperties": False
                         },
                         "character_voice": {
                             "type": "object",
                             "properties": {
-                                "score": {"type": "number", "minimum": 1.0, "maximum": 10.0},
-                                "reasoning": {"type": "string"}
+                                "score": {"type": "number", "minimum": 1.0, "maximum": 10.0}
                             },
-                            "required": ["score", "reasoning"],
+                            "required": ["score"],
                             "additionalProperties": False
                         },
                         "prose_quality": {
                             "type": "object",
                             "properties": {
-                                "score": {"type": "number", "minimum": 1.0, "maximum": 10.0},
-                                "reasoning": {"type": "string"}
+                                "score": {"type": "number", "minimum": 1.0, "maximum": 10.0}
                             },
-                            "required": ["score", "reasoning"],
+                            "required": ["score"],
                             "additionalProperties": False
                         },
                         "engagement": {
                             "type": "object",
                             "properties": {
-                                "score": {"type": "number", "minimum": 1.0, "maximum": 10.0},
-                                "reasoning": {"type": "string"}
+                                "score": {"type": "number", "minimum": 1.0, "maximum": 10.0}
                             },
-                            "required": ["score", "reasoning"],
+                            "required": ["score"],
                             "additionalProperties": False
                         }
                     },
@@ -170,7 +162,8 @@ class MultiJudgeEvaluator:
                 },
                 "summary": {
                     "type": "string",
-                    "description": "Brief 2-3 sentence assessment of the text's overall quality and notable strengths/weaknesses"
+                    "maxLength": 100,
+                    "description": "Very brief 1 sentence assessment"
                 }
             },
             "required": ["criterion_scores", "overall_score", "summary"],
@@ -203,6 +196,8 @@ class MultiJudgeEvaluator:
             'mistralai/ministral-8b',
             # Fireworks models (all Fireworks models support it)
             'fireworks/',  # Any model starting with fireworks/
+            'moonshotai/kimi-k2',
+            'deepseek/deepseek-chat-v3-0324'
         }
         
         print(f"🔧 MultiJudge initialized with {len(self.judge_models)} judges:")
@@ -276,7 +271,6 @@ class MultiJudgeEvaluator:
         # Apply instruction penalties if configured
         if penalty_config and penalty_config.get('instruction_penalties'):
             from evaluation.instruction_penalties import apply_instruction_penalties
-            import re
             
             # Calculate word count
             word_count = len(text.split()) if text else 0
@@ -354,7 +348,7 @@ class MultiJudgeEvaluator:
                     {"role": "system", "content": self._get_system_prompt()},
                     {"role": "user", "content": judgment_prompt}
                 ],
-                "temperature": self.temperature,
+                # Use model default temperature for unbiased evaluation
                 "max_tokens": 1500
             }
             
@@ -409,7 +403,7 @@ class MultiJudgeEvaluator:
             for result in individual_results:
                 if criterion in result['criterion_scores']:
                     scores.append(result['criterion_scores'][criterion]['score'])
-                    reasoning.append(result['criterion_scores'][criterion]['reasoning'])
+                    reasoning.append(result['criterion_scores'][criterion].get('reasoning', 'No reasoning'))
                     models.append(result['judge_model'])
             
             if scores:
@@ -499,21 +493,20 @@ Respond ONLY in the specified JSON format with no additional text."""
 
 **INSTRUCTIONS**: 
 1. Score each criterion on a 1-10 scale
-2. Provide specific reasoning for each score
-3. Calculate an overall weighted score
-4. Give a brief summary assessment
+2. Calculate an overall weighted score
+3. Give a one sentence summary
 
 **REQUIRED JSON RESPONSE FORMAT**:
 {{
     "criterion_scores": {{
-        "narrative_structure": {{"score": X.X, "reasoning": "detailed explanation"}},
-        "creativity_execution": {{"score": X.X, "reasoning": "detailed explanation"}},
-        "character_voice": {{"score": X.X, "reasoning": "detailed explanation"}},
-        "prose_quality": {{"score": X.X, "reasoning": "detailed explanation"}},
-        "engagement": {{"score": X.X, "reasoning": "detailed explanation"}}
+        "narrative_structure": {{"score": X.X}},
+        "creativity_execution": {{"score": X.X}},
+        "character_voice": {{"score": X.X}},
+        "prose_quality": {{"score": X.X}},
+        "engagement": {{"score": X.X}}
     }},
     "overall_score": X.X,
-    "summary": "Brief 2-3 sentence assessment of the text's overall quality and notable strengths/weaknesses"
+    "summary": "One sentence assessment"
 }}"""
     
     def _parse_judgment(self, judgment_text: str, model: str) -> Dict[str, Any]:
@@ -542,7 +535,7 @@ Respond ONLY in the specified JSON format with no additional text."""
         for criterion, details in judgment_data.get('criterion_scores', {}).items():
             result['criterion_scores'][criterion] = {
                 'score': float(details.get('score', 5.0)),
-                'reasoning': details.get('reasoning', 'No reasoning provided')
+                'reasoning': details.get('reasoning', '')
             }
         
         return result

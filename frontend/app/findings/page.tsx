@@ -14,8 +14,7 @@ export default function FindingsPage() {
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">Key Findings & Insights</h1>
         <p className="text-lg text-gray-600 dark:text-gray-300">
-          Comprehensive analysis of benchmark results reveals valuable insights about model performance, 
-          instruction following capabilities, and evaluation methodology considerations.
+          Analysis of benchmark results showing model performance differences and evaluation insights.
         </p>
       </div>
 

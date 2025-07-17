@@ -270,3 +270,5 @@ papers/
 !frontend/lib/
 # Still ignore any nested node_modules inside it if they exist
 frontend/lib/node_modules/
+
+FEEDBACK.md

@@ -23,7 +23,7 @@ export function Navigation() {
           Sampler Bench
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-300">
-          Hardware-agnostic quality evaluation of LLM sampling strategies
+          Comparing LLM sampling strategies for creative writing
         </p>
       </div>
       <div className="flex items-center gap-4">

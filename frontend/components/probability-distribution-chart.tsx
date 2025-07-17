@@ -199,7 +199,7 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
     }).sort((a, b) => b.probability - a.probability)
 
     return {
-      data: result.slice(0, 15), // Show top 15 tokens
+      data: result.slice(0, 20), // Show top 20 tokens (increased from 15)
       threshold,
       selectedCount,
       totalTokens: probabilities.length
@@ -262,16 +262,16 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
       </div>
 
       {/* Chart */}
-      <div className="h-64">
+      <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={processedData.data}
-            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+            margin={{ top: 5, right: 30, left: 20, bottom: 80 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
               dataKey="token" 
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 10 }}
               angle={-45}
               textAnchor="end"
               height={80}

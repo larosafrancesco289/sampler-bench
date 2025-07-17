@@ -1,9 +1,10 @@
 "use client"
 
+import { useState, useMemo } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useBenchmarkContext } from "@/contexts/benchmark-context"
-import { QualityFilters } from "@/components/quality-filters"
 
 export function LeaderboardTable() {
   const { 
@@ -11,18 +12,39 @@ export function LeaderboardTable() {
     loading, 
     error, 
     refetch, 
-    hasActiveFilters,
-    criteriaFilters,
-    wordCountRange,
-    scoreRange,
-    activePreset,
-    handleCriteriaFilterChange,
-    setWordCountRange,
-    setScoreRange,
-    handleQuickPresetChange,
-    resetQualityFilters,
-    dataBounds
+    hasActiveFilters
   } = useBenchmarkContext()
+
+  // Get unique models for the toggle
+  const availableModels = useMemo(() => {
+    const models = [...new Set(data.map(entry => entry.model_name || 'Unknown Model'))]
+    return models.sort()
+  }, [data])
+
+  const [selectedModels, setSelectedModels] = useState<string[]>(availableModels)
+
+  // Update selected models when available models change
+  useMemo(() => {
+    if (availableModels.length > 0 && selectedModels.length === 0) {
+      setSelectedModels(availableModels)
+    }
+  }, [availableModels, selectedModels.length])
+
+  // Filter data based on selected models
+  const filteredData = useMemo(() => {
+    return data.filter(entry => {
+      const modelName = entry.model_name || 'Unknown Model'
+      return selectedModels.includes(modelName)
+    })
+  }, [data, selectedModels])
+
+  const handleModelToggle = (modelName: string) => {
+    setSelectedModels(prev => 
+      prev.includes(modelName) 
+        ? prev.filter(m => m !== modelName)
+        : [...prev, modelName]
+    )
+  }
 
   if (loading) {
     return (
@@ -64,19 +86,28 @@ export function LeaderboardTable() {
 
   return (
     <div className="space-y-4">
-      <QualityFilters
-        onCriteriaFilterChange={handleCriteriaFilterChange}
-        onWordCountFilterChange={setWordCountRange}
-        onScoreRangeFilterChange={setScoreRange}
-        onQuickPresetChange={handleQuickPresetChange}
-        onReset={resetQualityFilters}
-        criteriaFilters={criteriaFilters}
-        wordCountRange={wordCountRange}
-        scoreRange={scoreRange}
-        activePreset={activePreset}
-        dataBounds={dataBounds}
-      />
-      {data.map((entry, index) => (
+      {/* Simple Model Toggle */}
+      {availableModels.length > 1 && (
+        <div className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Models:
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {availableModels.map(model => (
+              <Badge
+                key={model}
+                variant={selectedModels.includes(model) ? "default" : "outline"}
+                className="cursor-pointer transition-all duration-200 hover:scale-105"
+                onClick={() => handleModelToggle(model)}
+              >
+                {model}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {filteredData.map((entry, index) => (
         <div
           key={`${entry.sampler_name}-${entry.model_name || 'unknown'}-${index}`}
           className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-md dark:hover:shadow-lg transition-all duration-300 hover:scale-[1.02] bg-white dark:bg-gray-800/50"

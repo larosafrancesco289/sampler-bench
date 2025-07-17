@@ -43,18 +43,18 @@ function DashboardContent() {
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 animate-slide-up">
-        <Card className="transition-all duration-300 hover:scale-[1.02] hover:shadow-lg dark:hover:shadow-xl">
+      <div className="space-y-6 mb-8 animate-slide-up">
+        <Card className="transition-all duration-300 hover:shadow-lg dark:hover:shadow-xl">
           <CardHeader>
-            <CardTitle className="transition-colors duration-300">Overall Quality Scores</CardTitle>
-            <CardDescription className="transition-colors duration-300">Average quality ratings by sampling strategy</CardDescription>
+            <CardTitle className="transition-colors duration-300">Sampling Strategy Comparison by Model</CardTitle>
+            <CardDescription className="transition-colors duration-300">Quality scores grouped by model to compare sampling methods</CardDescription>
           </CardHeader>
           <CardContent>
             <ScoreChart />
           </CardContent>
         </Card>
         
-        <Card className="transition-all duration-300 hover:scale-[1.02] hover:shadow-lg dark:hover:shadow-xl">
+        <Card className="transition-all duration-300 hover:shadow-lg dark:hover:shadow-xl">
           <CardHeader>
             <CardTitle className="transition-colors duration-300">Quality Criteria Breakdown</CardTitle>
             <CardDescription className="transition-colors duration-300">Detailed evaluation across writing dimensions</CardDescription>
@@ -71,7 +71,7 @@ function DashboardContent() {
           <CardHeader>
             <CardTitle className="transition-colors duration-300">Quality Leaderboard</CardTitle>
             <CardDescription className="transition-colors duration-300">
-              Complete ranking of sampling strategies based on writing quality evaluation
+              Sampling strategies ranked by creative writing quality scores
             </CardDescription>
           </CardHeader>
           <CardContent>

@@ -1,9 +1,8 @@
 "use client"
 
-import { useState, useMemo } from 'react'
-import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
+import { useMemo, useState } from 'react'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { useBenchmarkContext } from "@/contexts/benchmark-context"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Badge } from "@/components/ui/badge"
 
 // Theme-aware colors that work in both light and dark modes
@@ -20,11 +19,8 @@ const getChartColors = () => [
   'hsl(var(--chart-10))'
 ]
 
-type ChartType = 'radar' | 'bar'
-
 export function QualityCriteriaChart() {
   const { data, loading, error, hasActiveFilters } = useBenchmarkContext()
-  const [chartType, setChartType] = useState<ChartType>('radar')
   const [maxItemsToShow] = useState(8) // Limit items to prevent overcrowding
 
   // Transform criteria names for display
@@ -53,23 +49,6 @@ export function QualityCriteriaChart() {
     }
     return data.slice(0, maxItemsToShow)
   }, [data, maxItemsToShow])
-
-  // Create chart data for radar chart
-  const radarChartData = useMemo(() => {
-    return allCriteria.map(criterion => {
-      const point: Record<string, unknown> = {
-        criterion: formatCriterionName(criterion)
-      }
-      
-      displayData.forEach((entry) => {
-        const entryKey = entry.sampler_name
-        const samplerKey = entryKey.replace(/[^a-zA-Z0-9]/g, '_')
-        point[samplerKey] = entry.criteria_breakdown[criterion] || 0
-      })
-      
-      return point
-    })
-  }, [allCriteria, displayData])
 
   // Create chart data for bar chart
   const barChartData = useMemo(() => {
@@ -113,50 +92,6 @@ export function QualityCriteriaChart() {
       </div>
     )
   }
-
-  const renderRadarChart = () => (
-    <ResponsiveContainer width="100%" height="100%">
-      <RadarChart data={radarChartData}>
-        <PolarGrid stroke="currentColor" opacity={0.2} />
-        <PolarAngleAxis 
-          dataKey="criterion" 
-          tick={{ fontSize: 9, fill: 'currentColor' }}
-          className="text-gray-700 dark:text-gray-300"
-        />
-        <PolarRadiusAxis 
-          angle={90} 
-          domain={[0, 10]} 
-          tick={{ fontSize: 8, fill: 'currentColor' }}
-          stroke="currentColor"
-          opacity={0.5}
-        />
-        {displayData.map((entry, index) => {
-          const entryKey = entry.sampler_name
-          const samplerKey = entryKey.replace(/[^a-zA-Z0-9]/g, '_')
-          const displayName = entryKey.length > 25 ? entryKey.substring(0, 22) + '...' : entryKey
-          
-          return (
-            <Radar
-              key={samplerKey}
-              name={displayName}
-              dataKey={samplerKey}
-              stroke={getChartColors()[index % getChartColors().length]}
-              fill={getChartColors()[index % getChartColors().length]}
-              fillOpacity={0.1}
-              strokeWidth={2}
-              className="transition-all duration-300"
-            />
-          )
-        })}
-        <Legend 
-          wrapperStyle={{ 
-            color: 'currentColor',
-            fontSize: '10px'
-          }}
-        />
-      </RadarChart>
-    </ResponsiveContainer>
-  )
 
   const renderBarChart = () => (
     <ResponsiveContainer width="100%" height="100%">
@@ -210,44 +145,33 @@ export function QualityCriteriaChart() {
 
   return (
     <div className="space-y-4">
-      {/* Chart Controls */}
-      <div className="flex items-center justify-between">
-        <ToggleGroup type="single" value={chartType} onValueChange={(value: string) => value && setChartType(value as ChartType)}>
-          <ToggleGroupItem value="radar" aria-label="Radar Chart">
-            Radar
-          </ToggleGroupItem>
-          <ToggleGroupItem value="bar" aria-label="Bar Chart">
-            Bar
-          </ToggleGroupItem>
-        </ToggleGroup>
-        
-        {data.length > maxItemsToShow && (
+      {/* Show item count if limited */}
+      {data.length > maxItemsToShow && (
+        <div className="flex justify-end">
           <Badge variant="secondary" className="text-xs">
             Showing top {maxItemsToShow} of {data.length} entries
           </Badge>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Chart */}
       <div className="h-80 transition-all duration-300">
-        {chartType === 'radar' ? renderRadarChart() : renderBarChart()}
+        {renderBarChart()}
       </div>
 
-      {/* Criteria Legend for Bar Chart */}
-      {chartType === 'bar' && (
-        <div className="flex flex-wrap gap-2 justify-center">
-          {allCriteria.map((criterion, index) => (
-            <Badge
-              key={criterion}
-              variant="outline"
-              className="text-xs"
-              style={{ borderColor: getChartColors()[index % getChartColors().length], color: getChartColors()[index % getChartColors().length] }}
-            >
-              {formatCriterionName(criterion)}
-            </Badge>
-          ))}
-        </div>
-      )}
+      {/* Criteria Legend */}
+      <div className="flex flex-wrap gap-2 justify-center">
+        {allCriteria.map((criterion, index) => (
+          <Badge
+            key={criterion}
+            variant="outline"
+            className="text-xs"
+            style={{ borderColor: getChartColors()[index % getChartColors().length], color: getChartColors()[index % getChartColors().length] }}
+          >
+            {formatCriterionName(criterion)}
+          </Badge>
+        ))}
+      </div>
     </div>
   )
 } 
