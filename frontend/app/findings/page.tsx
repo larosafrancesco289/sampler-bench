@@ -311,7 +311,7 @@ export default function FindingsPage() {
                         (insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore) < 0.3 
                           ? "Sampling parameters have minimal impact on creative writing quality. Model choice appears more important than sampling strategy."
                           : (insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore) < 0.8
-                          ? "Minimal sampling strategy effects observed. The 0.398 difference represents only 4.4% of the evaluation scale and is below typical human judgment noise levels."
+                          ? `Minimal sampling strategy effects observed. The ${(insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore).toFixed(3)} difference represents only ${((insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore) / 10 * 100).toFixed(1)}% of the evaluation scale and is below typical human judgment noise levels.`
                           : "Strong sampling strategy effects detected. Choice of sampling parameters significantly impacts output quality."
                       }
                     </p>
@@ -333,7 +333,7 @@ export default function FindingsPage() {
                   Word count compliance serves as an objective measure of instruction following.
                 </p>
                 <div className="space-y-2">
-                  {insights.modelPerformance.slice(0, 5).map((model) => {
+                  {insights.modelPerformance.map((model) => {
                     // Calculate compliance based on word count consistency
                     const wordCounts = model.entries.map(e => e.avg_word_count).filter(Boolean);
                     const avgWordCount = wordCounts.reduce((sum, count) => sum + count, 0) / wordCounts.length;

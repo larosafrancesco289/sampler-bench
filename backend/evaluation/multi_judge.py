@@ -103,7 +103,7 @@ class MultiJudgeEvaluator:
             }
         }
         
-        # JSON Schema for structured outputs
+        # JSON Schema for structured outputs (OpenAI/Google compatible)
         self.evaluation_schema = {
             "type": "object",
             "properties": {
@@ -170,6 +170,70 @@ class MultiJudgeEvaluator:
             "additionalProperties": False
         }
         
+        # Mistral-compatible schema (no minimum/maximum constraints)
+        self.mistral_evaluation_schema = {
+            "type": "object",
+            "properties": {
+                "criterion_scores": {
+                    "type": "object",
+                    "properties": {
+                        "narrative_structure": {
+                            "type": "object",
+                            "properties": {
+                                "score": {"type": "number", "description": "Score from 1.0 to 10.0"}
+                            },
+                            "required": ["score"],
+                            "additionalProperties": False
+                        },
+                        "creativity_execution": {
+                            "type": "object", 
+                            "properties": {
+                                "score": {"type": "number", "description": "Score from 1.0 to 10.0"}
+                            },
+                            "required": ["score"],
+                            "additionalProperties": False
+                        },
+                        "character_voice": {
+                            "type": "object",
+                            "properties": {
+                                "score": {"type": "number", "description": "Score from 1.0 to 10.0"}
+                            },
+                            "required": ["score"],
+                            "additionalProperties": False
+                        },
+                        "prose_quality": {
+                            "type": "object",
+                            "properties": {
+                                "score": {"type": "number", "description": "Score from 1.0 to 10.0"}
+                            },
+                            "required": ["score"],
+                            "additionalProperties": False
+                        },
+                        "engagement": {
+                            "type": "object",
+                            "properties": {
+                                "score": {"type": "number", "description": "Score from 1.0 to 10.0"}
+                            },
+                            "required": ["score"],
+                            "additionalProperties": False
+                        }
+                    },
+                    "required": ["narrative_structure", "creativity_execution", "character_voice", "prose_quality", "engagement"],
+                    "additionalProperties": False
+                },
+                "overall_score": {
+                    "type": "number",
+                    "description": "Overall weighted score from 1.0 to 10.0 based on all criteria"
+                },
+                "summary": {
+                    "type": "string",
+                    "description": "Very brief 1 sentence assessment (max 100 characters)"
+                }
+            },
+            "required": ["criterion_scores", "overall_score", "summary"],
+            "additionalProperties": False
+        }
+        
         # Models that support structured outputs (based on OpenRouter documentation)
         self.structured_output_models = {
             # OpenAI models (GPT-4o and later)
@@ -218,6 +282,17 @@ class MultiJudgeEvaluator:
                 return True
                 
         return False
+    
+    def _is_mistral_model(self, model: str) -> bool:
+        """Check if a model is a Mistral model (which has schema limitations)."""
+        return model.startswith('mistralai/')
+    
+    def _get_schema_for_model(self, model: str) -> dict:
+        """Get the appropriate schema for the given model."""
+        if self._is_mistral_model(model):
+            return self.mistral_evaluation_schema
+        else:
+            return self.evaluation_schema
     
     def evaluate_text(self, 
                      text: str, 
@@ -354,15 +429,17 @@ class MultiJudgeEvaluator:
             
             # Add structured outputs if supported by the model
             if self._supports_structured_outputs(model):
+                schema = self._get_schema_for_model(model)
                 request_params["response_format"] = {
                     "type": "json_schema",
                     "json_schema": {
                         "name": "creative_writing_evaluation",
                         "strict": True,
-                        "schema": self.evaluation_schema
+                        "schema": schema
                     }
                 }
-                print(f"   🔧 Using structured outputs for {model}")
+                schema_type = "Mistral" if self._is_mistral_model(model) else "standard"
+                print(f"   🔧 Using structured outputs ({schema_type} schema) for {model}")
             else:
                 print(f"   📝 Using text parsing for {model}")
             

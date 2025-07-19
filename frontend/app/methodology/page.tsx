@@ -42,8 +42,9 @@ export default function MethodologyPage() {
           <div className="flex flex-wrap gap-2">
             <Badge variant="secondary">5 Sampling Methods</Badge>
             <Badge variant="secondary">20 Samples Each</Badge>
-            <Badge variant="secondary">Multi-Judge Evaluation</Badge>
+            <Badge variant="secondary">Cross-Cultural Multi-Judge</Badge>
             <Badge variant="secondary">Creative Writing Focus</Badge>
+            <Badge variant="secondary">Instruction Following Tracking</Badge>
           </div>
         </CardContent>
       </Card>
@@ -88,7 +89,7 @@ export default function MethodologyPage() {
                 <div>
                   <h5 className="font-medium mb-1">Judge Models</h5>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
-                    GPT-4.1-nano and Gemini-2.0-flash via OpenRouter
+                    Kimi-K2 (Chinese) and Mistral Medium 3 (European) leading open-weight models
                   </p>
                 </div>
                 <div>
@@ -100,7 +101,7 @@ export default function MethodologyPage() {
                 <div>
                   <h5 className="font-medium mb-1">Quality Control</h5>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
-                    Penalties for word count violations (-1.5), meta-commentary (-0.8), failed generation (-3.0)
+                    Word count compliance tracking (300-400 words), instruction following analysis, generation failure detection
                   </p>
                 </div>
               </div>
@@ -315,9 +316,14 @@ Respond ONLY in the specified JSON format with no additional text.`}
             <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
               <h4 className="font-medium mb-2">Judge Models</h4>
               <p className="text-sm text-gray-600 dark:text-gray-300">
-                <strong>GPT-4.1-nano and Gemini-2.0-flash:</strong> Selected for their strong performance on creative tasks 
-                and ability to provide detailed, structured feedback. Multiple judges reduce individual model bias.
+                <strong>Kimi-K2 (Chinese) and Mistral Medium 3 (European):</strong> Leading open-weight models from different cultural backgrounds, 
+                selected for their strong creative writing evaluation capabilities and cross-cultural perspective diversity. 
+                Multiple judges reduce individual model bias while providing culturally diverse evaluation viewpoints.
               </p>
+              <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+                <strong>Judge Agreement:</strong> These models have demonstrated high consensus strength in testing, 
+                indicating excellent cross-cultural reliability in creative writing evaluation.
+              </div>
             </div>
           </div>
         </CardContent>
@@ -394,6 +400,54 @@ Respond ONLY in the specified JSON format with no additional text.`}
         </CardContent>
       </Card>
 
+
+      {/* Instruction Following */}
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Target className="h-5 w-5" />
+            Instruction Following Analysis
+          </CardTitle>
+          <CardDescription>
+            How we measure model compliance with specific instructions
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+              <h4 className="font-medium mb-2">Word Count Compliance</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                Each prompt specifies exactly 300-400 words. We track compliance rates as an objective measure 
+                of instruction following capability. High compliance indicates better instruction adherence.
+              </p>
+            </div>
+            
+            <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+              <h4 className="font-medium mb-2">Methodology Approach</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                Rather than applying score penalties, we use compliance metrics for analysis and reporting. 
+                This preserves the natural quality scores while providing clear visibility into instruction following patterns.
+              </p>
+              <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+                <div><strong>Tracked Metrics:</strong></div>
+                <div>• Word count compliance percentage per model/sampler</div>
+                <div>• Average word count deviation from target range</div>
+                <div>• Instruction following consistency across samples</div>
+                <div>• Generation failure rates and meta-commentary detection</div>
+              </div>
+            </div>
+            
+            <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+              <h4 className="font-medium mb-2">Why This Matters</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                Instruction following correlates with model reliability and real-world usability. Models with 
+                higher compliance rates typically perform better across quality dimensions, suggesting that 
+                instruction adherence is a fundamental capability indicator.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Score Interpretation */}
       <Card className="mb-8">
