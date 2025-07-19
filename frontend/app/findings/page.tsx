@@ -330,7 +330,7 @@ export default function FindingsPage() {
               </h3>
               <div className="p-4 bg-green-50 dark:bg-green-950 rounded-lg">
                 <p className="text-sm mb-3">
-                  Word count compliance serves as an objective measure of instruction following - a key quality indicator often overlooked in benchmarks.
+                  Word count compliance serves as an objective measure of instruction following.
                 </p>
                 <div className="space-y-2">
                   {insights.modelPerformance.slice(0, 5).map((model) => {

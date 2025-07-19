@@ -32,10 +32,10 @@ export function Navigation() {
             key={item.href}
             href={item.href}
             className={cn(
-              "text-sm px-3 py-2 rounded-md transition-colors",
+              "text-sm px-3 py-2 rounded-md transition-all duration-200 ease-out transform hover:scale-105 active:scale-95",
               pathname === item.href
-                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-                : "text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950"
+                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 shadow-sm"
+                : "text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950 hover:shadow-sm"
             )}
           >
             {item.label}
@@ -45,7 +45,7 @@ export function Navigation() {
           href="https://github.com/larosafrancesco289/sampler-bench"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+          className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-all duration-200 ease-out p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transform hover:scale-110 active:scale-95"
           title="View on GitHub"
         >
           <Github className="h-5 w-5" />

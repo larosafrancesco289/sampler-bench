@@ -80,47 +80,64 @@
     @apply bg-background text-foreground transition-colors;
   }
   
-  /* Enhanced animations */
+  /* Enhanced animations with reduced motion support */
   .animate-fade-in {
-    animation: fadeIn 0.5s ease-in-out;
+    animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
   
   .animate-slide-up {
-    animation: slideUp 0.3s ease-out;
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
   
   .animate-scale-in {
-    animation: scaleIn 0.2s ease-out;
+    animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-in,
+    .animate-slide-up,
+    .animate-scale-in {
+      animation: none;
+    }
+    
+    * {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+    }
   }
   
   /* Custom keyframes */
   @keyframes fadeIn {
     from {
       opacity: 0;
+      transform: translateY(8px);
     }
     to {
       opacity: 1;
+      transform: translateY(0);
     }
   }
   
   @keyframes slideUp {
     from {
-      transform: translateY(20px);
+      transform: translateY(16px) scale(0.99);
       opacity: 0;
     }
     to {
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
       opacity: 1;
     }
   }
   
   @keyframes scaleIn {
     from {
-      transform: scale(0.95);
+      transform: scale(0.97) translateY(4px);
       opacity: 0;
     }
     to {
-      transform: scale(1);
+      transform: scale(1) translateY(0);
       opacity: 1;
     }
   }
@@ -132,7 +149,33 @@
   
   /* Enhanced transitions for better dark mode */
   .transition-theme {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                color 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  /* Professional page transition utilities */
+  .page-transition-enter {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+  
+  .page-transition-enter-active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .page-transition-exit {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  
+  .page-transition-exit-active {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+    transition: all 0.2s cubic-bezier(0.4, 0, 1, 1);
   }
 }
 
