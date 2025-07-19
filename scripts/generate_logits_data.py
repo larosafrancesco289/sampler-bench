@@ -78,11 +78,102 @@ def check_server_status(port: int) -> bool:
     print(f"   ❌ No working endpoints found")
     return False
 
+def extract_token_logits_multi_sample(model_name: str, prompt: str, port: int) -> Optional[Dict[str, Any]]:
+    """Extract token logits from KoboldCpp using multiple sampling runs to get more diverse tokens."""
+    
+    # Try different temperature values to get different token distributions
+    temperatures = [0.1, 0.5, 1.0, 1.5, 2.0]
+    all_tokens = {}  # token -> best logit seen
+    endpoints = ["/api/v1/generate", "/api/extra/generate/check", "/api/latest/generate"]
+    
+    for temp in temperatures:
+        for endpoint in endpoints:
+            try:
+                payload = {
+                    "prompt": prompt,
+                    "max_length": 1,
+                    "max_context_length": 2048,
+                    "temperature": temp,
+                    "top_p": 1.0,
+                    "top_k": 0,
+                    "rep_pen": 1.0,
+                    "rep_pen_range": 0,
+                    "rep_pen_slope": 1.0,
+                    "tfs": 1.0,
+                    "typical": 1.0,
+                    "sampler_order": [6, 0, 1, 3, 4, 2, 5],
+                    "n": 1,
+                    "stop_sequence": [],
+                    "logprobs": True,
+                    "use_memory": False,
+                    "use_story": False,
+                    "use_world_info": False,
+                    "use_userscripts": False
+                }
+                
+                response = requests.post(f"http://localhost:{port}{endpoint}", json=payload, timeout=30)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    
+                    # Extract tokens from this response
+                    if 'results' in data and len(data['results']) > 0:
+                        result = data['results'][0]
+                        if 'logprobs' in result and result['logprobs']:
+                            logprobs_data = result['logprobs']
+                            
+                            # Process the logprobs data
+                            if isinstance(logprobs_data, dict) and 'content' in logprobs_data:
+                                for item in logprobs_data['content']:
+                                    if isinstance(item, dict) and 'token' in item and 'logprob' in item:
+                                        token = str(item['token'])
+                                        logit = float(item['logprob'])
+                                        
+                                        # Keep the highest logit for each token
+                                        if token not in all_tokens or logit > all_tokens[token]:
+                                            all_tokens[token] = logit
+                                        
+                                        # Also extract top alternatives
+                                        if 'top_logprobs' in item and isinstance(item['top_logprobs'], list):
+                                            for alt in item['top_logprobs']:
+                                                if isinstance(alt, dict) and 'token' in alt and 'logprob' in alt:
+                                                    alt_token = str(alt['token'])
+                                                    alt_logit = float(alt['logprob'])
+                                                    
+                                                    if alt_token not in all_tokens or alt_logit > all_tokens[alt_token]:
+                                                        all_tokens[alt_token] = alt_logit
+                    
+                    # If we got data from this endpoint, break to next temperature
+                    if all_tokens:
+                        break
+                        
+            except Exception as e:
+                print(f"   Failed temperature {temp} endpoint {endpoint}: {e}")
+                continue
+    
+    if all_tokens:
+        # Convert to the expected format
+        processed_tokens = []
+        for i, (token, logit) in enumerate(sorted(all_tokens.items(), key=lambda x: x[1], reverse=True)):
+            processed_tokens.append({
+                "token": token,
+                "logit": logit,
+                "index": i
+            })
+        
+        return {"logprobs": processed_tokens, "endpoint": "multi_sample"}
+    
+    return None
+
 def extract_token_logits(model_name: str, prompt: str, port: int) -> Optional[Dict[str, Any]]:
     """Extract token logits from KoboldCpp using the new logprobs API (v1.77+)."""
     
-    # KoboldCpp v1.77+ supports logprobs in the API
-    # Try the main generate endpoint with logprobs enabled first
+    # First try the multi-sampling approach for more tokens
+    multi_result = extract_token_logits_multi_sample(model_name, prompt, port)
+    if multi_result:
+        return multi_result
+    
+    # Fallback to single request approach
     endpoints = [
         "/api/v1/generate",
         "/api/extra/generate/check", 
@@ -107,7 +198,7 @@ def extract_token_logits(model_name: str, prompt: str, port: int) -> Optional[Di
                 "sampler_order": [6, 0, 1, 3, 4, 2, 5],
                 "n": 1,
                 "stop_sequence": [],
-                "logprobs": 50,  # Request top 50 token probabilities (KoboldCpp v1.77+)
+                "logprobs": True,  # Request logprobs (KoboldCpp v1.77+)
                 "use_memory": False,
                 "use_story": False,
                 "use_world_info": False,
@@ -271,15 +362,13 @@ def create_realistic_logits_dataset(model_name: str, num_scenarios: int = 5) -> 
                             
                             # Also extract top alternatives if available
                             if 'top_logprobs' in item and isinstance(item['top_logprobs'], list):
-                                for alt in item['top_logprobs'][:20]:  # Take top 20 alternatives
+                                for alt in item['top_logprobs']:  # Take all alternatives
                                     if isinstance(alt, dict) and 'token' in alt and 'logprob' in alt:
-                                        # Don't duplicate the main token
-                                        if alt['token'] != item['token']:
-                                            processed_tokens.append({
-                                                "token": str(alt['token']),
-                                                "logit": float(alt['logprob']),
-                                                "index": len(processed_tokens)
-                                            })
+                                        processed_tokens.append({
+                                            "token": str(alt['token']),
+                                            "logit": float(alt['logprob']),
+                                            "index": len(processed_tokens)
+                                        })
                 
                 # Fallback: try direct token->logprob mapping
                 elif not processed_tokens:
@@ -347,7 +436,7 @@ def create_realistic_logits_dataset(model_name: str, num_scenarios: int = 5) -> 
                 "tokens": processed_tokens,
                 "raw_logits_count": len(processed_tokens),
                 "endpoint_used": result.get('endpoint', 'unknown'),
-                "data_type": "real_logprobs"
+                "data_type": "real_logprobs_only"
             }
             
             successful_extractions += 1

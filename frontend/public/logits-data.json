@@ -1,6 +1,6 @@
 {
-  "model": "gemma3-12b-it",
-  "port": 5006,
+  "model": "llama.cpp",
+  "port": 5007,
   "scenarios": {
     "article_start": {
       "prompt": "The weather today is",
@@ -8,38 +8,127 @@
       "tokens": [
         {
           "token": " beautiful",
-          "logit": -2.169722557067871,
+          "logit": -2.22232985496521,
+          "probability": 0.10835635990199316,
+          "index": 0
+        },
+        {
+          "token": " a",
+          "logit": -2.47416090965271,
+          "probability": 0.0842336402467512,
           "index": 1
         },
         {
           "token": " sunny",
-          "logit": -2.4319944381713867,
+          "logit": -2.4832305908203125,
+          "probability": 0.08347312202829765,
           "index": 2
         },
         {
-          "token": " a",
-          "logit": -2.4391565322875977,
+          "token": " expected",
+          "logit": -2.8535802364349365,
+          "probability": 0.057637594814594115,
           "index": 3
         },
         {
-          "token": " expected",
-          "logit": -2.927513837814331,
+          "token": " going",
+          "logit": -3.1016156673431396,
+          "probability": 0.04497647663455312,
           "index": 4
         },
         {
-          "token": " going",
-          "logit": -3.274174690246582,
+          "token": " partly",
+          "logit": -3.2719647884368896,
+          "probability": 0.037931825798591515,
           "index": 5
         },
         {
-          "token": " partly",
-          "logit": -3.3773391246795654,
-          "index": 0
+          "token": " warm",
+          "logit": -3.4829213619232178,
+          "probability": 0.030717542767984444,
+          "index": 6
+        },
+        {
+          "token": " looking",
+          "logit": -3.591336965560913,
+          "probability": 0.02756145706063519,
+          "index": 7
+        },
+        {
+          "token": " absolutely",
+          "logit": -3.5961453914642334,
+          "probability": 0.027429247950160673,
+          "index": 8
+        },
+        {
+          "token": " perfect",
+          "logit": -3.707566976547241,
+          "probability": 0.02453715016724178,
+          "index": 9
+        },
+        {
+          "token": " ",
+          "logit": -3.8003804683685303,
+          "probability": 0.022362262104043126,
+          "index": 10
+        },
+        {
+          "token": " quite",
+          "logit": -4.145326614379883,
+          "probability": 0.015838262102285398,
+          "index": 11
+        },
+        {
+          "token": " mostly",
+          "logit": -4.160810470581055,
+          "probability": 0.01559491357807228,
+          "index": 12
+        },
+        {
+          "token": " gorgeous",
+          "logit": -4.248666763305664,
+          "probability": 0.014283264192180352,
+          "index": 13
+        },
+        {
+          "token": " just",
+          "logit": -4.259210586547852,
+          "probability": 0.014133455147142976,
+          "index": 14
+        },
+        {
+          "token": " lovely",
+          "logit": -4.299064636230469,
+          "probability": 0.013581256488159422,
+          "index": 15
+        },
+        {
+          "token": " cloudy",
+          "logit": -4.464786529541016,
+          "probability": 0.011507151934825939,
+          "index": 16
+        },
+        {
+          "token": " predicted",
+          "logit": -4.52253532409668,
+          "probability": 0.010861451431505962,
+          "index": 17
+        },
+        {
+          "token": " bright",
+          "logit": -4.543180465698242,
+          "probability": 0.01063951407559734,
+          "index": 18
+        },
+        {
+          "token": " clear",
+          "logit": -4.569156646728516,
+          "probability": 0.01036669882138536,
+          "index": 19
         }
       ],
-      "raw_logits_count": 6,
-      "endpoint_used": "/api/v1/generate",
-      "data_type": "real_logprobs"
+      "total_vocab_size": 20,
+      "data_type": "full_vocabulary_logits"
     },
     "story_opening": {
       "prompt": "Once upon a time, there was a",
@@ -47,33 +136,127 @@
       "tokens": [
         {
           "token": " little",
-          "logit": -0.7872694730758667,
+          "logit": -0.7880691885948181,
+          "probability": 0.45472193050811927,
           "index": 0
         },
         {
           "token": " young",
-          "logit": -1.9677655696868896,
+          "logit": -1.9922127723693848,
+          "probability": 0.13639328399348788,
           "index": 1
         },
         {
           "token": " small",
-          "logit": -2.4769420623779297,
+          "logit": -2.5402112007141113,
+          "probability": 0.07884974490954307,
           "index": 2
         },
         {
-          "token": " tiny",
-          "logit": -3.1588211059570312,
+          "token": " beautiful",
+          "logit": -3.1571850776672363,
+          "probability": 0.04254533449067414,
           "index": 3
         },
         {
-          "token": " beautiful",
-          "logit": -3.184478521347046,
+          "token": " tiny",
+          "logit": -3.2181973457336426,
+          "probability": 0.04002714837414358,
           "index": 4
+        },
+        {
+          "token": " kingdom",
+          "logit": -3.4057393074035645,
+          "probability": 0.033182279106835376,
+          "index": 5
+        },
+        {
+          "token": " lonely",
+          "logit": -4.213634967803955,
+          "probability": 0.014792500230903085,
+          "index": 6
+        },
+        {
+          "token": " curious",
+          "logit": -4.260490894317627,
+          "probability": 0.014115371553457268,
+          "index": 7
+        },
+        {
+          "token": " land",
+          "logit": -4.266367435455322,
+          "probability": 0.014032665243379299,
+          "index": 8
+        },
+        {
+          "token": " girl",
+          "logit": -4.560268878936768,
+          "probability": 0.010459246294289692,
+          "index": 9
+        },
+        {
+          "token": " wise",
+          "logit": -4.567724704742432,
+          "probability": 0.010381553965999109,
+          "index": 10
+        },
+        {
+          "token": " king",
+          "logit": -4.623306751251221,
+          "probability": 0.009820269124367509,
+          "index": 11
+        },
+        {
+          "token": " village",
+          "logit": -4.671654224395752,
+          "probability": 0.00935677850645552,
+          "index": 12
+        },
+        {
+          "token": " vibrant",
+          "logit": -4.983957767486572,
+          "probability": 0.006846910382645393,
+          "index": 13
+        },
+        {
+          "token": " princess",
+          "logit": -5.182569980621338,
+          "probability": 0.00561356111700017,
+          "index": 14
+        },
+        {
+          "token": " magical",
+          "logit": -5.187654972076416,
+          "probability": 0.005585088659141453,
+          "index": 15
+        },
+        {
+          "token": " baker",
+          "logit": -5.254749774932861,
+          "probability": 0.005222652967179777,
+          "index": 16
+        },
+        {
+          "token": " forest",
+          "logit": -5.288811206817627,
+          "probability": 0.005047757433908489,
+          "index": 17
+        },
+        {
+          "token": " bustling",
+          "logit": -5.302418231964111,
+          "probability": 0.004979537658250857,
+          "index": 18
+        },
+        {
+          "token": " very",
+          "logit": -5.3520283699035645,
+          "probability": 0.0047385297538478695,
+          "index": 19
         }
       ],
-      "raw_logits_count": 5,
-      "endpoint_used": "/api/v1/generate",
-      "data_type": "real_logprobs"
+      "total_vocab_size": 20,
+      "data_type": "full_vocabulary_logits"
     },
     "conversation": {
       "prompt": "Hello, how are",
@@ -81,33 +264,127 @@
       "tokens": [
         {
           "token": " you",
-          "logit": -0.003623007331043482,
+          "logit": -0.003460128093138337,
+          "probability": 0.9965458512516511,
           "index": 0
         },
         {
           "token": " we",
-          "logit": -6.580086708068848,
+          "logit": -6.661855697631836,
+          "probability": 0.0012787711546213979,
           "index": 1
         },
         {
           "token": " things",
-          "logit": -7.372448921203613,
+          "logit": -7.502840042114258,
+          "probability": 0.0005515158156785604,
           "index": 2
         },
         {
           "token": " doing",
-          "logit": -7.639103889465332,
+          "logit": -7.643415451049805,
+          "probability": 0.0004791890073323455,
           "index": 3
         },
         {
           "token": " your",
-          "logit": -8.33687686920166,
+          "logit": -8.180255889892578,
+          "probability": 0.00028013024845733046,
           "index": 4
+        },
+        {
+          "token": " ya",
+          "logit": -8.77680778503418,
+          "probability": 0.0001542697622556498,
+          "index": 5
+        },
+        {
+          "token": "?",
+          "logit": -9.262481689453125,
+          "probability": 9.491947195615398e-05,
+          "index": 6
+        },
+        {
+          "token": " the",
+          "logit": -9.370758056640625,
+          "probability": 8.51787935896019e-05,
+          "index": 7
+        },
+        {
+          "token": " today",
+          "logit": -9.41842269897461,
+          "probability": 8.121401728968918e-05,
+          "index": 8
+        },
+        {
+          "token": " people",
+          "logit": -9.822586059570312,
+          "probability": 5.421320418333905e-05,
+          "index": 9
+        },
+        {
+          "token": " y",
+          "logit": -10.120073318481445,
+          "probability": 4.02631733889183e-05,
+          "index": 10
+        },
+        {
+          "token": " all",
+          "logit": -10.152170181274414,
+          "probability": 3.8991371446501134e-05,
+          "index": 11
+        },
+        {
+          "token": " they",
+          "logit": -10.47859001159668,
+          "probability": 2.8132360877411363e-05,
+          "index": 12
+        },
+        {
+          "token": " those",
+          "logit": -10.566459655761719,
+          "probability": 2.5765873974505015e-05,
+          "index": 13
+        },
+        {
+          "token": " these",
+          "logit": -11.172566413879395,
+          "probability": 1.4054521291006858e-05,
+          "index": 14
+        },
+        {
+          "token": " looking",
+          "logit": -11.37559986114502,
+          "probability": 1.14720162095114e-05,
+          "index": 15
+        },
+        {
+          "token": " You",
+          "logit": -11.409466743469238,
+          "probability": 1.1090000145642312e-05,
+          "index": 16
+        },
+        {
+          "token": " u",
+          "logit": -11.491220474243164,
+          "probability": 1.0219422575536237e-05,
+          "index": 17
+        },
+        {
+          "token": " our",
+          "logit": -11.538019180297852,
+          "probability": 9.752185148231193e-06,
+          "index": 18
+        },
+        {
+          "token": " folks",
+          "logit": -11.59774398803711,
+          "probability": 9.186789883198631e-06,
+          "index": 19
         }
       ],
-      "raw_logits_count": 5,
-      "endpoint_used": "/api/v1/generate",
-      "data_type": "real_logprobs"
+      "total_vocab_size": 20,
+      "data_type": "full_vocabulary_logits"
     },
     "technical": {
       "prompt": "The algorithm works by",
@@ -115,33 +392,127 @@
       "tokens": [
         {
           "token": " repeatedly",
-          "logit": -1.6886714696884155,
-          "index": 1
-        },
-        {
-          "token": " iteratively",
-          "logit": -1.9303648471832275,
-          "index": 2
-        },
-        {
-          "token": " first",
-          "logit": -2.576775074005127,
-          "index": 3
-        },
-        {
-          "token": " maintaining",
-          "logit": -2.8446123600006104,
+          "logit": -1.655572533607483,
+          "probability": 0.19098268039495853,
           "index": 0
         },
         {
+          "token": " iteratively",
+          "logit": -1.96538507938385,
+          "probability": 0.14010192586360778,
+          "index": 1
+        },
+        {
+          "token": " first",
+          "logit": -2.483995199203491,
+          "probability": 0.08340932217348489,
+          "index": 2
+        },
+        {
+          "token": " maintaining",
+          "logit": -2.739650249481201,
+          "probability": 0.06459293435525143,
+          "index": 3
+        },
+        {
           "token": " iterating",
-          "logit": -3.2421457767486572,
+          "logit": -3.3101134300231934,
+          "probability": 0.036512031958211004,
           "index": 4
+        },
+        {
+          "token": " finding",
+          "logit": -3.333627223968506,
+          "probability": 0.035663510635149345,
+          "index": 5
+        },
+        {
+          "token": " recursively",
+          "logit": -3.414294719696045,
+          "probability": 0.03289960196224363,
+          "index": 6
+        },
+        {
+          "token": " comparing",
+          "logit": -3.611175060272217,
+          "probability": 0.027020077984638517,
+          "index": 7
+        },
+        {
+          "token": " creating",
+          "logit": -3.81123685836792,
+          "probability": 0.022120801730925902,
+          "index": 8
+        },
+        {
+          "token": " dividing",
+          "logit": -3.89131498336792,
+          "probability": 0.02041847841705528,
+          "index": 9
+        },
+        {
+          "token": " generating",
+          "logit": -3.9251723289489746,
+          "probability": 0.019738735022922116,
+          "index": 10
+        },
+        {
+          "token": " performing",
+          "logit": -4.118432521820068,
+          "probability": 0.016269997330599577,
+          "index": 11
+        },
+        {
+          "token": " using",
+          "logit": -4.127404689788818,
+          "probability": 0.016124673093311438,
+          "index": 12
+        },
+        {
+          "token": " calculating",
+          "logit": -4.319665431976318,
+          "probability": 0.013304334002645087,
+          "index": 13
+        },
+        {
+          "token": " traversing",
+          "logit": -4.481324672698975,
+          "probability": 0.011318410030983281,
+          "index": 14
+        },
+        {
+          "token": " building",
+          "logit": -4.482228755950928,
+          "probability": 0.011308181870286602,
+          "index": 15
+        },
+        {
+          "token": " constructing",
+          "logit": -4.589799404144287,
+          "probability": 0.010154895198965657,
+          "index": 16
+        },
+        {
+          "token": " identifying",
+          "logit": -4.660485744476318,
+          "probability": 0.009461865236502612,
+          "index": 17
+        },
+        {
+          "token": " starting",
+          "logit": -4.681699275970459,
+          "probability": 0.00926325967090828,
+          "index": 18
+        },
+        {
+          "token": " searching",
+          "logit": -4.681994915008545,
+          "probability": 0.009260521494505495,
+          "index": 19
         }
       ],
-      "raw_logits_count": 5,
-      "endpoint_used": "/api/v1/generate",
-      "data_type": "real_logprobs"
+      "total_vocab_size": 20,
+      "data_type": "full_vocabulary_logits"
     },
     "question": {
       "prompt": "What is the most important",
@@ -149,39 +520,225 @@
       "tokens": [
         {
           "token": " thing",
-          "logit": -0.24038594961166382,
+          "logit": -0.14784486591815948,
+          "probability": 0.8625649177796345,
           "index": 0
         },
         {
-          "token": " ingredient",
-          "logit": -2.719782829284668,
+          "token": " factor",
+          "logit": -3.030836582183838,
+          "probability": 0.048275235026623745,
           "index": 1
         },
         {
-          "token": " piece",
-          "logit": -2.8991613388061523,
+          "token": " ingredient",
+          "logit": -3.600407123565674,
+          "probability": 0.027312600580123067,
           "index": 2
         },
         {
-          "token": " factor",
-          "logit": -3.260138511657715,
+          "token": " skill",
+          "logit": -4.616837024688721,
+          "probability": 0.009884009549599762,
           "index": 3
         },
         {
-          "token": " decision",
-          "logit": -4.692992210388184,
+          "token": " feature",
+          "logit": -4.728907108306885,
+          "probability": 0.008836122689748963,
           "index": 4
+        },
+        {
+          "token": " piece",
+          "logit": -5.027472019195557,
+          "probability": 0.00655536146951845,
+          "index": 5
+        },
+        {
+          "token": " lesson",
+          "logit": -5.211279392242432,
+          "probability": 0.0054546905327437474,
+          "index": 6
+        },
+        {
+          "token": " part",
+          "logit": -5.527584552764893,
+          "probability": 0.003975580305345932,
+          "index": 7
+        },
+        {
+          "token": " decision",
+          "logit": -5.584034442901611,
+          "probability": 0.0037573759798807662,
+          "index": 8
+        },
+        {
+          "token": " characteristic",
+          "logit": -5.77116060256958,
+          "probability": 0.003116138815919027,
+          "index": 9
+        },
+        {
+          "token": " issue",
+          "logit": -5.9455132484436035,
+          "probability": 0.002617558545690861,
+          "index": 10
+        },
+        {
+          "token": " function",
+          "logit": -6.132997989654541,
+          "probability": 0.002170065365236698,
+          "index": 11
+        },
+        {
+          "token": " quality",
+          "logit": -6.645102024078369,
+          "probability": 0.0013003757418574464,
+          "index": 12
+        },
+        {
+          "token": " aspect",
+          "logit": -6.699944019317627,
+          "probability": 0.0012309808118905084,
+          "index": 13
+        },
+        {
+          "token": " question",
+          "logit": -6.733217716217041,
+          "probability": 0.0011906954673591536,
+          "index": 14
+        },
+        {
+          "token": " consideration",
+          "logit": -6.795595645904541,
+          "probability": 0.0011186914265474538,
+          "index": 15
+        },
+        {
+          "token": " technology",
+          "logit": -6.953901767730713,
+          "probability": 0.0009549020695354361,
+          "index": 16
+        },
+        {
+          "token": " attribute",
+          "logit": -6.96343469619751,
+          "probability": 0.0009458423080528456,
+          "index": 17
+        },
+        {
+          "token": " takeaway",
+          "logit": -7.058262348175049,
+          "probability": 0.0008602716485596776,
+          "index": 18
+        },
+        {
+          "token": " meal",
+          "logit": -7.1206231117248535,
+          "probability": 0.0008082629560554221,
+          "index": 19
         }
       ],
-      "raw_logits_count": 5,
-      "endpoint_used": "/api/v1/generate",
-      "data_type": "real_logprobs"
+      "total_vocab_size": 20,
+      "data_type": "full_vocabulary_logits"
     }
   },
-  "vocab_size": 0,
+  "vocab_size": 20,
   "generation_info": {
-    "timestamp": "1751792844.1231031",
+    "timestamp": "1752909847.060632",
     "successful_extractions": 5,
-    "total_attempts": 5
+    "total_attempts": 5,
+    "server_info": {
+      "default_generation_settings": {
+        "id": 0,
+        "id_task": -1,
+        "n_ctx": 8192,
+        "speculative": false,
+        "is_processing": false,
+        "params": {
+          "n_predict": -1,
+          "seed": 4294967295,
+          "temperature": 0.800000011920929,
+          "dynatemp_range": 0.0,
+          "dynatemp_exponent": 1.0,
+          "top_k": 40,
+          "top_p": 0.949999988079071,
+          "min_p": 0.05000000074505806,
+          "top_n_sigma": -1.0,
+          "xtc_probability": 0.0,
+          "xtc_threshold": 0.10000000149011612,
+          "typical_p": 1.0,
+          "repeat_last_n": 64,
+          "repeat_penalty": 1.0,
+          "presence_penalty": 0.0,
+          "frequency_penalty": 0.0,
+          "dry_multiplier": 0.0,
+          "dry_base": 1.75,
+          "dry_allowed_length": 2,
+          "dry_penalty_last_n": 8192,
+          "dry_sequence_breakers": [
+            "\n",
+            ":",
+            "\"",
+            "*"
+          ],
+          "mirostat": 0,
+          "mirostat_tau": 5.0,
+          "mirostat_eta": 0.10000000149011612,
+          "stop": [],
+          "max_tokens": -1,
+          "n_keep": 0,
+          "n_discard": 0,
+          "ignore_eos": false,
+          "stream": true,
+          "logit_bias": [],
+          "n_probs": 0,
+          "min_keep": 0,
+          "grammar": "",
+          "grammar_lazy": false,
+          "grammar_triggers": [],
+          "preserved_tokens": [],
+          "chat_format": "Content-only",
+          "reasoning_format": "none",
+          "reasoning_in_content": false,
+          "thinking_forced_open": false,
+          "samplers": [
+            "penalties",
+            "dry",
+            "top_n_sigma",
+            "top_k",
+            "typ_p",
+            "top_p",
+            "min_p",
+            "xtc",
+            "temperature"
+          ],
+          "speculative.n_max": 16,
+          "speculative.n_min": 0,
+          "speculative.p_min": 0.75,
+          "timings_per_token": false,
+          "post_sampling_probs": false,
+          "lora": []
+        },
+        "prompt": "",
+        "next_token": {
+          "has_next_token": true,
+          "has_new_line": false,
+          "n_remain": -1,
+          "n_decoded": 0,
+          "stopping_word": ""
+        }
+      },
+      "total_slots": 1,
+      "model_path": "/home/franc/llms/google_gemma-3-12b-it-Q4_K_M.gguf",
+      "modalities": {
+        "vision": false,
+        "audio": false
+      },
+      "chat_template": "{{ bos_token }}\n{%- if messages[0]['role'] == 'system' -%}\n    {%- if messages[0]['content'] is string -%}\n        {%- set first_user_prefix = messages[0]['content'] + '\n\n' -%}\n    {%- else -%}\n        {%- set first_user_prefix = messages[0]['content'][0]['text'] + '\n\n' -%}\n    {%- endif -%}\n    {%- set loop_messages = messages[1:] -%}\n{%- else -%}\n    {%- set first_user_prefix = \"\" -%}\n    {%- set loop_messages = messages -%}\n{%- endif -%}\n{%- for message in loop_messages -%}\n    {%- if (message['role'] == 'user') != (loop.index0 % 2 == 0) -%}\n        {{ raise_exception(\"Conversation roles must alternate user/assistant/user/assistant/...\") }}\n    {%- endif -%}\n    {%- if (message['role'] == 'assistant') -%}\n        {%- set role = \"model\" -%}\n    {%- else -%}\n        {%- set role = message['role'] -%}\n    {%- endif -%}\n    {{ '<start_of_turn>' + role + '\n' + (first_user_prefix if loop.first else \"\") }}\n    {%- if message['content'] is string -%}\n        {{ message['content'] | trim }}\n    {%- elif message['content'] is iterable -%}\n        {%- for item in message['content'] -%}\n            {%- if item['type'] == 'image' -%}\n                {{ '<start_of_image>' }}\n            {%- elif item['type'] == 'text' -%}\n                {{ item['text'] | trim }}\n            {%- endif -%}\n        {%- endfor -%}\n    {%- else -%}\n        {{ raise_exception(\"Invalid content type\") }}\n    {%- endif -%}\n    {{ '<end_of_turn>\n' }}\n{%- endfor -%}\n{%- if add_generation_prompt -%}\n    {{'<start_of_turn>model\n'}}\n{%- endif -%}\n",
+      "bos_token": "<bos>",
+      "eos_token": "<eos>",
+      "build_info": "b5740-fa4a9f2a"
+    }
   }
 }

@@ -38,8 +38,11 @@ python scripts/judge_results.py --auto-find
 # Full benchmark (generate + judge)
 python scripts/run_full_benchmark.py --model llama-3.1-8b-instruct
 
-# Start model server (KoboldCpp)
+# Start model server (KoboldCpp for benchmarking)
 bash scripts/start_model_server.sh
+
+# Start llama.cpp server (for visualization with more tokens)
+bash scripts/start_llama_server.sh
 ```
 
 ### Frontend Development
@@ -62,12 +65,32 @@ npm run lint
 
 ### Data Processing
 ```bash
-# Generate visualization data
+# Generate visualization data (from KoboldCpp - limited tokens)
 python scripts/generate_logits_data.py
+
+# Generate visualization data (from llama.cpp - 20 clean tokens)
+python scripts/generate_logits_llamacpp.py --port 5007
 
 # Analyze results
 python scripts/analyze_results.py
 ```
+
+## Model Server Options
+
+The system supports two inference servers depending on your use case:
+
+### KoboldCpp Server (Port 5006)
+- **Use for**: Benchmarking and text generation
+- **Script**: `scripts/start_model_server.sh`
+- **Features**: Full benchmarking capabilities, limited logprobs (5-6 tokens)
+- **Data script**: `scripts/generate_logits_data.py`
+
+### llama.cpp Server (Port 5007)
+- **Use for**: Sampling visualization with more tokens
+- **Script**: `scripts/start_llama_server.sh`  
+- **Features**: Clean 20-token probability distributions for visualization
+- **Data script**: `scripts/generate_logits_llamacpp.py`
+- **Visualization**: Provides authentic token distributions for sampler comparison
 
 ## Key Configuration Files
 

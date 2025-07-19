@@ -199,7 +199,7 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
     }).sort((a, b) => b.probability - a.probability)
 
     return {
-      data: result.slice(0, 20), // Show top 20 tokens (increased from 15)
+      data: result.slice(0, 50), // Show top 50 tokens (increased from 20)
       threshold,
       selectedCount,
       totalTokens: probabilities.length
@@ -239,7 +239,7 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
             </Badge>
             {dataSource === 'real' && (
               <span className="text-gray-500">
-                Generated from KoboldCpp
+                Generated from llama.cpp
               </span>
             )}
           </div>
@@ -266,7 +266,7 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={processedData.data}
-            margin={{ top: 5, right: 30, left: 20, bottom: 80 }}
+            margin={{ top: 5, right: 30, left: 20, bottom: 100 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
@@ -274,7 +274,8 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
               tick={{ fontSize: 10 }}
               angle={-45}
               textAnchor="end"
-              height={80}
+              height={100}
+              interval={0}
             />
             <YAxis 
               tick={{ fontSize: 12 }}
