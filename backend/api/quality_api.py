@@ -263,22 +263,51 @@ class SamplerBenchAPI:
             }
         
         try:
-            judgment = self.judge.judge_text(text, prompt, sampler_config)
-            
-            return {
-                'success': True,
-                'overall_score': judgment.overall_score,
-                'criterion_scores': [
-                    {
-                        'criterion': cs.criterion,
-                        'score': cs.score,
-                        'reasoning': cs.reasoning
-                    }
-                    for cs in judgment.criterion_scores
-                ],
-                'summary': judgment.summary,
-                'evaluation_time': judgment.evaluation_time
-            }
+            # Support both single-judge and multi-judge evaluators
+            if hasattr(self.judge, 'evaluate_text'):
+                # Multi-judge path
+                mj = self.judge.evaluate_text(
+                    text=text,
+                    prompt=prompt,
+                    sampler_config=sampler_config,
+                    penalty_config=None  # Penalties are handled explicitly by callers
+                )
+                return {
+                    'success': True,
+                    'overall_score': mj.overall_score,
+                    'overall_std': mj.overall_std,
+                    'criterion_scores': [
+                        {
+                            'criterion': cs.criterion,
+                            'score': cs.mean_score,
+                            'std': cs.std_score,
+                            'consensus_strength': cs.consensus_strength
+                        }
+                        for cs in mj.criterion_scores
+                    ],
+                    'summary': mj.summary,
+                    'evaluation_time': mj.evaluation_time,
+                    'judge_models': mj.judge_models,
+                    'judge_count': mj.judge_count,
+                    'consensus_method': mj.consensus_method
+                }
+            else:
+                # Single-judge path
+                judgment = self.judge.judge_text(text, prompt, sampler_config)
+                return {
+                    'success': True,
+                    'overall_score': judgment.overall_score,
+                    'criterion_scores': [
+                        {
+                            'criterion': cs.criterion,
+                            'score': cs.score,
+                            'reasoning': cs.reasoning
+                        }
+                        for cs in judgment.criterion_scores
+                    ],
+                    'summary': judgment.summary,
+                    'evaluation_time': judgment.evaluation_time
+                }
             
         except Exception as e:
             return {
@@ -363,14 +392,34 @@ class SamplerBenchAPI:
                 else:
                     results['failed_samples'] += 1
         
-        # Get comprehensive results
-        benchmark_results = aggregator.get_benchmark_results(
+        # Get comprehensive results (use enhanced aggregator API)
+        benchmark_results = aggregator.get_enhanced_benchmark_results(
             benchmark_name="Frontend Quality Benchmark",
             model_name=list(self.models.keys())[0] if self.models else "Unknown"
         )
         
-        results['quality_stats'] = benchmark_results.quality_stats
-        results['quality_ranking'] = aggregator.get_quality_ranking()
+        # Summarize key stats for API consumers
+        results['quality_stats'] = {
+            'sampler_stats': {
+                name: {
+                    'overall_mean': stats.overall_mean,
+                    'overall_std': stats.overall_std,
+                    'overall_confidence_interval': stats.overall_confidence_interval,
+                    'prompt_consistency': stats.prompt_consistency,
+                    'total_samples': stats.total_samples,
+                    'prompts_covered': stats.prompts_covered
+                }
+                for name, stats in benchmark_results.sampler_stats.items()
+            }
+        }
+        results['quality_ranking'] = sorted(
+            (
+                { 'sampler_name': name, 'avg_quality': stats.overall_mean }
+                for name, stats in benchmark_results.sampler_stats.items()
+            ),
+            key=lambda x: x['avg_quality'],
+            reverse=True
+        )
         
         return results
     

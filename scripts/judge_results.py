@@ -61,28 +61,9 @@ def judge_benchmark_results(results_file: str,
         print(f"❌ Failed to load results: {e}")
         return None
     
-    # Load config file for penalty configuration if provided
+    # Explicitly disable penalties to avoid muddling quality scores in full benchmark outputs
+    # (Instruction adherence can be visualized separately in the dashboard.)
     penalty_config = None
-    if config_file:
-        try:
-            import yaml
-            
-            config_path = Path(config_file)
-            if config_path.exists():
-                with open(config_path, 'r') as f:
-                    config_data = yaml.safe_load(f)
-                    
-                # Extract penalty configuration
-                if 'quality_control' in config_data and 'instruction_penalties' in config_data['quality_control']:
-                    penalty_config = config_data['quality_control']
-                    print(f"📋 Loaded penalty configuration from {config_file}")
-                else:
-                    print(f"ℹ️ No penalty configuration found in {config_file}")
-            else:
-                print(f"⚠️ Config file not found: {config_file}")
-        except Exception as e:
-            print(f"❌ Error loading config file: {e}")
-            penalty_config = None
     
     # Initialize judge (multi-judge if enabled, single judge otherwise)
     print(f"\n⚖️ Initializing judge system...")
@@ -159,7 +140,7 @@ def judge_benchmark_results(results_file: str,
                         text=batch_sample['text'],
                         prompt=batch_sample['prompt'],
                         sampler_config=batch_sample['sampler_config'],
-                        penalty_config=penalty_config
+                        penalty_config=None  # penalties disabled for full-benchmark scoring
                     )
                     return i, judgment
                 except Exception as e:

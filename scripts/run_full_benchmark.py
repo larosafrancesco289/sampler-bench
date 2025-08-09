@@ -216,9 +216,8 @@ Examples:
         if args.api_key:
             judge_cmd.extend(["--api-key", args.api_key])
         
-        # Pass config file for penalty configuration
-        if args.config:
-            judge_cmd.extend(["--config", args.config])
+        # Do NOT pass config for penalties to judging to avoid muddling scores
+        # (Penalties are intentionally disabled in judging script.)
         
         success = run_command(judge_cmd, "Results Judging")
         
