@@ -223,7 +223,7 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
             <select 
               value={selectedScenario}
               onChange={(e) => setSelectedScenario(e.target.value)}
-              className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800"
+            className="px-3 py-1 text-sm border border-border rounded-2xl bg-surface"
             >
               {Object.entries(logitsData.scenarios).map(([key, scenario]) => (
                 <option key={key} value={key}>
@@ -238,7 +238,7 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
               {dataSource === 'real' ? `Real ${logitsData.model} Data` : 'Simulated Data'}
             </Badge>
             {dataSource === 'real' && (
-              <span className="text-gray-500">
+            <span className="text-fg-muted">
                 Generated from llama.cpp
               </span>
             )}
@@ -268,34 +268,39 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
             data={processedData.data}
             margin={{ top: 5, right: 30, left: 20, bottom: 100 }}
           >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" opacity={0.5} />
             <XAxis 
               dataKey="token" 
-              tick={{ fontSize: 10 }}
+              tick={{ fontSize: 10, fill: 'var(--color-fg)' }}
               angle={-45}
               textAnchor="end"
               height={100}
               interval={0}
             />
             <YAxis 
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 12, fill: 'var(--color-fg)' }}
               label={{ 
                 value: 'Probability (%)', 
                 angle: -90, 
                 position: 'insideLeft',
-                style: { textAnchor: 'middle' }
+                style: { textAnchor: 'middle', fill: 'var(--color-fg)' }
               }}
               width={60}
             />
-            <Tooltip formatter={formatTooltip} />
+            <Tooltip 
+              formatter={formatTooltip}
+              contentStyle={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '8px', color: 'var(--color-fg)' }}
+              labelStyle={{ color: 'var(--color-fg)' }}
+              itemStyle={{ color: 'var(--color-fg)' }}
+            />
             <Bar 
               dataKey="selectedProbability"
-              fill="#3b82f6"
+              fill="var(--color-accent)"
               name="Selected"
             />
             <Bar 
               dataKey="filteredProbability"
-              fill="#e5e7eb"
+              fill="color-mix(in oklab, var(--color-fg) 10%, transparent)"
               name="Filtered"
             />
           </BarChart>
@@ -305,17 +310,17 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
       {/* Legend */}
       <div className="flex items-center gap-4 text-sm">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-blue-500 rounded"></div>
+          <div className="w-4 h-4 bg-accent rounded"></div>
           <span>Selected tokens</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-gray-300 rounded"></div>
+        <div className="w-4 h-4 bg-muted rounded"></div>
           <span>Filtered out</span>
         </div>
       </div>
 
       {/* Explanation */}
-      <div className="text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
+    <div className="text-sm text-fg-muted bg-muted p-3 rounded-2xl">
         <p>
           <strong>Visualization:</strong> This chart shows how the sampling strategy affects token selection. 
           The height of each bar represents the probability of that token being selected. 

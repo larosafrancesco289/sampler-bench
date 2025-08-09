@@ -19,10 +19,10 @@ export function Navigation() {
   return (
     <div className="mb-8 flex items-center justify-between">
       <div>
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+        <h1 className="text-4xl font-bold text-fg mb-2">
           Sampler Bench
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300">
+        <p className="text-lg text-fg-muted">
           Comparing LLM sampling strategies for creative writing
         </p>
       </div>
@@ -32,10 +32,10 @@ export function Navigation() {
             key={item.href}
             href={item.href}
             className={cn(
-              "text-sm px-3 py-2 rounded-md transition-all duration-200 ease-out transform hover:scale-105 active:scale-95",
+              "text-sm px-3 py-2 rounded-2xl transition-all duration-200 ease-out transform hover:scale-105 active:scale-95",
               pathname === item.href
-                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 shadow-sm"
-                : "text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950 hover:shadow-sm"
+                ? "bg-accent text-black shadow-sm"
+                : "text-fg-muted hover:bg-muted hover:text-fg hover:shadow-sm"
             )}
           >
             {item.label}
@@ -45,7 +45,7 @@ export function Navigation() {
           href="https://github.com/larosafrancesco289/sampler-bench"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-all duration-200 ease-out p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transform hover:scale-110 active:scale-95"
+          className="text-fg-muted hover:text-fg transition-all duration-200 ease-out p-2 rounded-2xl hover:bg-muted transform hover:scale-110 active:scale-95"
           title="View on GitHub"
         >
           <Github className="h-5 w-5" />

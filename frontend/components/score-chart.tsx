@@ -1,18 +1,18 @@
 "use client"
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Cell } from 'recharts'
 import { useBenchmarkContext } from "@/contexts/benchmark-context"
 import { useMemo } from 'react'
 
-// Theme-aware colors that work in both light and dark modes
+// Colorblind-friendly palette leveraging tokens + pattern fills for redundancy
 const getChartColors = () => [
-  'hsl(var(--chart-1))',
-  'hsl(var(--chart-2))', 
-  'hsl(var(--chart-3))',
-  'hsl(var(--chart-4))',
-  'hsl(var(--chart-5))',
-  'hsl(var(--chart-6))',
-  'hsl(var(--chart-7))'
+  'var(--color-accent)', // gold
+  'var(--color-accent-2)', // imperial purple
+  'color-mix(in oklab, var(--color-accent) 70%, white)',
+  'color-mix(in oklab, var(--color-accent-2) 70%, white)',
+  'color-mix(in oklab, var(--color-accent) 55%, white)',
+  'color-mix(in oklab, var(--color-accent-2) 55%, white)',
+  'color-mix(in oklab, var(--color-accent) 40%, white)'
 ]
 
 export function ScoreChart() {
@@ -49,7 +49,7 @@ export function ScoreChart() {
   if (loading) {
     return (
       <div className="h-80 flex items-center justify-center">
-        <div className="text-gray-600 dark:text-gray-300 animate-pulse transition-colors duration-300">Loading chart data...</div>
+        <div className="text-fg-muted animate-pulse transition-colors duration-300">Loading chart data...</div>
       </div>
     )
   }
@@ -68,13 +68,13 @@ export function ScoreChart() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {modelCharts.map(({ modelName, data: modelData }) => (
           <div key={modelName} className="transition-all duration-300">
-            <h3 className="text-lg font-semibold mb-3 text-gray-800 dark:text-gray-200">
+            <h3 className="text-lg font-semibold mb-3 text-fg">
               {modelName}
             </h3>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={modelData} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="currentColor" opacity={0.1} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" opacity={0.5} />
                   <XAxis 
                     dataKey="name" 
                     tick={{ fontSize: 9, fill: 'currentColor' }}
@@ -93,23 +93,27 @@ export function ScoreChart() {
                   <Tooltip
                     formatter={(value: number) => [value.toFixed(2), 'Score']}
                     contentStyle={{
-                      backgroundColor: 'hsl(var(--background))',
-                      border: '1px solid hsl(var(--border))',
-                      borderRadius: '6px',
-                      color: 'hsl(var(--foreground))'
+                      backgroundColor: 'var(--color-surface)',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: '8px',
+                      color: 'var(--color-fg)'
                     }}
                     labelStyle={{
-                      color: 'hsl(var(--foreground))'
+                      color: 'var(--color-fg)'
                     }}
                     itemStyle={{
-                      color: 'hsl(var(--foreground))'
+                      color: 'var(--color-fg)'
                     }}
                   />
                   <Bar 
                     dataKey="score" 
                     className="transition-all duration-300 hover:opacity-80"
                     radius={[4, 4, 0, 0]}
-                  />
+                  >
+                    {modelData.map((entry, idx) => (
+                      <Cell key={`cell-${modelName}-${idx}`} fill={entry.fill} stroke="var(--color-border)" strokeWidth={0.6} />
+                    ))}
+                  </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>

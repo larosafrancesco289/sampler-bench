@@ -59,14 +59,14 @@ export function FilterControls({
   const clearSamplerFilters = () => onSamplerChange([])
 
   return (
-    <Card className="mb-6 transition-all duration-300 hover:shadow-md dark:hover:shadow-lg border-l-4 border-l-blue-500">
+    <Card className="mb-6 transition-all duration-300 hover:shadow-md dark:hover:shadow-lg border-l-4 border-l-[var(--color-accent)]">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Filter className="h-5 w-5 text-blue-600" />
+            <Filter className="h-5 w-5 text-[var(--color-accent)]" />
             <CardTitle className="text-lg">Data Filters</CardTitle>
             {hasActiveFilters && (
-              <Badge variant="default" className="text-xs bg-blue-600">
+              <Badge variant="default" className="text-xs">
                 {(selectedModels.length + selectedSamplers.length)} active
               </Badge>
             )}
@@ -105,7 +105,7 @@ export function FilterControls({
           {/* Model Filters */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <h4 className="text-sm font-medium text-fg">
                 Models ({modelOptions.length})
               </h4>
               <div className="flex items-center gap-2">
@@ -124,7 +124,7 @@ export function FilterControls({
                     variant="ghost"
                     size="sm"
                     onClick={clearModelFilters}
-                    className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    className="h-6 px-2 text-xs text-fg-muted hover:text-fg"
                   >
                     <X className="h-3 w-3 mr-1" />
                     Clear
@@ -150,7 +150,7 @@ export function FilterControls({
           {/* Sampler Filters */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <h4 className="text-sm font-medium text-fg">
                 Sampling Strategies ({samplerOptions.length})
               </h4>
               <div className="flex items-center gap-2">
@@ -169,7 +169,7 @@ export function FilterControls({
                     variant="ghost"
                     size="sm"
                     onClick={clearSamplerFilters}
-                    className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    className="h-6 px-2 text-xs text-fg-muted hover:text-fg"
                   >
                     <X className="h-3 w-3 mr-1" />
                     Clear
@@ -193,13 +193,13 @@ export function FilterControls({
           </div>
 
           {/* Aggregation Toggle */}
-          <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+          <div className="pt-3 border-t border-border">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <h4 className="text-sm font-medium text-fg mb-1">
                   Aggregate Across Models
                 </h4>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-fg-muted">
                   Combine scores from all models to compare sampling strategies directly
                 </p>
               </div>
@@ -216,8 +216,8 @@ export function FilterControls({
 
           {/* Active Filters Summary */}
           {hasActiveFilters && (
-            <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-              <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">Active filters:</div>
+            <div className="pt-2 border-t border-border">
+              <div className="text-xs text-fg-muted mb-2">Active filters:</div>
               <div className="flex flex-wrap gap-1">
                 {selectedModels.map((model) => (
                   <Badge key={`model-${model}`} variant="secondary" className="text-xs">

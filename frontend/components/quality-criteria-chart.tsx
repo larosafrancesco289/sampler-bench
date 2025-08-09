@@ -5,18 +5,18 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { useBenchmarkContext } from "@/contexts/benchmark-context"
 import { Badge } from "@/components/ui/badge"
 
-// Theme-aware colors that work in both light and dark modes
+// Use design tokens for series colors
 const getChartColors = () => [
-  'hsl(var(--chart-1))',
-  'hsl(var(--chart-2))', 
-  'hsl(var(--chart-3))',
-  'hsl(var(--chart-4))',
-  'hsl(var(--chart-5))',
-  'hsl(var(--chart-6))',
-  'hsl(var(--chart-7))',
-  'hsl(var(--chart-8))',
-  'hsl(var(--chart-9))',
-  'hsl(var(--chart-10))'
+  'var(--color-accent)',
+  'color-mix(in oklab, var(--color-accent) 70%, transparent)',
+  'var(--color-accent-2)',
+  'color-mix(in oklab, var(--color-accent-2) 70%, transparent)',
+  'color-mix(in oklab, var(--color-accent) 50%, transparent)',
+  'color-mix(in oklab, var(--color-accent-2) 50%, transparent)',
+  'color-mix(in oklab, var(--color-accent) 30%, transparent)',
+  'color-mix(in oklab, var(--color-accent-2) 30%, transparent)',
+  'color-mix(in oklab, var(--color-accent) 85%, transparent)',
+  'color-mix(in oklab, var(--color-accent-2) 85%, transparent)'
 ]
 
 export function QualityCriteriaChart() {
@@ -70,7 +70,7 @@ export function QualityCriteriaChart() {
   if (loading) {
     return (
       <div className="h-80 flex items-center justify-center">
-        <div className="text-gray-600 dark:text-gray-300 animate-pulse transition-colors duration-300">Loading chart data...</div>
+        <div className="text-fg-muted animate-pulse transition-colors duration-300">Loading chart data...</div>
       </div>
     )
   }
@@ -86,7 +86,7 @@ export function QualityCriteriaChart() {
   if (data.length === 0) {
     return (
       <div className="h-80 flex items-center justify-center">
-        <div className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+        <div className="text-fg-muted transition-colors duration-300">
           {hasActiveFilters ? 'No data matches the current filters' : 'No data available'}
         </div>
       </div>
@@ -96,7 +96,7 @@ export function QualityCriteriaChart() {
   const renderBarChart = () => (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart data={barChartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="currentColor" opacity={0.2} />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" opacity={0.5} />
         <XAxis 
           dataKey="name" 
           angle={-45}
@@ -118,18 +118,9 @@ export function QualityCriteriaChart() {
             return item?.fullName || label
           }}
           formatter={(value: number, name: string) => [value.toFixed(2), name]}
-          contentStyle={{
-            backgroundColor: 'hsl(var(--background))',
-            border: '1px solid hsl(var(--border))',
-            borderRadius: '6px',
-            color: 'hsl(var(--foreground))'
-          }}
-          labelStyle={{
-            color: 'hsl(var(--foreground))'
-          }}
-          itemStyle={{
-            color: 'hsl(var(--foreground))'
-          }}
+          contentStyle={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '8px', color: 'var(--color-fg)' }}
+          labelStyle={{ color: 'var(--color-fg)' }}
+          itemStyle={{ color: 'var(--color-fg)' }}
         />
         {allCriteria.map((criterion, index) => (
           <Bar

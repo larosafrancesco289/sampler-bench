@@ -127,7 +127,7 @@ export function QualityFilters({
           <div>
             <div className="flex items-center gap-2 mb-3">
               <Target className="h-4 w-4" />
-              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <h4 className="text-sm font-medium text-fg">
                 Quick Presets
               </h4>
             </div>
@@ -150,7 +150,7 @@ export function QualityFilters({
           <div>
             <div className="flex items-center gap-2 mb-3">
               <Filter className="h-4 w-4" />
-              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <h4 className="text-sm font-medium text-fg">
                 Overall Score Range
               </h4>
             </div>
@@ -163,7 +163,7 @@ export function QualityFilters({
                 step={0.1}
                 className="w-full"
               />
-              <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-1">
+              <div className="flex justify-between text-sm text-fg-muted mt-1">
                 <span>{scoreRange[0].toFixed(1)}</span>
                 <span>{scoreRange[1].toFixed(1)}</span>
               </div>
@@ -174,7 +174,7 @@ export function QualityFilters({
           <div>
             <div className="flex items-center gap-2 mb-3">
               <FileText className="h-4 w-4" />
-              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <h4 className="text-sm font-medium text-fg">
                 Word Count Range
               </h4>
             </div>
@@ -187,7 +187,7 @@ export function QualityFilters({
                 step={25}
                 className="w-full"
               />
-              <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-1">
+              <div className="flex justify-between text-sm text-fg-muted mt-1">
                 <span>{wordCountRange[0]} words</span>
                 <span>{wordCountRange[1]} words</span>
               </div>
@@ -198,7 +198,7 @@ export function QualityFilters({
           <div>
             <div className="flex items-center gap-2 mb-3">
               <Target className="h-4 w-4" />
-              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <h4 className="text-sm font-medium text-fg">
                 Writing Quality Criteria
               </h4>
             </div>
@@ -216,7 +216,7 @@ export function QualityFilters({
                       <SelectItem key={option.value} value={option.value}>
                         <div>
                           <div className="font-medium">{option.label}</div>
-                          <div className="text-xs text-gray-500">{option.description}</div>
+                          <div className="text-xs text-fg-muted">{option.description}</div>
                         </div>
                       </SelectItem>
                     ))}
@@ -230,13 +230,13 @@ export function QualityFilters({
               if (!criteriaOption) return null
 
               return (
-                <div key={criteria} className="mb-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div key={criteria} className="mb-4 p-3 bg-muted rounded-2xl">
                   <div className="flex items-center justify-between mb-2">
                     <div>
-                      <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      <div className="text-sm font-medium text-fg">
                         {criteriaOption.label}
                       </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                      <div className="text-xs text-fg-muted">
                         {criteriaOption.description}
                       </div>
                     </div>
@@ -258,7 +258,7 @@ export function QualityFilters({
                       step={0.1}
                       className="w-full"
                     />
-                    <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    <div className="flex justify-between text-sm text-fg-muted mt-1">
                       <span>Min: {minScore.toFixed(1)}</span>
                       <span>Max: 10.0</span>
                     </div>
@@ -285,8 +285,8 @@ export function QualityFilters({
 
           {/* Active Filters Summary */}
           {hasActiveFilters && (
-            <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-              <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">Active filters:</div>
+            <div className="pt-4 border-t border-border">
+              <div className="text-xs text-fg-muted mb-2">Active filters:</div>
               <div className="flex flex-wrap gap-1">
                 {Object.entries(criteriaFilters).map(([criteria, minScore]) => {
                   const criteriaOption = CRITERIA_OPTIONS.find(opt => opt.value === criteria)

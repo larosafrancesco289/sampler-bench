@@ -76,7 +76,7 @@ export function SamplerExplanation({ sampler, showMath }: SamplerExplanationProp
       {/* Simple Explanation */}
       <div>
         <h3 className="font-semibold mb-2">How it works</h3>
-        <p className="text-sm text-gray-700 dark:text-gray-300">
+      <p className="text-sm text-fg-muted">
           {explanation.simple}
         </p>
       </div>
@@ -84,7 +84,7 @@ export function SamplerExplanation({ sampler, showMath }: SamplerExplanationProp
       {/* Detailed Explanation */}
       <div>
         <h3 className="font-semibold mb-2">Technical Details</h3>
-        <p className="text-sm text-gray-700 dark:text-gray-300">
+      <p className="text-sm text-fg-muted">
           {explanation.detailed}
         </p>
       </div>
@@ -93,10 +93,10 @@ export function SamplerExplanation({ sampler, showMath }: SamplerExplanationProp
       {showMath && (
         <div>
           <h3 className="font-semibold mb-2">Mathematical Formula</h3>
-          <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
+        <div className="bg-muted p-4 rounded-2xl">
             <LatexMath block>{explanation.math}</LatexMath>
             {explanation.mathDescription && (
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 italic">
+            <p className="text-sm text-fg-muted mt-2 italic">
                 {explanation.mathDescription}
               </p>
             )}
@@ -119,23 +119,23 @@ export function SamplerExplanation({ sampler, showMath }: SamplerExplanationProp
       {/* Pros and Cons */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <h4 className="font-semibold mb-2 text-green-700 dark:text-green-300">Advantages</h4>
+          <h4 className="font-semibold mb-2 text-fg">Advantages</h4>
           <ul className="text-sm space-y-1">
             {explanation.pros.map((pro, index) => (
               <li key={index} className="flex items-start gap-2">
-                <span className="text-green-500 text-xs mt-1">✓</span>
-                <span className="text-gray-700 dark:text-gray-300">{pro}</span>
+                <span className="text-xs mt-1 text-[var(--color-accent)]">✓</span>
+                <span className="text-fg-muted">{pro}</span>
               </li>
             ))}
           </ul>
         </div>
         <div>
-          <h4 className="font-semibold mb-2 text-red-700 dark:text-red-300">Limitations</h4>
+          <h4 className="font-semibold mb-2 text-fg">Limitations</h4>
           <ul className="text-sm space-y-1">
             {explanation.cons.map((con, index) => (
               <li key={index} className="flex items-start gap-2">
-                <span className="text-red-500 text-xs mt-1">✗</span>
-                <span className="text-gray-700 dark:text-gray-300">{con}</span>
+                <span className="text-xs mt-1 text-[var(--color-accent-2)]">✗</span>
+                <span className="text-fg-muted">{con}</span>
               </li>
             ))}
           </ul>

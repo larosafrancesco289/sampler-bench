@@ -64,10 +64,10 @@ export default function SamplerVisualizer() {
     <div className="container mx-auto py-8 px-4">
       <Navigation />
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+        <h1 className="text-4xl font-bold text-fg mb-2">
           Sampler Visualizer
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300">
+        <p className="text-lg text-fg-muted">
           Interactive visualization of LLM sampling strategies and their effects on token selection
         </p>
       </div>
@@ -80,7 +80,7 @@ export default function SamplerVisualizer() {
               <Settings className="w-5 h-5" />
               Select Sampling Strategy
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-fg-muted">
               Choose a sampling method to visualize its behavior
             </CardDescription>
           </CardHeader>
@@ -124,7 +124,7 @@ export default function SamplerVisualizer() {
                 Reset to Defaults
               </Button>
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-fg-muted">
               Adjust the parameters to see their effect on the probability distribution
             </CardDescription>
           </CardHeader>
@@ -144,7 +144,7 @@ export default function SamplerVisualizer() {
                   step={0.1}
                   className="w-full"
                 />
-                <p className="text-xs text-gray-600 dark:text-gray-400">
+                <p className="text-xs text-fg-muted">
                   Controls randomness. Lower values = more focused, higher values = more random. Default: 1.0
                 </p>
               </div>
@@ -164,7 +164,7 @@ export default function SamplerVisualizer() {
                     step={0.05}
                     className="w-full"
                   />
-                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                  <p className="text-xs text-fg-muted">
                     Cumulative probability threshold. Tokens with cumulative probability below this are filtered out. Default: 0.9
                   </p>
                 </div>
@@ -184,7 +184,7 @@ export default function SamplerVisualizer() {
                     step={1}
                     className="w-full"
                   />
-                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                  <p className="text-xs text-fg-muted">
                     Number of top tokens to consider. Only the k most likely tokens are kept. Default: 50
                   </p>
                 </div>
@@ -204,7 +204,7 @@ export default function SamplerVisualizer() {
                     step={0.01}
                     className="w-full"
                   />
-                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                  <p className="text-xs text-fg-muted">
                     Minimum probability threshold scaled by top token probability. Default: 0.1
                   </p>
                 </div>
@@ -224,7 +224,7 @@ export default function SamplerVisualizer() {
                     step={0.1}
                     className="w-full"
                   />
-                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                  <p className="text-xs text-fg-muted">
                     Standard deviation multiplier for logit threshold. Default: 3.0
                   </p>
                 </div>
@@ -262,7 +262,7 @@ export default function SamplerVisualizer() {
         <Card>
           <CardHeader>
             <CardTitle>Probability Distribution</CardTitle>
-            <CardDescription>
+            <CardDescription className="text-fg-muted">
               How the sampling strategy affects token selection
             </CardDescription>
           </CardHeader>
@@ -284,7 +284,7 @@ export default function SamplerVisualizer() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <h4 className="font-semibold mb-2">For Creative Writing:</h4>
-              <ul className="text-sm space-y-1 text-gray-600 dark:text-gray-400">
+              <ul className="text-sm space-y-1 text-fg-muted">
                 <li>• Use higher temperature (1.2-2.0) for more creativity</li>
                 <li>• Min-p sampling works well at high temperatures</li>
                 <li>• Top-nσ maintains coherence even at high temps</li>
@@ -292,7 +292,7 @@ export default function SamplerVisualizer() {
             </div>
             <div>
               <h4 className="font-semibold mb-2">For Factual Content:</h4>
-              <ul className="text-sm space-y-1 text-gray-600 dark:text-gray-400">
+              <ul className="text-sm space-y-1 text-fg-muted">
                 <li>• Use lower temperature (0.7-1.0) for accuracy</li>
                 <li>• Top-p with 0.9-0.95 works well</li>
                 <li>• Top-k with 40-60 tokens for balance</li>

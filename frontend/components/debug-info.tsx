@@ -12,7 +12,7 @@ export function DebugInfo() {
   } = useBenchmarkContext()
 
   return (
-    <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4 text-xs">
+    <div className="bg-muted p-4 rounded-2xl mb-4 text-xs">
       <h4 className="font-bold mb-2">Debug Info:</h4>
       <div>Total raw entries: {data.length}</div>
       <div>Selected models: {JSON.stringify(selectedModels)}</div>

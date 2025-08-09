@@ -47,7 +47,7 @@ function DashboardContent() {
         <Card className="transition-all duration-300 hover:shadow-lg dark:hover:shadow-xl">
           <CardHeader>
             <CardTitle className="transition-colors duration-300">Sampling Strategy Comparison by Model</CardTitle>
-            <CardDescription className="transition-colors duration-300">Quality scores grouped by model to compare sampling methods</CardDescription>
+            <CardDescription className="text-fg-muted transition-colors duration-300">Quality scores grouped by model to compare sampling methods</CardDescription>
           </CardHeader>
           <CardContent>
             <ScoreChart />
@@ -57,7 +57,7 @@ function DashboardContent() {
         <Card className="transition-all duration-300 hover:shadow-lg dark:hover:shadow-xl">
           <CardHeader>
             <CardTitle className="transition-colors duration-300">Quality Criteria Breakdown</CardTitle>
-            <CardDescription className="transition-colors duration-300">Detailed evaluation across writing dimensions</CardDescription>
+            <CardDescription className="text-fg-muted transition-colors duration-300">Detailed evaluation across writing dimensions</CardDescription>
           </CardHeader>
           <CardContent>
             <QualityCriteriaChart />
@@ -70,9 +70,7 @@ function DashboardContent() {
         <Card className="transition-all duration-300 hover:shadow-lg dark:hover:shadow-xl">
           <CardHeader>
             <CardTitle className="transition-colors duration-300">Quality Leaderboard</CardTitle>
-            <CardDescription className="transition-colors duration-300">
-              Sampling strategies ranked by creative writing quality scores
-            </CardDescription>
+            <CardDescription className="text-fg-muted transition-colors duration-300">Sampling strategies ranked by creative writing quality scores</CardDescription>
           </CardHeader>
           <CardContent>
             <LeaderboardTable />

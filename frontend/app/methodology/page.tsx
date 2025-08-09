@@ -14,10 +14,10 @@ export default function MethodologyPage() {
     <div className="container mx-auto py-8 px-4">
       <Navigation />
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+        <h1 className="text-4xl font-bold text-fg mb-2">
           Benchmark Methodology
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300">
+        <p className="text-lg text-fg-muted">
           How we evaluate LLM sampling strategies for creative writing
         </p>
       </div>
@@ -65,19 +65,19 @@ export default function MethodologyPage() {
               <div className="space-y-3">
                 <div>
                   <h5 className="font-medium mb-1">Model Setup</h5>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                   <p className="text-sm text-fg-muted">
                     Local inference using KoboldCpp server
                   </p>
                 </div>
                 <div>
                   <h5 className="font-medium mb-1">Sampling</h5>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                   <p className="text-sm text-fg-muted">
                     20 samples per strategy using 5 creative writing prompts (4 repetitions each)
                   </p>
                 </div>
                 <div>
                   <h5 className="font-medium mb-1">Target Length</h5>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                   <p className="text-sm text-fg-muted">
                     300-400 words per story with compliance scoring
                   </p>
                 </div>
@@ -88,19 +88,19 @@ export default function MethodologyPage() {
               <div className="space-y-3">
                 <div>
                   <h5 className="font-medium mb-1">Judge Models</h5>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                   <p className="text-sm text-fg-muted">
                     Kimi-K2 (Chinese) and Mistral Medium 3 (European) leading open-weight models
                   </p>
                 </div>
                 <div>
                   <h5 className="font-medium mb-1">Consensus Scoring</h5>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                   <p className="text-sm text-fg-muted">
                     Multiple judges evaluate each sample, scores averaged with reliability metrics
                   </p>
                 </div>
                 <div>
                   <h5 className="font-medium mb-1">Quality Control</h5>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                   <p className="text-sm text-fg-muted">
                     Word count compliance tracking (300-400 words), instruction following analysis, generation failure detection
                   </p>
                 </div>
@@ -122,7 +122,7 @@ export default function MethodologyPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+          <div className="mb-6 p-4 bg-muted rounded-lg">
             <p className="text-sm">
               <strong>Rationale:</strong> Creative writing quality is multifaceted and subjective. We use structured criteria 
               to make evaluation more consistent and transparent. These dimensions capture the key elements that differentiate 
@@ -144,9 +144,9 @@ export default function MethodologyPage() {
             
             {isPromptsOpen && (
               <div className="mt-4 space-y-4">
-                <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div className="p-4 bg-muted rounded-lg">
                   <h4 className="font-medium mb-2">System Prompt</h4>
-                  <pre className="text-xs text-gray-700 dark:text-gray-300 whitespace-pre-wrap overflow-x-auto">
+                  <pre className="text-xs text-fg-muted whitespace-pre-wrap overflow-x-auto">
 {`You are an expert literary critic and creative writing evaluator. Your task is to objectively assess creative writing samples based on specific criteria.
 
 You will evaluate texts on a 1-10 scale for each criterion, where:
@@ -162,7 +162,7 @@ Respond ONLY in the specified JSON format with no additional text.`}
                   </pre>
                 </div>
                 
-                <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div className="p-4 bg-muted rounded-lg">
                   <h4 className="font-medium mb-2">Evaluation Criteria (with weights)</h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
@@ -188,9 +188,9 @@ Respond ONLY in the specified JSON format with no additional text.`}
                   </div>
                 </div>
                 
-                <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div className="p-4 bg-muted rounded-lg">
                   <h4 className="font-medium mb-2">User Prompt Template</h4>
-                  <pre className="text-xs text-gray-700 dark:text-gray-300 whitespace-pre-wrap overflow-x-auto">
+                  <pre className="text-xs text-fg-muted whitespace-pre-wrap overflow-x-auto">
 {`**TASK**: Evaluate the following creative writing sample based on the specified criteria.
 
 **ORIGINAL PROMPT**: [Original writing prompt]
@@ -241,11 +241,11 @@ Respond ONLY in the specified JSON format with no additional text.`}
                     <h4 className="font-medium">Narrative Structure</h4>
                     <Badge variant="outline" className="text-xs">30%</Badge>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                  <p className="text-sm text-fg-muted mb-2">
                     <strong>What it measures:</strong> Story organization, pacing, plot coherence, and logical progression. 
                     Does the story have a clear beginning, middle, and end? Are events well-sequenced?
                   </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                   <p className="text-sm text-fg-muted">
                     <strong>Why it matters:</strong> Fundamental to readable fiction. Poor structure confuses readers and 
                     undermines other story elements. Highest weight because it&apos;s essential for story comprehension.
                   </p>
@@ -256,11 +256,11 @@ Respond ONLY in the specified JSON format with no additional text.`}
                     <h4 className="font-medium">Creativity Execution</h4>
                     <Badge variant="outline" className="text-xs">25%</Badge>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                  <p className="text-sm text-fg-muted mb-2">
                     <strong>What it measures:</strong> Originality of ideas, creative premise handling, and unexpected elements. 
                     Does the story offer fresh perspectives or novel approaches?
                   </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                  <p className="text-sm text-fg-muted">
                     <strong>Why it matters:</strong> Distinguishes memorable from forgettable writing. Creative stories engage 
                     readers more effectively and demonstrate the model&apos;s ability to generate novel content.
                   </p>
@@ -271,11 +271,11 @@ Respond ONLY in the specified JSON format with no additional text.`}
                     <h4 className="font-medium">Character Voice</h4>
                     <Badge variant="outline" className="text-xs">20%</Badge>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                  <p className="text-sm text-fg-muted mb-2">
                     <strong>What it measures:</strong> Character development, authentic dialogue, and distinct character voices. 
                     Are characters believable and well-developed within the story&apos;s scope?
                   </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                  <p className="text-sm text-fg-muted">
                     <strong>Why it matters:</strong> Characters drive reader engagement. Strong character voices indicate 
                     sophisticated language modeling and understanding of human psychology.
                   </p>
@@ -286,11 +286,11 @@ Respond ONLY in the specified JSON format with no additional text.`}
                     <h4 className="font-medium">Prose Quality</h4>
                     <Badge variant="outline" className="text-xs">15%</Badge>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                  <p className="text-sm text-fg-muted mb-2">
                     <strong>What it measures:</strong> Writing craft, style, sentence variety, and language use. 
                     Is the prose well-crafted and pleasant to read?
                   </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                  <p className="text-sm text-fg-muted">
                     <strong>Why it matters:</strong> Technical writing quality affects readability and aesthetic appeal. 
                     Shows the model&apos;s mastery of language mechanics and stylistic variation.
                   </p>
@@ -301,11 +301,11 @@ Respond ONLY in the specified JSON format with no additional text.`}
                     <h4 className="font-medium">Engagement</h4>
                     <Badge variant="outline" className="text-xs">10%</Badge>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                  <p className="text-sm text-fg-muted mb-2">
                     <strong>What it measures:</strong> Reader interest and emotional impact. Does the story hold attention 
                     and evoke emotional responses?
                   </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                  <p className="text-sm text-fg-muted">
                     <strong>Why it matters:</strong> Ultimate goal of creative writing. Lower weight because it&apos;s the most 
                     subjective criterion and often emerges from the other dimensions.
                   </p>
@@ -313,14 +313,14 @@ Respond ONLY in the specified JSON format with no additional text.`}
               </div>
             </div>
 
-            <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+            <div className="p-4 bg-muted rounded-lg">
               <h4 className="font-medium mb-2">Judge Models</h4>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
+              <p className="text-sm text-fg-muted">
                 <strong>Kimi-K2 (Chinese) and Mistral Medium 3 (European):</strong> Leading open-weight models from different cultural backgrounds, 
                 selected for their strong creative writing evaluation capabilities and cross-cultural perspective diversity. 
                 Multiple judges reduce individual model bias while providing culturally diverse evaluation viewpoints.
               </p>
-              <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+              <div className="mt-3 text-xs text-fg-muted">
                 <strong>Judge Agreement:</strong> These models have demonstrated high consensus strength in testing, 
                 indicating excellent cross-cultural reliability in creative writing evaluation.
               </div>
@@ -348,7 +348,7 @@ Respond ONLY in the specified JSON format with no additional text.`}
                   <h4 className="font-medium text-sm">model_default</h4>
                   <Badge variant="outline" className="text-xs">Dynamic</Badge>
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-300">
+                <p className="text-xs text-fg-muted">
                   Dynamically resolves to model-specific optimal settings (Llama: temp 0.6, top_p 0.9; Mistral Small: temp 0.15; etc.)
                 </p>
               </div>
@@ -358,7 +358,7 @@ Respond ONLY in the specified JSON format with no additional text.`}
                   <h4 className="font-medium text-sm">standard_minp</h4>
                   <Badge variant="outline" className="text-xs">temp 0.7, min_p 0.02</Badge>
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-300">
+                <p className="text-xs text-fg-muted">
                   Min-p sampling with conservative temperature 0.7 and min_p threshold 0.02
                 </p>
               </div>
@@ -368,7 +368,7 @@ Respond ONLY in the specified JSON format with no additional text.`}
                   <h4 className="font-medium text-sm">creative_minp</h4>
                   <Badge variant="outline" className="text-xs">temp 1.0, min_p 0.02</Badge>
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-300">
+                <p className="text-xs text-fg-muted">
                   Min-p sampling with moderate temperature 1.0 and min_p threshold 0.02
                 </p>
               </div>
@@ -380,7 +380,7 @@ Respond ONLY in the specified JSON format with no additional text.`}
                   <h4 className="font-medium text-sm">standard_sigma</h4>
                   <Badge variant="outline" className="text-xs">temp 1.5, σ 1.0</Badge>
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-300">
+                <p className="text-xs text-fg-muted">
                   Top-n-sigma sampling with high temperature 1.5 and standard deviation threshold 1.0
                 </p>
               </div>
@@ -390,7 +390,7 @@ Respond ONLY in the specified JSON format with no additional text.`}
                   <h4 className="font-medium text-sm">creative_sigma</h4>
                   <Badge variant="outline" className="text-xs">temp 1.0, σ 1.5</Badge>
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-300">
+                  <p className="text-xs text-fg-muted">
                   Top-n-sigma sampling with moderate temperature 1.0 and relaxed sigma threshold 1.5
                 </p>
               </div>
@@ -414,21 +414,21 @@ Respond ONLY in the specified JSON format with no additional text.`}
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <div className="p-4 bg-muted rounded-lg">
               <h4 className="font-medium mb-2">Word Count Compliance</h4>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
+              <p className="text-sm text-fg-muted">
                 Each prompt specifies exactly 300-400 words. We track compliance rates as an objective measure 
                 of instruction following capability. High compliance indicates better instruction adherence.
               </p>
             </div>
             
-            <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+            <div className="p-4 bg-muted rounded-lg">
               <h4 className="font-medium mb-2">Methodology Approach</h4>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+              <p className="text-sm text-fg-muted mb-3">
                 Rather than applying score penalties, we use compliance metrics for analysis and reporting. 
                 This preserves the natural quality scores while providing clear visibility into instruction following patterns.
               </p>
-              <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+              <div className="text-xs text-fg-muted space-y-1">
                 <div><strong>Tracked Metrics:</strong></div>
                 <div>• Word count compliance percentage per model/sampler</div>
                 <div>• Average word count deviation from target range</div>
@@ -437,9 +437,9 @@ Respond ONLY in the specified JSON format with no additional text.`}
               </div>
             </div>
             
-            <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+            <div className="p-4 bg-muted rounded-lg">
               <h4 className="font-medium mb-2">Why This Matters</h4>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
+              <p className="text-sm text-fg-muted">
                 Instruction following correlates with model reliability and real-world usability. Models with 
                 higher compliance rates typically perform better across quality dimensions, suggesting that 
                 instruction adherence is a fundamental capability indicator.
@@ -462,36 +462,36 @@ Respond ONLY in the specified JSON format with no additional text.`}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">9-10 Points</span>
-                <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">Exceptional</Badge>
+                <Badge variant="secondary">Exceptional</Badge>
               </div>
-              <p className="text-xs text-gray-600 dark:text-gray-300">
+              <p className="text-xs text-fg-muted">
                 Exceptional creative writing with outstanding quality across all criteria
               </p>
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">7-8 Points</span>
-                <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100">Good</Badge>
+                <Badge variant="secondary">Good</Badge>
               </div>
-              <p className="text-xs text-gray-600 dark:text-gray-300">
+              <p className="text-xs text-fg-muted">
                 Good quality writing with strong elements and minor areas for improvement
               </p>
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">5-6 Points</span>
-                <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100">Average</Badge>
+                <Badge variant="secondary">Average</Badge>
               </div>
-              <p className="text-xs text-gray-600 dark:text-gray-300">
+              <p className="text-xs text-fg-muted">
                 Average, adequate quality with balanced strengths and weaknesses
               </p>
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">1-4 Points</span>
-                <Badge className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100">Below Average</Badge>
+                <Badge variant="secondary">Below Average</Badge>
               </div>
-              <p className="text-xs text-gray-600 dark:text-gray-300">
+              <p className="text-xs text-fg-muted">
                 Below average to poor quality with significant issues requiring attention
               </p>
             </div>

@@ -20,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-canvas text-fg font-sans`}>
         <QueryProvider>
           <BenchmarkProvider>
             <ThemeProvider
@@ -29,7 +29,7 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+              <div className="min-h-screen">
                 <PageTransition>
                   {children}
                 </PageTransition>
