@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Dict, Any, List
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import random
 import os
 
 # Add backend to path
@@ -98,6 +99,17 @@ def judge_benchmark_results(results_file: str,
         print(f"⚠️ Skipping {failed_samples} failed generation samples")
     
     print(f"\n🔍 Evaluating {len(valid_samples)} valid samples...")
+
+    # Deterministic evaluation order if configured via environment variable
+    order_seed_env = os.getenv('EVALUATION_ORDER_SEED') or os.getenv('evaluation_order_seed')
+    if order_seed_env is not None:
+        try:
+            order_seed = int(order_seed_env)
+            rnd = random.Random(order_seed)
+            rnd.shuffle(valid_samples)
+            print(f"   🔒 Using deterministic evaluation order with seed {order_seed}")
+        except ValueError:
+            print(f"   ⚠️ Invalid EVALUATION_ORDER_SEED: {order_seed_env}")
     
     judged_samples = []
     evaluation_failures = 0

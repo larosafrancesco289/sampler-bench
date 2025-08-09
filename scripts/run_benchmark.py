@@ -17,6 +17,14 @@ from datetime import datetime
 sys.path.append(str(Path(__file__).parent.parent / "backend"))
 
 from api.quality_api import SamplerBenchAPI
+import hashlib
+
+
+def derive_seed(global_seed: int, model_name: str, sampler_name: str, prompt: str, repetition: int) -> int:
+    """Derive a per-sample deterministic seed from a global seed and sample identity."""
+    payload = f"{global_seed}|{model_name}|{sampler_name}|{repetition}|{prompt}".encode("utf-8")
+    digest = hashlib.sha256(payload).hexdigest()
+    return int(digest[:8], 16)  # 32-bit positive seed
 
 def load_prompts_from_config() -> List[str]:
     """Load prompts from experiments config or use defaults."""
@@ -113,8 +121,10 @@ def run_benchmark(model_name: str,
                 
                 print(f"    {current_sample}/{total_samples} - Repetition {rep+1}/{repetitions}")
                 
+                # Generate per-sample deterministic seed if global seed provided
+                sample_seed = derive_seed(seed, model_name, sampler_name, prompt, rep + 1) if seed is not None else None
                 # Generate sample
-                gen_result = api.generate_single_sample(prompt, sampler_name, max_length, seed=seed)
+                gen_result = api.generate_single_sample(prompt, sampler_name, max_length, seed=sample_seed)
                 
                 if gen_result['success']:
                     word_count = gen_result['word_count']
