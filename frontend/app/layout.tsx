@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
@@ -11,6 +11,12 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Sampler Bench - LLM Sampling Strategy Leaderboard',
   description: 'Professional benchmarking platform for evaluating LLM sampling strategies on creative writing tasks',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({

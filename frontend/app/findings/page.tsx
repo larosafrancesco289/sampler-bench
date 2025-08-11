@@ -96,11 +96,11 @@ export default function FindingsPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 max-w-6xl">
         <Navigation />
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-fg mb-2">Key Findings & Insights</h1>
-          <p className="text-lg text-fg-muted">
+          <h1 className="text-2xl sm:text-4xl font-bold text-fg mb-1 sm:mb-2">Key Findings & Insights</h1>
+          <p className="text-sm sm:text-lg text-fg-muted">
             Loading benchmark analysis...
           </p>
         </div>
@@ -115,11 +115,11 @@ export default function FindingsPage() {
 
   if (error || !data || !insights) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 max-w-6xl">
         <Navigation />
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-fg mb-2">Key Findings & Insights</h1>
-          <p className="text-lg text-fg-muted">
+          <h1 className="text-2xl sm:text-4xl font-bold text-fg mb-1 sm:mb-2">Key Findings & Insights</h1>
+          <p className="text-sm sm:text-lg text-fg-muted">
             Analysis of benchmark results showing model performance differences and evaluation insights.
           </p>
         </div>
@@ -134,11 +134,11 @@ export default function FindingsPage() {
     );
   }
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 max-w-6xl">
       <Navigation />
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-fg mb-2">Key Findings & Insights</h1>
-        <p className="text-lg text-fg-muted">
+        <h1 className="text-2xl sm:text-4xl font-bold text-fg mb-1 sm:mb-2">Key Findings & Insights</h1>
+        <p className="text-sm sm:text-lg text-fg-muted">
           Analysis of benchmark results showing model performance differences and evaluation insights.
         </p>
       </div>
@@ -152,7 +152,7 @@ export default function FindingsPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
             <div className="text-center">
               <div className="text-3xl font-bold text-fg">
                 {insights.modelPerformance.length}
@@ -215,8 +215,8 @@ export default function FindingsPage() {
                   </p>
                   
                   {/* Show criteria breakdown for top model */}
-                  {insights.modelPerformance[0].entries.length > 0 && (
-                    <div className="mt-3 grid grid-cols-2 md:grid-cols-5 gap-2 text-xs">
+                   {insights.modelPerformance[0].entries.length > 0 && (
+                    <div className="mt-3 grid grid-cols-2 md:grid-cols-5 gap-2 text-[11px] sm:text-xs">
                       {Object.entries(insights.modelPerformance[0].entries[0].criteria_breakdown).map(([criterion, score]) => (
                         <div key={criterion}>
                           <div className="font-medium">{criterion.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</div>
@@ -232,7 +232,7 @@ export default function FindingsPage() {
 
           {/* Model Ranking */}
           <div>
-            <h3 className="text-lg font-semibold mb-3">Model Performance Ranking</h3>
+            <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">Model Performance Ranking</h3>
             <div className="space-y-2">
               {insights.modelPerformance.map((model, index) => {
                const bgColor = 'bg-muted';
@@ -240,17 +240,17 @@ export default function FindingsPage() {
                const badgeColor = 'bg-accent text-black';
                 
                 return (
-                  <div key={model.model} className={`flex items-center justify-between p-3 ${bgColor} rounded-lg`}>
+                  <div key={model.model} className={`flex items-center justify-between p-2 sm:p-3 ${bgColor} rounded-lg`}>
                     <div className="flex items-center gap-3">
                       <Badge variant="outline" className={badgeColor}>
                         {index + 1}{index === 0 ? 'st' : index === 1 ? 'nd' : index === 2 ? 'rd' : 'th'}
                       </Badge>
-                      <span className="font-medium">{model.model}</span>
-                      <span className="text-sm text-fg-muted">
+                      <span className="font-medium break-words">{model.model}</span>
+                      <span className="text-xs sm:text-sm text-fg-muted">
                         ({model.totalSamples} samples)
                       </span>
                     </div>
-                    <span className="font-bold">{model.avgScore.toFixed(3)}</span>
+                    <span className="font-bold text-sm sm:text-base">{model.avgScore.toFixed(3)}</span>
                   </div>
                 );
               })}
@@ -279,21 +279,21 @@ export default function FindingsPage() {
                 : "Significant Sampling Strategy Differences"}
             </AlertTitle>
             <AlertDescription>
-              <div className="mt-2">
-                <p className="text-sm mb-3">
+                 <div className="mt-2">
+                  <p className="text-xs sm:text-sm mb-3">
                   {insights.samplerPerformance.length > 1 ? (
                     (insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore) < 0.5 
                       ? `Across ${insights.samplerPerformance.reduce((sum, s) => sum + s.totalSamples, 0)} samples, different sampling strategies show surprisingly small performance differences (${(insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore).toFixed(3)} point range).`
                       : `Analysis of ${insights.samplerPerformance.reduce((sum, s) => sum + s.totalSamples, 0)} samples reveals meaningful differences between sampling strategies (${(insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore).toFixed(3)} point range).`
                   ) : `Single sampling strategy evaluated with ${insights.samplerPerformance[0]?.totalSamples || 0} samples.`}
                 </p>
-                <div className="space-y-2">
+                 <div className="space-y-2">
                   {insights.samplerPerformance.slice(0, 5).map((sampler) => (
-                    <div key={sampler.name} className="flex items-center justify-between p-2 bg-muted rounded-2xl">
-                      <span className="font-medium text-sm">{sampler.name}</span>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold">{sampler.avgScore.toFixed(3)}</span>
-                        <span className="text-xs text-fg-muted">({sampler.totalSamples} samples)</span>
+                     <div key={sampler.name} className="flex items-center justify-between p-2 bg-muted rounded-2xl">
+                       <span className="font-medium text-xs sm:text-sm break-words">{sampler.name}</span>
+                       <div className="flex items-center gap-2">
+                         <span className="font-bold text-sm sm:text-base">{sampler.avgScore.toFixed(3)}</span>
+                         <span className="text-[11px] sm:text-xs text-fg-muted">({sampler.totalSamples} samples)</span>
                       </div>
                     </div>
                   ))}
@@ -301,8 +301,8 @@ export default function FindingsPage() {
                 
                 {/* Analysis based on actual performance differences */}
                 {insights.samplerPerformance.length > 1 && (
-                  <div className="mt-4 p-3 bg-muted rounded-2xl">
-                    <p className="text-sm">
+                   <div className="mt-4 p-3 bg-muted rounded-2xl">
+                    <p className="text-xs sm:text-sm">
                       <strong>Key Finding:</strong> {
                         (insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore) < 0.3 
                           ? "Sampling parameters have minimal impact on creative writing quality. Model choice appears more important than sampling strategy."
@@ -325,7 +325,7 @@ export default function FindingsPage() {
                 Instruction Following Analysis
               </h3>
               <div className="p-4 bg-muted rounded-2xl">
-                <p className="text-sm mb-3">
+                <p className="text-xs sm:text-sm mb-3">
                   Word count compliance serves as an objective measure of instruction following.
                 </p>
                 <div className="space-y-2">
@@ -338,22 +338,22 @@ export default function FindingsPage() {
                     
                     const complianceColor = compliance > 0.9 ? 'text-fg bg-muted' : compliance > 0.7 ? 'text-fg bg-muted' : 'text-fg bg-muted';
                     
-                    return (
-                      <div key={model.model} className="flex justify-between items-center">
-                        <span className="font-medium">{model.model}:</span>
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline" className={complianceColor}>
-                            {(compliance * 100).toFixed(0)}% compliance
-                          </Badge>
-                          <span className="text-xs text-fg-muted">
-                            (avg: {avgWordCount.toFixed(0)} words)
-                          </span>
+                      return (
+                        <div key={model.model} className="flex justify-between items-center">
+                          <span className="font-medium text-sm break-words">{model.model}:</span>
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className={complianceColor}>
+                              {(compliance * 100).toFixed(0)}% compliance
+                            </Badge>
+                            <span className="text-[11px] sm:text-xs text-fg-muted">
+                              (avg: {avgWordCount.toFixed(0)} words)
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    );
+                      );
                   })}
                 </div>
-               <p className="text-xs text-fg-muted mt-3">
+                <p className="text-[11px] sm:text-xs text-fg-muted mt-3">
                   Models with higher instruction compliance typically achieve better overall quality scores, suggesting this metric captures important capabilities.
                 </p>
               </div>
@@ -374,12 +374,12 @@ export default function FindingsPage() {
                     {(insights.avgConsensus * 100).toFixed(1)}%
                   </Badge>
                 </div>
-                <p className="text-sm">
+                <p className="text-xs sm:text-sm">
                   {insights.avgConsensus > 0.85 ? "High judge agreement indicates clear quality differences and reliable evaluation."
                    : insights.avgConsensus > 0.7 ? "Moderate judge agreement suggests some subjectivity but reasonable consistency."
                    : "Low judge agreement indicates high evaluation subjectivity or potential issues with judge models."}
                 </p>
-               <p className="text-xs text-fg-muted mt-2">
+               <p className="text-[11px] sm:text-xs text-fg-muted mt-2">
                   Creative writing evaluation naturally involves subjectivity. {(insights.avgConsensus * 100).toFixed(1)}% consensus is {insights.avgConsensus > 0.8 ? "strong" : insights.avgConsensus > 0.7 ? "reasonable" : "concerning"} for this domain.
                 </p>
               </div>
@@ -427,12 +427,12 @@ export default function FindingsPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-fg-muted">
+          <p className="text-xs sm:text-sm text-fg-muted">
             This analysis is automatically generated from your current benchmark data. 
             Results will update when you run new benchmarks or modify the dataset.
           </p>
           {summary?.last_updated && (
-            <p className="text-xs text-fg-muted mt-2">
+            <p className="text-[11px] sm:text-xs text-fg-muted mt-2">
               Last updated: {new Date(summary.last_updated).toLocaleString()}
             </p>
           )}

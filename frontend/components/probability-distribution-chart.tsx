@@ -233,7 +233,7 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
             </select>
           </div>
           
-          <div className="flex items-center gap-2 text-xs">
+      <div className="flex items-center gap-2 text-[11px] sm:text-xs flex-wrap">
             <Badge variant={dataSource === 'real' ? "default" : "secondary"}>
               {dataSource === 'real' ? `Real ${logitsData.model} Data` : 'Simulated Data'}
             </Badge>
@@ -247,7 +247,7 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
       )}
 
       {/* Stats */}
-      <div className="flex flex-wrap gap-2 text-sm">
+      <div className="flex flex-wrap gap-2 text-xs sm:text-sm">
         <Badge variant="outline">
           Selected: {processedData.selectedCount} / {processedData.totalTokens} tokens
         </Badge>
@@ -262,7 +262,7 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
       </div>
 
       {/* Chart */}
-      <div className="h-80">
+      <div className="h-64 sm:h-80">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={processedData.data}
@@ -308,7 +308,7 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-4 text-sm">
+      <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm flex-wrap">
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 bg-accent rounded"></div>
           <span>Selected tokens</span>
@@ -320,7 +320,7 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
       </div>
 
       {/* Explanation */}
-    <div className="text-sm text-fg-muted bg-muted p-3 rounded-2xl">
+    <div className="text-xs sm:text-sm text-fg-muted bg-muted p-3 rounded-2xl">
         <p>
           <strong>Visualization:</strong> This chart shows how the sampling strategy affects token selection. 
           The height of each bar represents the probability of that token being selected. 

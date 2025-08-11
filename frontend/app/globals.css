@@ -76,3 +76,18 @@ body { @apply bg-canvas text-fg font-sans; }
   .page-transition-exit { opacity: 1; transform: translateY(0) scale(1); }
   .page-transition-exit-active { opacity: 0; transform: translateY(-4px) scale(.98); transition: all .2s cubic-bezier(.4,0,1,1); }
 }
+
+/* --- Mobile responsiveness + touch UX safeguards --- */
+@layer utilities {
+  .container { max-width: 100%; }
+  .prose { word-wrap: break-word; overflow-wrap: anywhere; }
+}
+
+/* Prevent horizontal scroll from charts/tables */
+.overflow-x-auto { -webkit-overflow-scrolling: touch; }
+
+/* Make media elements scale down on small screens */
+img, svg, canvas { max-width: 100%; height: auto; }
+
+/* Improve tap targets and zoom behavior */
+button, a, input, select { touch-action: manipulation; }

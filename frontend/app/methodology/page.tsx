@@ -11,13 +11,13 @@ export default function MethodologyPage() {
   const [isPromptsOpen, setIsPromptsOpen] = useState(false)
   
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto py-6 sm:py-8 px-3 sm:px-4">
       <Navigation />
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-fg mb-2">
+        <h1 className="text-2xl sm:text-4xl font-bold text-fg mb-1 sm:mb-2">
           Benchmark Methodology
         </h1>
-        <p className="text-lg text-fg-muted">
+        <p className="text-sm sm:text-lg text-fg-muted">
           How we evaluate LLM sampling strategies for creative writing
         </p>
       </div>
@@ -59,25 +59,25 @@ export default function MethodologyPage() {
           <CardDescription>How samples are generated and evaluated</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <h4 className="font-medium mb-3">Generation</h4>
               <div className="space-y-3">
                 <div>
                   <h5 className="font-medium mb-1">Model Setup</h5>
-                   <p className="text-sm text-fg-muted">
+                   <p className="text-xs sm:text-sm text-fg-muted">
                     Local inference using KoboldCpp server
                   </p>
                 </div>
                 <div>
                   <h5 className="font-medium mb-1">Sampling</h5>
-                   <p className="text-sm text-fg-muted">
+                   <p className="text-xs sm:text-sm text-fg-muted">
                     20 samples per strategy using 5 creative writing prompts (4 repetitions each)
                   </p>
                 </div>
                 <div>
                   <h5 className="font-medium mb-1">Target Length</h5>
-                   <p className="text-sm text-fg-muted">
+                   <p className="text-xs sm:text-sm text-fg-muted">
                     300-400 words per story with compliance scoring
                   </p>
                 </div>
@@ -88,19 +88,19 @@ export default function MethodologyPage() {
               <div className="space-y-3">
                 <div>
                   <h5 className="font-medium mb-1">Judge Models</h5>
-                   <p className="text-sm text-fg-muted">
+                   <p className="text-xs sm:text-sm text-fg-muted">
                     Kimi-K2 (Chinese) and Mistral Medium 3 (European) leading open-weight models
                   </p>
                 </div>
                 <div>
                   <h5 className="font-medium mb-1">Consensus Scoring</h5>
-                   <p className="text-sm text-fg-muted">
+                   <p className="text-xs sm:text-sm text-fg-muted">
                     Multiple judges evaluate each sample, scores averaged with reliability metrics
                   </p>
                 </div>
                 <div>
                   <h5 className="font-medium mb-1">Quality Control</h5>
-                   <p className="text-sm text-fg-muted">
+                   <p className="text-xs sm:text-sm text-fg-muted">
                     Word count compliance tracking (300-400 words), instruction following analysis, generation failure detection
                   </p>
                 </div>
@@ -122,8 +122,8 @@ export default function MethodologyPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 p-4 bg-muted rounded-lg">
-            <p className="text-sm">
+           <div className="mb-6 p-4 bg-muted rounded-lg">
+            <p className="text-xs sm:text-sm">
               <strong>Rationale:</strong> Creative writing quality is multifaceted and subjective. We use structured criteria 
               to make evaluation more consistent and transparent. These dimensions capture the key elements that differentiate 
               good from poor creative writing. The specific judging prompts and criteria implementations can be found in the 
@@ -133,7 +133,7 @@ export default function MethodologyPage() {
 
           {/* Judging Prompts Dropdown */}
           <div className="mt-6">
-            <Button 
+              <Button 
               variant="outline" 
               className="w-full justify-between"
               onClick={() => setIsPromptsOpen(!isPromptsOpen)}
@@ -146,7 +146,7 @@ export default function MethodologyPage() {
               <div className="mt-4 space-y-4">
                 <div className="p-4 bg-muted rounded-lg">
                   <h4 className="font-medium mb-2">System Prompt</h4>
-                  <pre className="text-xs text-fg-muted whitespace-pre-wrap overflow-x-auto">
+                  <pre className="text-[11px] sm:text-xs text-fg-muted whitespace-pre-wrap overflow-x-auto">
 {`You are an expert literary critic and creative writing evaluator. Your task is to objectively assess creative writing samples based on specific criteria.
 
 You will evaluate texts on a 1-10 scale for each criterion, where:
@@ -164,7 +164,7 @@ Respond ONLY in the specified JSON format with no additional text.`}
                 
                 <div className="p-4 bg-muted rounded-lg">
                   <h4 className="font-medium mb-2">Evaluation Criteria (with weights)</h4>
-                  <div className="space-y-2 text-sm">
+                  <div className="space-y-2 text-xs sm:text-sm">
                     <div className="flex justify-between">
                       <span><strong>Narrative Coherence:</strong> How well the story flows and maintains logical consistency</span>
                       <Badge variant="outline">25%</Badge>
@@ -190,7 +190,7 @@ Respond ONLY in the specified JSON format with no additional text.`}
                 
                 <div className="p-4 bg-muted rounded-lg">
                   <h4 className="font-medium mb-2">User Prompt Template</h4>
-                  <pre className="text-xs text-fg-muted whitespace-pre-wrap overflow-x-auto">
+                   <pre className="text-[11px] sm:text-xs text-fg-muted whitespace-pre-wrap overflow-x-auto">
 {`**TASK**: Evaluate the following creative writing sample based on the specified criteria.
 
 **ORIGINAL PROMPT**: [Original writing prompt]
@@ -233,7 +233,7 @@ Respond ONLY in the specified JSON format with no additional text.`}
           
           <div className="space-y-6 mt-8">
             <div>
-              <h3 className="font-semibold mb-4">Core Evaluation Dimensions</h3>
+               <h3 className="font-semibold mb-3 sm:mb-4">Core Evaluation Dimensions</h3>
               
               <div className="space-y-4">
                 <div className="p-4 border rounded-lg">
@@ -241,11 +241,11 @@ Respond ONLY in the specified JSON format with no additional text.`}
                     <h4 className="font-medium">Narrative Structure</h4>
                     <Badge variant="outline" className="text-xs">30%</Badge>
                   </div>
-                  <p className="text-sm text-fg-muted mb-2">
+                  <p className="text-xs sm:text-sm text-fg-muted mb-2">
                     <strong>What it measures:</strong> Story organization, pacing, plot coherence, and logical progression. 
                     Does the story have a clear beginning, middle, and end? Are events well-sequenced?
                   </p>
-                   <p className="text-sm text-fg-muted">
+                   <p className="text-xs sm:text-sm text-fg-muted">
                     <strong>Why it matters:</strong> Fundamental to readable fiction. Poor structure confuses readers and 
                     undermines other story elements. Highest weight because it&apos;s essential for story comprehension.
                   </p>
@@ -256,11 +256,11 @@ Respond ONLY in the specified JSON format with no additional text.`}
                     <h4 className="font-medium">Creativity Execution</h4>
                     <Badge variant="outline" className="text-xs">25%</Badge>
                   </div>
-                  <p className="text-sm text-fg-muted mb-2">
+                  <p className="text-xs sm:text-sm text-fg-muted mb-2">
                     <strong>What it measures:</strong> Originality of ideas, creative premise handling, and unexpected elements. 
                     Does the story offer fresh perspectives or novel approaches?
                   </p>
-                  <p className="text-sm text-fg-muted">
+                  <p className="text-xs sm:text-sm text-fg-muted">
                     <strong>Why it matters:</strong> Distinguishes memorable from forgettable writing. Creative stories engage 
                     readers more effectively and demonstrate the model&apos;s ability to generate novel content.
                   </p>
@@ -271,11 +271,11 @@ Respond ONLY in the specified JSON format with no additional text.`}
                     <h4 className="font-medium">Character Voice</h4>
                     <Badge variant="outline" className="text-xs">20%</Badge>
                   </div>
-                  <p className="text-sm text-fg-muted mb-2">
+                  <p className="text-xs sm:text-sm text-fg-muted mb-2">
                     <strong>What it measures:</strong> Character development, authentic dialogue, and distinct character voices. 
                     Are characters believable and well-developed within the story&apos;s scope?
                   </p>
-                  <p className="text-sm text-fg-muted">
+                  <p className="text-xs sm:text-sm text-fg-muted">
                     <strong>Why it matters:</strong> Characters drive reader engagement. Strong character voices indicate 
                     sophisticated language modeling and understanding of human psychology.
                   </p>
@@ -315,12 +315,12 @@ Respond ONLY in the specified JSON format with no additional text.`}
 
             <div className="p-4 bg-muted rounded-lg">
               <h4 className="font-medium mb-2">Judge Models</h4>
-              <p className="text-sm text-fg-muted">
+              <p className="text-xs sm:text-sm text-fg-muted">
                 <strong>Kimi-K2 (Chinese) and Mistral Medium 3 (European):</strong> Leading open-weight models from different cultural backgrounds, 
                 selected for their strong creative writing evaluation capabilities and cross-cultural perspective diversity. 
                 Multiple judges reduce individual model bias while providing culturally diverse evaluation viewpoints.
               </p>
-              <div className="mt-3 text-xs text-fg-muted">
+              <div className="mt-3 text-[11px] sm:text-xs text-fg-muted">
                 <strong>Judge Agreement:</strong> These models have demonstrated high consensus strength in testing, 
                 indicating excellent cross-cultural reliability in creative writing evaluation.
               </div>

@@ -146,7 +146,7 @@ export function QualityCriteriaChart() {
       )}
 
       {/* Chart */}
-      <div className="h-80 transition-all duration-300">
+      <div className="h-64 sm:h-80 transition-all duration-300">
         {renderBarChart()}
       </div>
 
@@ -156,7 +156,7 @@ export function QualityCriteriaChart() {
           <Badge
             key={criterion}
             variant="outline"
-            className="text-xs"
+            className="text-[10px] sm:text-xs"
             style={{ borderColor: getChartColors()[index % getChartColors().length], color: getChartColors()[index % getChartColors().length] }}
           >
             {formatCriterionName(criterion)}

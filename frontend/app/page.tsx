@@ -21,7 +21,7 @@ function DashboardContent() {
     setAggregateAcrossModels
   } = useBenchmarkContext()
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto py-6 sm:py-8 px-3 sm:px-4">
       <Navigation />
 
       {/* Filter Controls */}

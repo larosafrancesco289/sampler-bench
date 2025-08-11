@@ -65,13 +65,13 @@ export function ScoreChart() {
   return (
     <div className="space-y-6">
       {/* Model Charts in Grid Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {modelCharts.map(({ modelName, data: modelData }) => (
           <div key={modelName} className="transition-all duration-300">
-            <h3 className="text-lg font-semibold mb-3 text-fg">
+            <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3 text-fg break-words">
               {modelName}
             </h3>
-            <div className="h-80">
+            <div className="h-64 sm:h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={modelData} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" opacity={0.5} />
@@ -86,7 +86,7 @@ export function ScoreChart() {
                   />
                   <YAxis 
                     domain={[0, 10]}
-                    tick={{ fontSize: 11, fill: 'currentColor' }}
+                    tick={{ fontSize: 10, fill: 'currentColor' }}
                     stroke="currentColor"
                     opacity={0.7}
                   />

@@ -61,13 +61,13 @@ export default function SamplerVisualizer() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto py-6 sm:py-8 px-3 sm:px-4">
       <Navigation />
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-fg mb-2">
+        <h1 className="text-2xl sm:text-4xl font-bold text-fg mb-1 sm:mb-2">
           Sampler Visualizer
         </h1>
-        <p className="text-lg text-fg-muted">
+        <p className="text-sm sm:text-lg text-fg-muted">
           Interactive visualization of LLM sampling strategies and their effects on token selection
         </p>
       </div>
@@ -85,7 +85,7 @@ export default function SamplerVisualizer() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {samplers.map((sampler) => (
                 <Button
                   key={sampler.id}
@@ -93,9 +93,9 @@ export default function SamplerVisualizer() {
                   className="h-auto p-4 text-left flex-col items-start justify-start min-h-[100px]"
                   onClick={() => setSelectedSampler(sampler.id)}
                 >
-                  <div className="w-full">
-                    <div className="font-semibold text-left mb-2 break-words">{sampler.name}</div>
-                    <div className="text-sm opacity-70 text-left break-words hyphens-auto leading-relaxed">
+                   <div className="w-full">
+                    <div className="font-semibold text-left mb-1 sm:mb-2 break-words">{sampler.name}</div>
+                    <div className="text-xs sm:text-sm opacity-70 text-left break-words hyphens-auto leading-relaxed">
                       {sampler.description}
                     </div>
                   </div>
@@ -131,7 +131,7 @@ export default function SamplerVisualizer() {
           <CardContent>
             <div className="space-y-6">
               {/* Temperature (always shown) */}
-              <div className="space-y-2">
+                <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium">Temperature</label>
                   <Badge variant="outline">{temperature[0]}</Badge>
@@ -144,14 +144,14 @@ export default function SamplerVisualizer() {
                   step={0.1}
                   className="w-full"
                 />
-                <p className="text-xs text-fg-muted">
+                  <p className="text-[11px] sm:text-xs text-fg-muted">
                   Controls randomness. Lower values = more focused, higher values = more random. Default: 1.0
                 </p>
               </div>
 
               {/* Sampler-specific parameters */}
               {selectedSampler === 'top_p' && (
-                <div className="space-y-2">
+                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium">Top-p (Nucleus)</label>
                     <Badge variant="outline">{topP[0]}</Badge>
@@ -164,14 +164,14 @@ export default function SamplerVisualizer() {
                     step={0.05}
                     className="w-full"
                   />
-                  <p className="text-xs text-fg-muted">
+                   <p className="text-[11px] sm:text-xs text-fg-muted">
                     Cumulative probability threshold. Tokens with cumulative probability below this are filtered out. Default: 0.9
                   </p>
                 </div>
               )}
 
               {selectedSampler === 'top_k' && (
-                <div className="space-y-2">
+                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium">Top-k</label>
                     <Badge variant="outline">{topK[0]}</Badge>
@@ -184,14 +184,14 @@ export default function SamplerVisualizer() {
                     step={1}
                     className="w-full"
                   />
-                  <p className="text-xs text-fg-muted">
+                   <p className="text-[11px] sm:text-xs text-fg-muted">
                     Number of top tokens to consider. Only the k most likely tokens are kept. Default: 50
                   </p>
                 </div>
               )}
 
               {selectedSampler === 'min_p' && (
-                <div className="space-y-2">
+                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium">Min-p</label>
                     <Badge variant="outline">{minP[0]}</Badge>
@@ -204,14 +204,14 @@ export default function SamplerVisualizer() {
                     step={0.01}
                     className="w-full"
                   />
-                  <p className="text-xs text-fg-muted">
+                   <p className="text-[11px] sm:text-xs text-fg-muted">
                     Minimum probability threshold scaled by top token probability. Default: 0.1
                   </p>
                 </div>
               )}
 
               {selectedSampler === 'top_n_sigma' && (
-                <div className="space-y-2">
+                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium">n-sigma</label>
                     <Badge variant="outline">{topNSigma[0]}</Badge>
@@ -224,7 +224,7 @@ export default function SamplerVisualizer() {
                     step={0.1}
                     className="w-full"
                   />
-                  <p className="text-xs text-fg-muted">
+                   <p className="text-[11px] sm:text-xs text-fg-muted">
                     Standard deviation multiplier for logit threshold. Default: 3.0
                   </p>
                 </div>
@@ -235,7 +235,7 @@ export default function SamplerVisualizer() {
       </div>
 
       {/* Explanation and Visualization */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-8">
         {/* Explanation */}
         <Card>
           <CardHeader>

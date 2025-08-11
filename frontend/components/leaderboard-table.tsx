@@ -109,16 +109,16 @@ export function LeaderboardTable() {
       {filteredData.map((entry, index) => (
         <div
           key={`${entry.sampler_name}-${entry.model_name || 'unknown'}-${index}`}
-          className="border border-border rounded-2xl p-6 hover:shadow-md transition-all duration-300 hover:scale-[1.02] bg-surface"
+          className="border border-border rounded-2xl p-4 sm:p-6 hover:shadow-md transition-all duration-300 bg-surface"
         >
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-0 mb-4">
+            <div className="flex items-start sm:items-center gap-3 sm:gap-4">
               <div className="flex items-center justify-center w-8 h-8 rounded-full bg-accent text-black font-bold text-sm transition-colors duration-300">
                 {index + 1}
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-fg transition-colors duration-300">{entry.sampler_name}</h3>
-                <p className="text-sm text-fg-muted transition-colors duration-300">{entry.description}</p>
+                <h3 className="text-base sm:text-lg font-semibold text-fg transition-colors duration-300 break-words">{entry.sampler_name}</h3>
+                <p className="text-sm text-fg-muted transition-colors duration-300 break-words">{entry.description}</p>
                 {entry.model_name && (
                   <p className="text-xs text-fg-muted font-medium transition-colors duration-300">
                     Model: {entry.model_name}
@@ -126,8 +126,8 @@ export function LeaderboardTable() {
                 )}
               </div>
             </div>
-            <div className="text-right">
-              <div className="text-2xl font-bold text-fg transition-colors duration-300">
+            <div className="text-left sm:text-right">
+              <div className="text-xl sm:text-2xl font-bold text-fg transition-colors duration-300">
                 {entry.average_score.toFixed(2)}
                 {entry.overall_std && (
                   <span className="text-xs text-fg-muted ml-1">
@@ -135,7 +135,7 @@ export function LeaderboardTable() {
                   </span>
                 )}
               </div>
-              <div className="flex items-center justify-end gap-2">
+              <div className="flex items-center justify-start sm:justify-end gap-2 flex-wrap">
                 <div className="text-sm text-fg-muted transition-colors duration-300">
                   {entry.total_samples} samples
                 </div>
@@ -152,21 +152,21 @@ export function LeaderboardTable() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {/* Quality Criteria Breakdown */}
             <div>
-              <h4 className="font-medium mb-3 text-fg transition-colors duration-300">Quality Criteria</h4>
+              <h4 className="font-medium mb-2 sm:mb-3 text-fg transition-colors duration-300">Quality Criteria</h4>
               <div className="space-y-2">
                 {Object.entries(entry.criteria_breakdown).map(([criterion, score]) => {
                   const std = entry.criteria_std?.[criterion];
                   return (
-                    <div key={criterion} className="flex items-center justify-between group hover:bg-muted p-2 rounded-2xl transition-all duration-200">
-                      <span className="text-sm capitalize text-fg transition-colors duration-300" title={`${criterion.replace(/_/g, ' ')}: ${score.toFixed(2)}${std ? ` (±${std.toFixed(1)})` : ''}`}>
+                    <div key={criterion} className="flex items-center justify-between gap-2 group hover:bg-muted p-2 rounded-2xl transition-all duration-200">
+                      <span className="text-sm capitalize text-fg transition-colors duration-300 break-words" title={`${criterion.replace(/_/g, ' ')}: ${score.toFixed(2)}${std ? ` (±${std.toFixed(1)})` : ''}`}>
                         {criterion.replace(/_/g, ' ')}
                       </span>
-                      <div className="flex items-center space-x-2">
-                        <Progress value={score * 10} className="w-24 h-2 transition-all duration-300" />
-                        <span className="text-sm font-medium text-fg transition-colors duration-300">
+                      <div className="flex items-center gap-2">
+                        <Progress value={score * 10} className="w-20 sm:w-24 h-2 transition-all duration-300" />
+                        <span className="text-sm font-medium text-fg transition-colors duration-300 whitespace-nowrap">
                           {score.toFixed(1)}
                           {std && (
                             <span className="text-xs text-fg-muted ml-1">
@@ -184,9 +184,9 @@ export function LeaderboardTable() {
             {/* Parameters & Word Count */}
             <div className="space-y-4">
               <div>
-              <h4 className="font-medium mb-3 text-fg transition-colors duration-300">Output Quality</h4>
-                <div className="text-center p-3 bg-muted rounded-2xl transition-all duration-300 hover:brightness-105">
-                  <div className="text-lg font-medium text-fg transition-colors duration-300">{entry.avg_word_count}</div>
+              <h4 className="font-medium mb-2 sm:mb-3 text-fg transition-colors duration-300">Output Quality</h4>
+                <div className="text-center p-3 bg-muted rounded-2xl transition-all duration-300">
+                  <div className="text-base sm:text-lg font-medium text-fg transition-colors duration-300">{entry.avg_word_count}</div>
                   <div className="text-sm text-fg-muted transition-colors duration-300">avg words per sample</div>
                 </div>
               </div>
@@ -234,7 +234,7 @@ export function LeaderboardTable() {
               )}
 
               <div>
-                <h4 className="font-medium mb-3 text-fg transition-colors duration-300">Sampling Parameters</h4>
+                <h4 className="font-medium mb-2 sm:mb-3 text-fg transition-colors duration-300">Sampling Parameters</h4>
                 <div className="flex flex-wrap gap-2">
                   {Object.entries(entry.parameters).map(([key, value]) => (
                     <Badge key={key} variant="secondary" className="text-xs transition-all duration-300 hover:scale-105">
