@@ -49,17 +49,17 @@ def judge_benchmark_results(results_file: str,
         Path to the saved judged results file
     """
     
-    print("⚖️ Starting Results Judging")
+    print("Starting Results Judging")
     print("=" * 50)
-    print(f"📁 Results file: {results_file}")
+    print(f"Results file: {results_file}")
     
     # Load existing results
-    print(f"\n📂 Loading benchmark results...")
+    print(f"\nLoading benchmark results...")
     try:
         data = load_benchmark_results(results_file)
-        print(f"✅ Loaded {len(data.get('samples', []))} samples")
+        print(f"Loaded {len(data.get('samples', []))} samples")
     except Exception as e:
-        print(f"❌ Failed to load results: {e}")
+        print(f"Failed to load results: {e}")
         return None
     
     # Explicitly disable penalties to avoid muddling quality scores in full benchmark outputs
@@ -67,24 +67,23 @@ def judge_benchmark_results(results_file: str,
     penalty_config = None
     
     # Initialize judge (multi-judge if enabled, single judge otherwise)
-    print(f"\n⚖️ Initializing judge system...")
+    print(f"\nInitializing judge system...")
     try:
         judge = create_judge()  # Auto-detects multi-judge mode from environment
         
         # Check if it's multi-judge or single judge
         if hasattr(judge, 'judge_models'):
-            print(f"✅ Multi-judge initialized with {len(judge.judge_models)} judges:")
+            print(f"Multi-judge initialized with {len(judge.judge_models)} judges:")
             for i, model in enumerate(judge.judge_models, 1):
                 print(f"   {i}. {model}")
-            print(f"📊 Consensus method: {judge.consensus_method}")
+            print(f"Consensus method: {judge.consensus_method}")
         else:
-            print(f"✅ Single judge initialized: {judge.model}")
+            print(f"Single judge initialized: {judge.model}")
         
-        print(f"📋 Evaluation criteria: {', '.join(judge.get_criteria_info().keys())}")
+        print(f"Evaluation criteria: {', '.join(judge.get_criteria_info().keys())}")
     except Exception as e:
-        print(f"❌ Failed to initialize judge: {e}")
-        print("💡 Tip: Make sure you have OPENROUTER_API_KEY in your .env file for multi-judge")
-        print("💡 Or OPENAI_API_KEY for single-judge mode")
+        print(f"Failed to initialize judge: {e}")
+        print("Tip: Set OPENROUTER_API_KEY (multi-judge) or OPENAI_API_KEY (single-judge)")
         return None
     
     # Initialize aggregator for quality tracking
@@ -96,9 +95,9 @@ def judge_benchmark_results(results_file: str,
     failed_samples = len(samples) - len(valid_samples)
     
     if failed_samples > 0:
-        print(f"⚠️ Skipping {failed_samples} failed generation samples")
+        print(f"Skipping {failed_samples} failed generation samples")
     
-    print(f"\n🔍 Evaluating {len(valid_samples)} valid samples...")
+    print(f"\nEvaluating {len(valid_samples)} valid samples...")
 
     # Deterministic evaluation order if configured via environment variable
     order_seed_env = os.getenv('EVALUATION_ORDER_SEED') or os.getenv('evaluation_order_seed')
@@ -107,9 +106,9 @@ def judge_benchmark_results(results_file: str,
             order_seed = int(order_seed_env)
             rnd = random.Random(order_seed)
             rnd.shuffle(valid_samples)
-            print(f"   🔒 Using deterministic evaluation order with seed {order_seed}")
+            print(f"   Using deterministic evaluation order with seed {order_seed}")
         except ValueError:
-            print(f"   ⚠️ Invalid EVALUATION_ORDER_SEED: {order_seed_env}")
+            print(f"   Invalid EVALUATION_ORDER_SEED: {order_seed_env}")
     
     judged_samples = []
     evaluation_failures = 0
@@ -129,11 +128,11 @@ def judge_benchmark_results(results_file: str,
             'original_sample': sample  # Keep reference to original
         })
     
-    print(f"\n⚖️ Judging {len(batch_samples)} samples using batched evaluation...")
+    print(f"\nJudging {len(batch_samples)} samples using batched evaluation...")
     
     # Progress callback for batch processing
     def progress_callback(completed, total):
-        print(f"   📊 Progress: {completed}/{total} samples evaluated...")
+        print(f"   Progress: {completed}/{total} samples evaluated...")
     
     try:
         # Get max concurrent evaluations from environment (default to 5)
@@ -156,7 +155,7 @@ def judge_benchmark_results(results_file: str,
                     )
                     return i, judgment
                 except Exception as e:
-                    print(f"   ❌ Error evaluating sample {i+1}: {e}")
+                    print(f"   Error evaluating sample {i+1}: {e}")
                     return i, None
             
             # Process samples in parallel
@@ -177,7 +176,7 @@ def judge_benchmark_results(results_file: str,
             # Filter out None results (failed evaluations)
             valid_judgments = [j for j in judgments if j is not None]
             if len(valid_judgments) != len(judgments):
-                print(f"   ⚠️  Warning: {len(judgments) - len(valid_judgments)} samples failed evaluation")
+                print(f"   Warning: {len(judgments) - len(valid_judgments)} samples failed evaluation")
             judgments = valid_judgments
             
         else:
@@ -189,16 +188,16 @@ def judge_benchmark_results(results_file: str,
                 progress_callback=progress_callback
             )
         
-        print(f"\n✅ Completed evaluation of {len(judgments)} samples")
+        print(f"\nCompleted evaluation of {len(judgments)} samples")
         
         # Process the judgment results (unified handling for both judge types)
         for i, (judgment, batch_sample) in enumerate(zip(judgments, batch_samples)):
             original_sample = batch_sample['original_sample']
             
-            print(f"\n📊 Sample {i+1}/{len(valid_samples)}")
+            print(f"\nSample {i+1}/{len(valid_samples)}")
             print(f"   Sampler: {original_sample.get('sampler_name', 'unknown')}")
             print(f"   Prompt: {original_sample.get('prompt', 'N/A')[:60]}...")
-            print(f"   📊 Quality score: {judgment.overall_score:.2f}/10")
+            print(f"   Quality score: {judgment.overall_score:.2f}/10")
             
             # Handle different result structures (multi-judge vs single-judge)
             if hasattr(judge, 'judge_models'):
@@ -340,7 +339,7 @@ def judge_benchmark_results(results_file: str,
         }
         
     except Exception as e:
-        print(f"⚠️ Could not generate quality statistics: {e}")
+        print(f"Could not generate quality statistics: {e}")
         import traceback
         traceback.print_exc()
         
@@ -365,45 +364,43 @@ def judge_benchmark_results(results_file: str,
     with open(enhanced_filepath, 'w') as f:
         json.dump(enhanced_results, f, indent=2)
     
-    print(f"\n💾 Enhanced results saved to: {enhanced_filepath}")
-    print(f"📊 Judgment Summary:")
-    print(f"   ✅ Successfully judged: {len(valid_samples) - evaluation_failures}")
-    print(f"   ❌ Judgment failures: {evaluation_failures}")
-    print(f"   📈 Success rate: {((len(valid_samples) - evaluation_failures) / len(valid_samples) * 100):.1f}%")
+    print(f"\nEnhanced results saved to: {enhanced_filepath}")
+    print(f"Judgment Summary:")
+    print(f"   Successfully judged: {len(valid_samples) - evaluation_failures}")
+    print(f"   Judgment failures: {evaluation_failures}")
+    print(f"   Success rate: {((len(valid_samples) - evaluation_failures) / len(valid_samples) * 100):.1f}%")
     
     # Print enhanced quality analysis if available
     if 'enhanced_statistics' in enhanced_results and enhanced_results['enhanced_statistics']:
-        print(f"\n🎭 ENHANCED QUALITY ANALYSIS:")
+        print(f"\nENHANCED QUALITY ANALYSIS:")
         enhanced_stats = enhanced_results['enhanced_statistics']
         
         # Overall ranking with confidence intervals
-        print(f"\n🏆 QUALITY RANKING (with 95% confidence intervals):")
+        print(f"\nQUALITY RANKING (with 95% confidence intervals):")
         ranking = enhanced_results['quality_statistics']['sampler_ranking']
         for rank, sampler_data in enumerate(ranking, 1):
             sampler_name = sampler_data['sampler_name']
             if sampler_name in enhanced_stats['sampler_stats']:
                 stats = enhanced_stats['sampler_stats'][sampler_name]
                 ci_low, ci_high = stats['confidence_interval']
-                consistency_icon = "🔸" if stats['prompt_consistency'] > 8.0 else "🔹"
-                
                 print(f"   {rank}. {sampler_name}: {stats['overall_mean']:.2f}/10 "
-                      f"[{ci_low:.2f}-{ci_high:.2f}] {consistency_icon}")
+                      f"[{ci_low:.2f}-{ci_high:.2f}]")
                 print(f"      Consistency: {stats['prompt_consistency']:.1f}/10, "
                       f"Samples: {stats['total_samples']}")
         
         # Best performers analysis
-        print(f"\n📊 PERFORMANCE INSIGHTS:")
-        print(f"   🏅 Highest Quality: {enhanced_stats['highest_quality_sampler']}")
-        print(f"   🎯 Most Consistent: {enhanced_stats['most_consistent_sampler']}")
+        print(f"\nPERFORMANCE INSIGHTS:")
+        print(f"   Highest Quality: {enhanced_stats['highest_quality_sampler']}")
+        print(f"   Most Consistent: {enhanced_stats['most_consistent_sampler']}")
         
         # Per-prompt winners
-        print(f"\n📝 BEST SAMPLER PER PROMPT:")
+        print(f"\nBEST SAMPLER PER PROMPT:")
         for prompt, best_sampler in enhanced_stats['best_sampler_per_prompt'].items():
-            print(f"   • {prompt[:50]}... → {best_sampler}")
+            print(f"   - {prompt[:50]}... -> {best_sampler}")
         
     elif 'quality_statistics' in enhanced_results:
         # Fallback to basic ranking
-        print(f"\n🏆 QUALITY RANKING:")
+        print(f"\nQUALITY RANKING:")
         ranking = enhanced_results['quality_statistics']['sampler_ranking']
         for rank, sampler_data in enumerate(ranking, 1):
             print(f"   {rank}. {sampler_data['sampler_name']}: {sampler_data['avg_quality']:.2f}/10")
@@ -458,19 +455,19 @@ def main():
     if not results_file and args.auto_find:
         results_file = find_latest_results_file()
         if results_file:
-            print(f"🔍 Auto-found latest results file: {results_file}")
+            print(f"Auto-found latest results file: {results_file}")
         else:
-            print("❌ No results files found in results/ directory")
+            print("No results files found in results/ directory")
             sys.exit(1)
     
     if not results_file:
-        print("❌ No results file specified")
-        print("💡 Usage: python judge_results.py <results_file.json>")
-        print("💡 Or use --auto-find to find the latest file automatically")
+        print("No results file specified")
+        print("Usage: python judge_results.py <results_file.json>")
+        print("Or use --auto-find to find the latest file automatically")
         sys.exit(1)
     
     if not Path(results_file).exists():
-        print(f"❌ Results file not found: {results_file}")
+        print(f"Results file not found: {results_file}")
         sys.exit(1)
     
     # Run judging
@@ -483,10 +480,10 @@ def main():
     )
     
     if judged_file:
-        print(f"\n🎉 Judging completed successfully!")
-        print(f"📁 Enhanced results file: {judged_file}")
+        print(f"\nJudging completed successfully")
+        print(f"Enhanced results file: {judged_file}")
     else:
-        print(f"\n💥 Judging failed!")
+        print(f"\nJudging failed")
         sys.exit(1)
 
 if __name__ == "__main__":

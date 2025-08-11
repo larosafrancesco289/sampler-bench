@@ -61,7 +61,7 @@ def run_benchmark(model_name: str,
         Path to the saved results file
     """
     
-    print("🚀 Starting Sampler Benchmark")
+    print("Starting Sampler Benchmark")
     print("=" * 50)
     print(f"Model: {model_name}")
     print(f"Samplers: {', '.join(sampler_names)}")
@@ -72,13 +72,13 @@ def run_benchmark(model_name: str,
     api = SamplerBenchAPI()
     
     # Initialize generator
-    print(f"\n🔌 Initializing model: {model_name}")
+    print(f"\nInitializing model: {model_name}")
     gen_result = api.initialize_generator(model_name)
     if not gen_result['success']:
-        print(f"❌ Failed to initialize generator: {gen_result['error']}")
+        print(f"Failed to initialize generator: {gen_result['error']}")
         return None
     
-    print(f"✅ Connected to model on port {gen_result['config']['port']}")
+    print(f"Connected to model on port {gen_result['config']['port']}")
     
     # Prepare results structure
     results = {
@@ -107,14 +107,14 @@ def run_benchmark(model_name: str,
     current_sample = 0
     failed_samples = 0
     
-    print(f"\n📝 Generating {total_samples} samples...")
+    print(f"\nGenerating {total_samples} samples...")
     
     # Generate samples with repetitions
     for sampler_name in sampler_names:
-        print(f"\n🎯 Testing sampler: {sampler_name}")
+        print(f"\nTesting sampler: {sampler_name}")
         
         for i, prompt in enumerate(prompts, 1):
-            print(f"\n  📋 Prompt {i}: {prompt[:60]}...")
+            print(f"\n  Prompt {i}: {prompt[:60]}...")
             
             for rep in range(repetitions):
                 current_sample += 1
@@ -141,12 +141,11 @@ def run_benchmark(model_name: str,
                     }
                     
                     results['samples'].append(sample)
-                    
-                    print(f"    ✅ Generated {word_count} words")
+                    print(f"    Generated {word_count} words")
                     
                 else:
                     failed_samples += 1
-                    print(f"    ❌ Generation failed: {gen_result['error']}")
+                    print(f"    Generation failed: {gen_result['error']}")
                     
                     # Still record the failed attempt
                     sample = {
@@ -181,11 +180,11 @@ def run_benchmark(model_name: str,
     with open(filepath, 'w') as f:
         json.dump(results, f, indent=2)
     
-    print(f"\n💾 Results saved to: {filepath}")
-    print(f"📊 Summary:")
-    print(f"   ✅ Successful samples: {total_samples - failed_samples}")
-    print(f"   ❌ Failed samples: {failed_samples}")
-    print(f"   📈 Success rate: {((total_samples - failed_samples) / total_samples * 100):.1f}%")
+    print(f"\nResults saved to: {filepath}")
+    print(f"Summary:")
+    print(f"   Successful samples: {total_samples - failed_samples}")
+    print(f"   Failed samples: {failed_samples}")
+    print(f"   Success rate: {((total_samples - failed_samples) / total_samples * 100):.1f}%")
     
     return str(filepath)
 
@@ -239,11 +238,11 @@ def main():
     )
     
     if result_file:
-        print(f"\n🎉 Benchmark completed successfully!")
-        print(f"📁 Results file: {result_file}")
-        print(f"📋 Next step: Run judge_results.py on this file")
+        print(f"\nBenchmark completed successfully")
+        print(f"Results file: {result_file}")
+        print(f"Next step: Run judge_results.py on this file")
     else:
-        print(f"\n💥 Benchmark failed!")
+        print(f"\nBenchmark failed")
         sys.exit(1)
 
 if __name__ == "__main__":

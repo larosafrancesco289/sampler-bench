@@ -17,7 +17,7 @@ def load_config(config_path: str) -> dict:
         with open(config_path, 'r') as f:
             return yaml.safe_load(f)
     except Exception as e:
-        print(f"❌ Error loading config file {config_path}: {e}")
+        print(f"Error loading config file {config_path}: {e}")
         sys.exit(1)
 
 def extract_config_settings(config: dict) -> tuple:
@@ -38,25 +38,25 @@ def extract_config_settings(config: dict) -> tuple:
         return prompts, samplers, repetitions
         
     except KeyError as e:
-        print(f"❌ Config file missing required field: {e}")
+        print(f"Config file missing required field: {e}")
         sys.exit(1)
 
 def run_command(cmd, description):
     """Run a command and handle errors."""
     print(f"\n{'='*60}")
-    print(f"🔄 {description}")
+    print(f"{description}")
     print(f"{'='*60}")
     print(f"Running: {' '.join(cmd)}")
     
     try:
         result = subprocess.run(cmd, check=True, capture_output=False)
-        print(f"✅ {description} completed successfully")
+        print(f"{description} completed successfully")
         return True
     except subprocess.CalledProcessError as e:
-        print(f"❌ {description} failed with exit code {e.returncode}")
+        print(f"{description} failed with exit code {e.returncode}")
         return False
     except Exception as e:
-        print(f"❌ {description} failed with error: {e}")
+        print(f"{description} failed with error: {e}")
         return False
 
 def main():
@@ -137,7 +137,7 @@ Examples:
     
     # Validate arguments
     if args.no_judge and args.judge_only:
-        print("❌ Cannot use both --no-judge and --judge-only")
+        print("Cannot use both --no-judge and --judge-only")
         sys.exit(1)
     
     # Load configuration if provided
@@ -146,10 +146,10 @@ Examples:
     repetitions = 1
     
     if args.config:
-        print(f"📋 Loading configuration from: {args.config}")
+        print(f"Loading configuration from: {args.config}")
         config = load_config(args.config)
         config_prompts, config_samplers, repetitions = extract_config_settings(config)
-        print(f"✅ Config loaded: {len(config_prompts)} prompts, {len(config_samplers)} samplers, {repetitions} repetitions each")
+        print(f"Config loaded: {len(config_prompts)} prompts, {len(config_samplers)} samplers, {repetitions} repetitions each")
     
     # Determine final settings (command line overrides config)
     final_samplers = args.samplers if args.samplers else config_samplers or ["llama_default", "standard_minp", "creative_minp"]
@@ -162,7 +162,7 @@ Examples:
     
     # Step 1: Run benchmark generation (unless judge-only)
     if not args.judge_only:
-        print("🚀 STEP 1: Running Benchmark Generation")
+        print("STEP 1: Running Benchmark Generation")
         
         # Build benchmark command
         benchmark_cmd = [
@@ -190,12 +190,12 @@ Examples:
         success = run_command(benchmark_cmd, "Benchmark Generation")
         
         if not success:
-            print("\n💥 Full benchmark failed at generation step!")
+            print("\nFull benchmark failed at generation step")
             sys.exit(1)
     
     # Step 2: Run judging (unless no-judge)
     if not args.no_judge:
-        print("\n⚖️ STEP 2: Running Results Judging")
+        print("\nSTEP 2: Running Results Judging")
         
         # Build judge command
         judge_cmd = [
@@ -222,26 +222,26 @@ Examples:
         success = run_command(judge_cmd, "Results Judging")
         
         if not success:
-            print("\n💥 Full benchmark failed at judging step!")
-            print("📝 Note: Generation results are still saved and can be judged later")
+            print("\nFull benchmark failed at judging step")
+            print("Note: Generation results are still saved and can be judged later")
             sys.exit(1)
     
     # Success summary
     print(f"\n{'='*60}")
-    print("🎉 FULL BENCHMARK COMPLETED SUCCESSFULLY!")
+    print("FULL BENCHMARK COMPLETED SUCCESSFULLY")
     print(f"{'='*60}")
     
     if args.judge_only:
-        print("📊 Results have been judged and enhanced with quality scores")
+        print("Results have been judged and enhanced with quality scores")
     elif args.no_judge:
-        print("📝 Benchmark generation completed")
-        print("💡 Run with judging: python scripts/judge_results.py --auto-find")
+        print("Benchmark generation completed")
+        print("Run with judging: python scripts/judge_results.py --auto-find")
     else:
-        print("✅ Generation completed")
-        print("✅ Judging completed")
-        print("📊 Results include quality scores and rankings")
+        print("Generation completed")
+        print("Judging completed")
+        print("Results include quality scores and rankings")
     
-    print(f"\n📁 Check the '{args.output_dir}/' directory for results")
+    print(f"\nCheck the '{args.output_dir}/' directory for results")
 
 if __name__ == "__main__":
     main() 

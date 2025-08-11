@@ -264,11 +264,11 @@ class MultiJudgeEvaluator:
             'deepseek/deepseek-chat-v3-0324'
         }
         
-        print(f"🔧 MultiJudge initialized with {len(self.judge_models)} judges:")
+        print(f"MultiJudge initialized with {len(self.judge_models)} judges:")
         for i, model in enumerate(self.judge_models, 1):
             structured = self._supports_structured_outputs(model)
             print(f"   {i}. {model} {'(structured)' if structured else '(text)'}")
-        print(f"📊 Consensus method: {self.consensus_method}")
+        print(f"Consensus method: {self.consensus_method}")
     
     def _supports_structured_outputs(self, model: str) -> bool:
         """Check if a model supports structured outputs."""
@@ -312,7 +312,7 @@ class MultiJudgeEvaluator:
         """
         start_time = time.time()
         
-        print(f"⚖️ Evaluating with {len(self.judge_models)} judges...")
+        print(f"Evaluating with {len(self.judge_models)} judges...")
         
         # Get judgments from all judges in parallel
         individual_results = self._get_parallel_judgments(text, prompt, sampler_config)
@@ -403,9 +403,9 @@ class MultiJudgeEvaluator:
                 try:
                     result = future.result()
                     individual_results.append(result)
-                    print(f"   ✅ {model}: {result['overall_score']:.2f}/10")
+                    print(f"   {model}: {result['overall_score']:.2f}/10")
                 except Exception as e:
-                    print(f"   ❌ {model}: Failed ({str(e)})")
+                    print(f"   {model}: Failed ({str(e)})")
                     # Add fallback result
                     individual_results.append(self._create_fallback_result(model, str(e)))
         
@@ -439,9 +439,9 @@ class MultiJudgeEvaluator:
                     }
                 }
                 schema_type = "Mistral" if self._is_mistral_model(model) else "standard"
-                print(f"   🔧 Using structured outputs ({schema_type} schema) for {model}")
+                print(f"   Using structured outputs ({schema_type} schema) for {model}")
             else:
-                print(f"   📝 Using text parsing for {model}")
+                print(f"   Using text parsing for {model}")
             
             response = self.client.chat.completions.create(**request_params)
             
@@ -450,7 +450,7 @@ class MultiJudgeEvaluator:
             return result
             
         except Exception as e:
-            print(f"   ❌ {model} failed: {str(e)}")
+            print(f"   {model} failed: {str(e)}")
             # Return fallback result for this judge
             return self._create_fallback_result(model, str(e))
     

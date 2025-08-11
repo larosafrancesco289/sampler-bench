@@ -31,7 +31,7 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 usage() {
-    echo -e "${CYAN}🚀 Model Server Startup Script${NC}"
+    echo -e "${CYAN}Model Server Startup Script${NC}"
     echo ""
     echo "Usage: $0 [MODEL_NAME] [OPTIONS]"
     echo ""
@@ -87,7 +87,7 @@ while [[ $# -gt 0 ]]; do
             shift 2
             ;;
         --*)
-            echo -e "${RED}❌ Unknown option: $1${NC}"
+            echo -e "${RED}Unknown option: $1${NC}"
             usage
             exit 1
             ;;
@@ -95,7 +95,7 @@ while [[ $# -gt 0 ]]; do
             if [[ -z "$MODEL_NAME" ]]; then
                 MODEL_NAME="$1"
             else
-                echo -e "${RED}❌ Too many arguments: $1${NC}"
+                echo -e "${RED}Too many arguments: $1${NC}"
                 usage
                 exit 1
             fi
@@ -118,7 +118,7 @@ fi
 
 # Validate model name
 if [[ ! "${MODEL_CONFIGS[$MODEL_NAME]+_}" ]]; then
-    echo -e "${RED}❌ Unknown model: $MODEL_NAME${NC}"
+    echo -e "${RED}Unknown model: $MODEL_NAME${NC}"
     echo -e "${YELLOW}Available models:${NC}"
     for model in "${!MODEL_CONFIGS[@]}"; do
         echo -e "  ${GREEN}$model${NC}"
@@ -139,19 +139,19 @@ MODEL_PATH="$MODELS_DIR/$MODEL_FILE"
 
 # Validation
 if [[ ! -f "$KOBOLDCPP_PATH" ]]; then
-    echo -e "${RED}❌ KoboldCpp not found at: $KOBOLDCPP_PATH${NC}"
-    echo -e "${YELLOW}💡 Use --koboldcpp to specify the correct path${NC}"
+    echo -e "${RED}KoboldCpp not found at: $KOBOLDCPP_PATH${NC}"
+    echo -e "${YELLOW}Use --koboldcpp to specify the correct path${NC}"
     exit 1
 fi
 
 if [[ ! -f "$MODEL_PATH" ]]; then
-    echo -e "${RED}❌ Model file not found: $MODEL_PATH${NC}"
-    echo -e "${YELLOW}💡 Use --models-dir to specify the correct directory${NC}"
+    echo -e "${RED}Model file not found: $MODEL_PATH${NC}"
+    echo -e "${YELLOW}Use --models-dir to specify the correct directory${NC}"
     exit 1
 fi
 
 # Display startup info
-echo -e "${CYAN}🚀 Starting Model Server${NC}"
+echo -e "${CYAN}Starting Model Server${NC}"
 echo -e "${PURPLE}════════════════════════════════════════${NC}"
 echo -e "${YELLOW}Model:${NC} $MODEL_NAME"
 echo -e "${YELLOW}File:${NC} $MODEL_FILE"
@@ -163,14 +163,14 @@ echo -e "${PURPLE}════════════════════�
 echo ""
 
 # Kill any existing process on the port
-echo -e "${BLUE}🔄 Checking for existing processes on port $PORT...${NC}"
+echo -e "${BLUE}Checking for existing processes on port $PORT...${NC}"
 if lsof -ti:$PORT > /dev/null 2>&1; then
-    echo -e "${YELLOW}⚠️  Stopping existing process on port $PORT...${NC}"
+    echo -e "${YELLOW}Stopping existing process on port $PORT...${NC}"
     kill $(lsof -ti:$PORT) 2>/dev/null || true
     sleep 2
-    echo -e "${GREEN}✅ Port $PORT is now free${NC}"
+    echo -e "${GREEN}Port $PORT is now free${NC}"
 else
-    echo -e "${GREEN}✅ Port $PORT is available${NC}"
+    echo -e "${GREEN}Port $PORT is available${NC}"
 fi
 
 # Build KoboldCpp command
@@ -183,7 +183,7 @@ if [[ "$MODEL_NAME" == "llama-3.1-8b-instruct" ]]; then
 fi
 
 # Start the server
-echo -e "${BLUE}🚀 Starting KoboldCpp server...${NC}"
+echo -e "${BLUE}Starting KoboldCpp server...${NC}"
 echo -e "${CYAN}Command: $KOBOLD_CMD${NC}"
 echo ""
 
@@ -198,30 +198,30 @@ KOBOLD_PID=$!
 sleep 3
 if kill -0 $KOBOLD_PID 2>/dev/null; then
     echo ""
-    echo -e "${GREEN}🎉 Model server started successfully!${NC}"
+    echo -e "${GREEN}Model server started successfully${NC}"
     echo -e "${PURPLE}════════════════════════════════════════${NC}"
-    echo -e "${CYAN}🌐 Server URL:${NC} http://localhost:$PORT"
-    echo -e "${CYAN}📊 Web UI:${NC} http://localhost:$PORT"
-    echo -e "${CYAN}🔗 API Base:${NC} http://localhost:$PORT/api/v1"
+    echo -e "${CYAN}Server URL:${NC} http://localhost:$PORT"
+    echo -e "${CYAN}Web UI:${NC} http://localhost:$PORT"
+    echo -e "${CYAN}API Base:${NC} http://localhost:$PORT/api/v1"
     echo -e "${PURPLE}════════════════════════════════════════${NC}"
     echo ""
     echo -e "${YELLOW}💡 Testing commands:${NC}"
     echo -e "  ${GREEN}curl http://localhost:$PORT/api/v1/model${NC}"
     echo -e "  ${GREEN}python scripts/run_benchmark.py --model $MODEL_NAME${NC}"
     echo ""
-    echo -e "${YELLOW}📝 To stop the server:${NC}"
+    echo -e "${YELLOW}To stop the server:${NC}"
     echo -e "  ${GREEN}kill $KOBOLD_PID${NC}"
     echo -e "  ${GREEN}pkill -f koboldcpp${NC}"
     echo ""
     
     # Keep the script running to show server output
-    echo -e "${BLUE}📡 Server is running (PID: $KOBOLD_PID)${NC}"
+    echo -e "${BLUE}Server is running (PID: $KOBOLD_PID)${NC}"
     echo -e "${BLUE}Press Ctrl+C to stop the server${NC}"
     echo ""
     
     # Wait for the server process
     wait $KOBOLD_PID
 else
-    echo -e "${RED}❌ Failed to start model server${NC}"
+    echo -e "${RED}Failed to start model server${NC}"
     exit 1
 fi 

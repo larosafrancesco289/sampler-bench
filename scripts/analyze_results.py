@@ -16,24 +16,24 @@ def analyze_results(filepath, detailed=False):
         data = json.load(f)
     
     print("=" * 60)
-    print(f"📊 BENCHMARK ANALYSIS: {data['model_name']}")
+    print(f"BENCHMARK ANALYSIS: {data['model_name']}")
     print("=" * 60)
     
     # Basic overview
     meta = data['metadata']
-    print(f"✅ Completion: {meta['completed_samples']}/{meta['total_samples']} samples")
-    print(f"❌ Failures: {meta['failed_samples']}")
-    print(f"📝 Configuration: {meta['total_samplers']} samplers × {meta['total_prompts']} prompts × {meta['repetitions']} reps")
+    print(f"Completion: {meta['completed_samples']}/{meta['total_samples']} samples")
+    print(f"Failures: {meta['failed_samples']}")
+    print(f"Configuration: {meta['total_samplers']} samplers x {meta['total_prompts']} prompts x {meta['repetitions']} reps")
     
     # Judge metadata
     jm = data['judgment_metadata']
-    print(f"⚖️  Judgment: {jm['judge_type']} ({jm['successfully_judged']}/{jm['total_samples']} judged)")
+    print(f"Judgment: {jm['judge_type']} ({jm['successfully_judged']}/{jm['total_samples']} judged)")
     if jm['judgment_failures'] > 0:
-        print(f"🚨 Judge failures: {jm['judgment_failures']}")
+        print(f"Judge failures: {jm['judgment_failures']}")
     
     # Word count analysis
     word_counts = [sample['word_count'] for sample in data['samples']]
-    print(f"\n📏 WORD COUNTS:")
+    print(f"\nWORD COUNTS:")
     print(f"   Range: {min(word_counts)} - {max(word_counts)} words")
     print(f"   Average: {sum(word_counts)/len(word_counts):.1f} words")
     
@@ -43,11 +43,11 @@ def analyze_results(filepath, detailed=False):
     too_short = sum(1 for wc in word_counts if wc < 200)
     
     if zero_words + too_long + too_short > 0:
-        print(f"⚠️  Issues: {zero_words} empty, {too_short} too short (<200), {too_long} too long (>500)")
+        print(f"Issues: {zero_words} empty, {too_short} too short (<200), {too_long} too long (>500)")
     
     # Score analysis
     scores = [sample['judgment']['overall_score'] for sample in data['samples']]
-    print(f"\n🎯 QUALITY SCORES:")
+    print(f"\nQUALITY SCORES:")
     print(f"   Range: {min(scores):.2f} - {max(scores):.2f}")
     print(f"   Average: {sum(scores)/len(scores):.2f}")
     
@@ -58,10 +58,10 @@ def analyze_results(filepath, detailed=False):
     
     if penalty_samples:
         total_penalty = sum(s['judgment']['instruction_penalties']['total_penalty'] for s in penalty_samples)
-        print(f"⚠️  Penalties applied: {len(penalty_samples)}/{len(data['samples'])} samples (avg: {total_penalty/len(penalty_samples):.1f} pts)")
+        print(f"Penalties applied: {len(penalty_samples)}/{len(data['samples'])} samples (avg: {total_penalty/len(penalty_samples):.1f} pts)")
     
     # Sampler performance
-    print(f"\n🔀 SAMPLER PERFORMANCE:")
+    print(f"\nSAMPLER PERFORMANCE:")
     sampler_stats = {}
     for sample in data['samples']:
         sampler = sample['sampler_name']
@@ -84,10 +84,8 @@ def analyze_results(filepath, detailed=False):
     for sampler, stats in sorted_samplers:
         avg_score = sum(stats['scores']) / len(stats['scores'])
         avg_words = sum(stats['word_counts']) / len(stats['word_counts'])
-        status = "🔥" if avg_score > 6.2 else "✅" if avg_score > 5.8 else "⚠️" if avg_score > 5.0 else "❌"
         issue_str = f" ({stats['issues']} issues)" if stats['issues'] > 0 else ""
-        
-        print(f"   {status} {sampler:<15} {avg_score:.2f} avg  |  {avg_words:.0f} words{issue_str}")
+        print(f"   {sampler:<15} {avg_score:.2f} avg  |  {avg_words:.0f} words{issue_str}")
     
     # Judge consensus (if available)
     consensus_scores = []
@@ -99,14 +97,14 @@ def analyze_results(filepath, detailed=False):
     
     if consensus_scores:
         avg_consensus = sum(consensus_scores) / len(consensus_scores)
-        print(f"\n🤝 JUDGE CONSENSUS: {avg_consensus:.3f} average")
+        print(f"\nJUDGE CONSENSUS: {avg_consensus:.3f} average")
         if avg_consensus < 0.7:
-            print("   ⚠️  Low consensus - judges disagree frequently")
+            print("   Low consensus - judges disagree frequently")
         elif avg_consensus > 0.9:
-            print("   ✅ High consensus - judges agree well")
+            print("   High consensus - judges agree well")
     
     if detailed:
-        print(f"\n📋 DETAILED ISSUES:")
+        print(f"\nDETAILED ISSUES:")
         issue_count = 0
         for i, sample in enumerate(data['samples']):
             wc = sample['word_count']
@@ -148,23 +146,23 @@ def main():
         # Find latest judged results file
         results_dir = Path('results')
         if not results_dir.exists():
-            print("❌ No results directory found")
+            print("No results directory found")
             return 1
         
         judged_files = list(results_dir.glob('*_judged_*.json'))
         if not judged_files:
-            print("❌ No judged results files found")
+            print("No judged results files found")
             return 1
         
         # Sort by modification time, get latest
         filepath = max(judged_files, key=lambda p: p.stat().st_mtime)
-        print(f"📁 Auto-detected latest results: {filepath}")
+        print(f"Auto-detected latest results: {filepath}")
     
     try:
         analyze_results(filepath, args.detailed)
         return 0
     except Exception as e:
-        print(f"❌ Error analyzing results: {e}")
+        print(f"Error analyzing results: {e}")
         return 1
 
 if __name__ == '__main__':

@@ -393,7 +393,7 @@ class QualityAggregator:
         
         results = self.get_enhanced_benchmark_results()
         
-        print(f"\n📊 ENHANCED STATISTICAL QUALITY ANALYSIS")
+        print(f"\nENHANCED STATISTICAL QUALITY ANALYSIS")
         print(f"{'='*70}")
         print(f"Timestamp: {results.timestamp}")
         print(f"Total samples: {len(results.samples)}")
@@ -407,13 +407,11 @@ class QualityAggregator:
         ranked_samplers = sorted(results.sampler_stats.items(), 
                                key=lambda x: x[1].overall_mean, reverse=True)
         
-        print(f"\n🏆 QUALITY RANKING (with 95% Confidence Intervals):")
+        print(f"\nQUALITY RANKING (with 95% Confidence Intervals):")
         for rank, (sampler_name, stats) in enumerate(ranked_samplers, 1):
             ci_low, ci_high = stats.overall_confidence_interval
-            consistency_icon = "🔸" if stats.prompt_consistency > 0.8 else "🔹"
-            
             print(f"  {rank}. {sampler_name}: {stats.overall_mean:.2f}/10 "
-                  f"[{ci_low:.2f}-{ci_high:.2f}] {consistency_icon}")
+                  f"[{ci_low:.2f}-{ci_high:.2f}]")
             print(f"     Samples: {stats.total_samples}, "
                   f"Prompts: {stats.prompts_covered}, "
                   f"Consistency: {stats.prompt_consistency:.2f}")
@@ -437,7 +435,7 @@ class QualityAggregator:
             print(f"  Magnitude: {magnitude} {'(significant)' if abs(effect_size) > 0.5 else '(not significant)'}")
         
         # Meta-analysis
-        print(f"\n🎯 META-ANALYSIS:")
+        print(f"\nMETA-ANALYSIS:")
         print(f"  Best overall quality: {results.highest_quality_sampler}")
         print(f"  Most consistent: {results.most_consistent_sampler}")
         

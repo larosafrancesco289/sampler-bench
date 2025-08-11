@@ -31,10 +31,10 @@ def check_server_status(port: int) -> bool:
     try:
         response = requests.get(f"http://localhost:{port}/health", timeout=5)
         if response.status_code == 200:
-            print(f"   ✅ llama.cpp server responding on port {port}")
+            print(f"   llama.cpp server responding on port {port}")
             return True
     except Exception as e:
-        print(f"   ❌ llama.cpp server not responding on port {port}: {e}")
+        print(f"   llama.cpp server not responding on port {port}: {e}")
         return False
     
     return False
@@ -133,7 +133,7 @@ def create_full_logits_dataset(port: int = 5007, num_scenarios: int = 5) -> Dict
     """Create a comprehensive dataset with full vocabulary logits."""
     
     if not check_server_status(port):
-        print(f"❌ llama.cpp server not running on port {port}")
+        print(f"llama.cpp server not running on port {port}")
         print(f"Please start the server with: ./scripts/start_llama_server.sh")
         return None
     
@@ -141,7 +141,7 @@ def create_full_logits_dataset(port: int = 5007, num_scenarios: int = 5) -> Dict
     server_info = get_server_info(port)
     model_name = "llama.cpp"
     if server_info and 'default_generation_settings' in server_info:
-        print(f"✅ Connected to llama.cpp server")
+        print(f"Connected to llama.cpp server")
         print(f"   Server info: {server_info.get('default_generation_settings', {})}")
     
     # Different prompt scenarios
@@ -189,7 +189,7 @@ def create_full_logits_dataset(port: int = 5007, num_scenarios: int = 5) -> Dict
     successful_extractions = 0
     
     for scenario in scenarios[:num_scenarios]:
-        print(f"\n🔄 Processing scenario: {scenario['name']}")
+        print(f"\nProcessing scenario: {scenario['name']}")
         print(f"   Prompt: '{scenario['prompt']}'")
         
         tokens = extract_full_logits(scenario['prompt'], port)
@@ -204,14 +204,14 @@ def create_full_logits_dataset(port: int = 5007, num_scenarios: int = 5) -> Dict
             }
             
             successful_extractions += 1
-            print(f"   ✅ Successfully extracted {len(tokens)} tokens for visualization")
+            print(f"   Successfully extracted {len(tokens)} tokens for visualization")
             
             # Update vocab size if this is larger
             if len(tokens) > dataset["vocab_size"]:
                 dataset["vocab_size"] = len(tokens)
                 
         else:
-            print(f"   ❌ Failed to extract logits for scenario: {scenario['name']}")
+            print(f"   Failed to extract logits for scenario: {scenario['name']}")
             # Don't add failed scenarios to the dataset
     
     dataset["generation_info"]["successful_extractions"] = successful_extractions
@@ -229,12 +229,12 @@ def main():
     
     args = parser.parse_args()
     
-    print(f"🚀 Generating full vocabulary logits from llama.cpp server on port {args.port}")
+    print(f"Generating full vocabulary logits from llama.cpp server on port {args.port}")
     
     dataset = create_full_logits_dataset(args.port, args.scenarios)
     
     if not dataset:
-        print("❌ Failed to generate dataset")
+        print("Failed to generate dataset")
         sys.exit(1)
     
     # Save to file
@@ -244,7 +244,7 @@ def main():
     with open(output_path, 'w') as f:
         json.dump(dataset, f, indent=2)
     
-    print(f"\n✅ Dataset saved to: {output_path}")
+    print(f"\nDataset saved to: {output_path}")
     print(f"   Successful extractions: {dataset['generation_info']['successful_extractions']}")
     print(f"   Total vocabulary size: {dataset['vocab_size']}")
     print(f"   Total scenarios: {len(dataset['scenarios'])}")

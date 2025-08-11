@@ -64,7 +64,7 @@ def check_server_status(port: int) -> bool:
             print(f"   Response status: {response.status_code}")
             
             if response.status_code == 200:
-                print(f"   ✅ Server responding at {endpoint}")
+                print(f"   Server responding at {endpoint}")
                 if endpoint != "/":  # Don't print huge HTML for root
                     try:
                         print(f"   Server info: {response.json()}")
@@ -75,7 +75,7 @@ def check_server_status(port: int) -> bool:
             print(f"   Failed {endpoint}: {e}")
             continue
     
-    print(f"   ❌ No working endpoints found")
+    print(f"   No working endpoints found")
     return False
 
 def extract_token_logits_multi_sample(model_name: str, prompt: str, port: int) -> Optional[Dict[str, Any]]:
@@ -283,11 +283,11 @@ def create_realistic_logits_dataset(model_name: str, num_scenarios: int = 5) -> 
     port = get_model_port(model_name)
     
     if not check_server_status(port):
-        print(f"❌ KoboldCpp server not running on port {port}")
+        print(f"KoboldCpp server not running on port {port}")
         print(f"Please start the server with: ./scripts/start_model_server.sh {model_name}")
         return None
     
-    print(f"✅ Connected to KoboldCpp server on port {port}")
+    print(f"Connected to KoboldCpp server on port {port}")
     
     # Different prompt scenarios to get varied distributions
     scenarios = [
@@ -333,7 +333,7 @@ def create_realistic_logits_dataset(model_name: str, num_scenarios: int = 5) -> 
     successful_extractions = 0
     
     for scenario in scenarios[:num_scenarios]:
-        print(f"\n🔄 Processing scenario: {scenario['name']}")
+        print(f"\nProcessing scenario: {scenario['name']}")
         print(f"   Prompt: '{scenario['prompt']}'")
         
         result = extract_token_logits(model_name, scenario['prompt'], port)
@@ -440,10 +440,10 @@ def create_realistic_logits_dataset(model_name: str, num_scenarios: int = 5) -> 
             }
             
             successful_extractions += 1
-            print(f"   ✅ Successfully extracted {len(processed_tokens)} tokens from logprobs")
+            print(f"   Successfully extracted {len(processed_tokens)} tokens from logprobs")
             
         elif result and 'text' in result:
-            print(f"   ⚠️  Got text generation but no logprobs - creating enhanced fallback")
+            print(f"   Got text generation but no logprobs - creating enhanced fallback")
             # Create context-aware fallback based on the generated text
             generated_text = result['text']
             fallback_tokens = generate_context_aware_fallback(scenario['prompt'], generated_text)
@@ -459,7 +459,7 @@ def create_realistic_logits_dataset(model_name: str, num_scenarios: int = 5) -> 
             }
             
         else:
-            print(f"   ❌ Failed to extract logits")
+            print(f"   Failed to extract logits")
             # Create fallback data for this scenario
             dataset["scenarios"][scenario['name']] = {
                 "prompt": scenario['prompt'],
@@ -582,12 +582,12 @@ def main():
     
     args = parser.parse_args()
     
-    print(f"🚀 Generating logits data for model: {args.model}")
+    print(f"Generating logits data for model: {args.model}")
     
     dataset = create_realistic_logits_dataset(args.model, args.scenarios)
     
     if not dataset:
-        print("❌ Failed to generate dataset")
+        print("Failed to generate dataset")
         sys.exit(1)
     
     # Save to file
@@ -597,7 +597,7 @@ def main():
     with open(output_path, 'w') as f:
         json.dump(dataset, f, indent=2)
     
-    print(f"\n✅ Dataset saved to: {output_path}")
+    print(f"\nDataset saved to: {output_path}")
     print(f"   Successful extractions: {dataset['generation_info']['successful_extractions']}")
     print(f"   Total scenarios: {len(dataset['scenarios'])}")
     
