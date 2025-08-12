@@ -2,6 +2,8 @@
 
 Benchmark and compare text generation sampling strategies with a Python backend, a Next.js dashboard, and optional multi-judge evaluation.
 
+[Live dashboard](https://sampler-bench.vercel.app/)
+
 ### Why
 - Measure how different decoding settings affect output quality in creative writing.
 - Keep generation and judging separate so you can re-evaluate prior runs.
