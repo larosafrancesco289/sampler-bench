@@ -1,0 +1,38 @@
+# MMLU-Pro Subset Benchmark Configuration v1.0
+# Lightweight, objective accuracy, designed for sampler effect testing
+
+benchmark_config:
+  name: "MMLU-Pro Subset (Objective)"
+  description: "10-choice multiple-choice accuracy on a small, reproducible subset to assess sampler effects."
+
+  # Dataset selection
+  dataset:
+    name: "TIGER-Lab/MMLU-Pro"   # Hugging Face dataset repo
+    split: "test"                 # Use test split by default
+    categories: []                # e.g., ["Mathematics", "Physics"] to filter; empty for mixed
+
+  # Experimental setup
+  experimental_design:
+    subset_size: 20               # Total questions evaluated (keep tiny for local runs)
+    # Mirror robust creative writing sampler set
+    samplers:
+      - "model_default"
+      - "standard_minp"
+      - "creative_minp"
+      - "standard_sigma"
+      - "creative_sigma"
+
+  # Generation settings (local model server via KoboldCpp)
+  generation:
+    model: "llama-3.1-8b-instruct"
+    max_new_tokens: 8             # Keep tiny; expecting a single letter
+
+  # Output config
+  output_config:
+    results_dir: "results"
+
+  # Reproducibility
+  reproducibility:
+    seed: 42
+
+

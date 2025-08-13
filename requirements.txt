@@ -13,6 +13,9 @@ python-dotenv>=1.0.0
 # Scientific computing (minimal)
 numpy>=1.24.0
 
+# Datasets for objective benchmarks (e.g., MMLU-Pro)
+datasets>=2.19.0
+
 # FastAPI web framework and server
 fastapi>=0.104.0
 uvicorn[standard]>=0.24.0
