@@ -334,21 +334,22 @@ function FindingsContent() {
             )}
             {!mmlu.loading && !mmlu.error && mmlu.data && mmlu.data.length > 0 && (
               <div className="space-y-6">
-                {/* Executive-style summary, matched to Writing section styling */}
                 {(() => {
-                  const samplerStats = new Map<string, { mean: number; n: number; best: { model: string; acc: number }; worst: { model: string; acc: number } }>()
-                  mmlu.data.forEach((e: any) => {
+                  const samplerStats = new Map<string, { mean: number; n: number; best: { model: string; acc: number }; worst: { model: string; acc: number }; samples: number }>()
+                  mmlu.data.forEach((e) => {
                     let sampler = e.sampler_name
                     const match = sampler.match(/^([^(]+)(?:\s*\([^)]+\))?/)
                     if (match) sampler = match[1].trim()
                     const model = e.model_name || 'Unknown Model'
                     const acc = e.average_score * 100
+                    const samples = e.total_samples || 0
                     if (!samplerStats.has(sampler)) {
-                      samplerStats.set(sampler, { mean: 0, n: 0, best: { model, acc: -1 }, worst: { model, acc: 101 } })
+                      samplerStats.set(sampler, { mean: 0, n: 0, best: { model, acc: -1 }, worst: { model, acc: 101 }, samples: 0 })
                     }
                     const s = samplerStats.get(sampler)!
                     s.mean += acc
                     s.n += 1
+                    s.samples += samples
                     if (acc > s.best.acc) s.best = { model, acc }
                     if (acc < s.worst.acc) s.worst = { model, acc }
                   })
@@ -357,42 +358,56 @@ function FindingsContent() {
                     mean: s.n ? s.mean / s.n : 0,
                     best: s.best,
                     worst: s.worst,
+                    samples: s.samples
                   })).sort((a, b) => b.mean - a.mean)
 
                   const top = rows[0]
                   const bottom = rows[rows.length - 1]
-                  const spread = (top.mean - bottom.mean).toFixed(1)
+                  const spreadVal = top && bottom ? (top.mean - bottom.mean) : 0
+                  const spread = spreadVal.toFixed(1)
+                  const totalQuestions = rows.reduce((sum, r) => sum + r.samples, 0)
+
+                  const title = spreadVal < 3
+                    ? 'Minimal Impact of Sampling Strategies'
+                    : spreadVal < 6
+                    ? 'Modest Sampling Strategy Differences'
+                    : 'Significant Sampling Strategy Differences'
 
                   return (
                     <>
                       <Alert>
-                        <TrendingUp className="h-4 w-4" />
-                        <AlertTitle>Executive Summary (MMLU)</AlertTitle>
+                        <BarChart3 className="h-4 w-4" />
+                        <AlertTitle>{title}</AlertTitle>
                         <AlertDescription>
-                          <div className="mt-2 text-sm">
-                            <div className="mb-1">
-                              <strong>{top.sampler}</strong> leads with {top.mean.toFixed(1)}% mean accuracy.
+                          <div className="mt-2">
+                            <p className="text-xs sm:text-sm mb-3">
+                              {`Across ${totalQuestions} questions, different sampling strategies show ${spreadVal < 6 ? 'surprisingly small' : 'meaningful'} accuracy differences (${spread}% range).`}
+                            </p>
+                            <div className="space-y-2">
+                              {rows.map((r) => (
+                                <div key={r.sampler} className="flex items-center justify-between p-2 bg-muted rounded-2xl">
+                                  <span className="font-medium text-xs sm:text-sm break-words">{r.sampler}</span>
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-bold text-sm sm:text-base">{r.mean.toFixed(1)}%</span>
+                                    <span className="text-[11px] sm:text-xs text-fg-muted">({r.samples} questions)</span>
+                                  </div>
+                                </div>
+                              ))}
                             </div>
-                            <div className="text-fg-muted">Range across samplers: {spread}%</div>
+                            {rows.length > 1 && (
+                              <div className="mt-4 p-3 bg-muted rounded-2xl">
+                                <p className="text-xs sm:text-sm">
+                                  <strong>Key Finding (MMLU):</strong> {spreadVal < 3
+                                    ? 'Sampling parameters have minimal impact on MMLU accuracy. Model choice likely matters more than sampler.'
+                                    : spreadVal < 6
+                                    ? `Minimal sampling strategy effects observed. The ${spread}% difference represents a small portion of the accuracy scale.`
+                                    : 'Strong sampling effects detected. Choice of sampling parameters can materially change accuracy.'}
+                                </p>
+                              </div>
+                            )}
                           </div>
                         </AlertDescription>
                       </Alert>
-
-                      {/* Top samplers list */}
-                      <div>
-                        <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">Sampler Ranking (MMLU)</h3>
-                        <div className="space-y-2">
-                          {rows.map((r, idx) => (
-                            <div key={r.sampler} className={`flex items-center justify-between p-2 sm:p-3 bg-muted rounded-lg`}>
-                              <div className="flex items-center gap-3">
-                                <span className="font-medium break-words">{idx + 1}{idx === 0 ? 'st' : idx === 1 ? 'nd' : idx === 2 ? 'rd' : 'th'}</span>
-                                <span className="font-medium break-words">{r.sampler}</span>
-                              </div>
-                              <span className="font-bold text-sm sm:text-base">{r.mean.toFixed(1)}%</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
 
                       {/* Best/Worst per sampler details */}
                       <div>

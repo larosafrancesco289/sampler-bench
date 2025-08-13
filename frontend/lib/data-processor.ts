@@ -89,11 +89,11 @@ export function processBenchmarkData(benchmarkData: BenchmarkResults): Leaderboa
     const samplerConfig = benchmarkData.sampler_configs[samplerName]
 
     // Derive fallback parameters when config is missing/incomplete (e.g., model_default)
-    const aggregatedParameters: Record<string, any> = {}
+    const aggregatedParameters: Record<string, string | number> = {}
     try {
       const paramValueCounts = new Map<string, Map<string, number>>()
       samples.forEach((sample: Sample) => {
-        const cfg = (sample as any).sampler_config || {}
+        const cfg = (sample as Sample).sampler_config || {}
         Object.entries(cfg).forEach(([key, value]) => {
           const strVal = typeof value === 'number' ? String(Number(value)) : String(value)
           if (!paramValueCounts.has(key)) paramValueCounts.set(key, new Map())

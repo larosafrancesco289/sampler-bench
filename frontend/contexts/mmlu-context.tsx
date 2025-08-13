@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, ReactNode } from 'react'
 import { useMmluData } from '@/hooks/use-mmlu-data'
+import type { LeaderboardEntry, BenchmarkResults } from '@/types/benchmark'
 
 interface FilterOption {
   value: string
@@ -10,8 +11,8 @@ interface FilterOption {
 }
 
 interface MmluContextType {
-  data: any[]
-  summary: any
+  data: LeaderboardEntry[]
+  summary: unknown
   loading: boolean
   error: string | null
   refetch: () => void
@@ -26,7 +27,7 @@ interface MmluContextType {
   setSelectedSamplers: (samplers: string[]) => void
   resetFilters: () => void
   hasActiveFilters: boolean
-  rawData: any[]
+  rawData: BenchmarkResults[]
 }
 
 const MmluContext = createContext<MmluContextType | undefined>(undefined)

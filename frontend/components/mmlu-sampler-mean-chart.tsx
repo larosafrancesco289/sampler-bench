@@ -9,7 +9,7 @@ export function MmluSamplerMeanChart() {
 
   const chartData = useMemo(() => {
     const samplerGroups = new Map<string, { totalWeighted: number; weight: number }>()
-    data.forEach((entry: any) => {
+    data.forEach((entry) => {
       let sampler = entry.sampler_name
       const match = sampler.match(/^([^(]+)(?:\s*\([^)]+\))?/)
       if (match) sampler = match[1].trim()

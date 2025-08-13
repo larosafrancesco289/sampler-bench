@@ -28,7 +28,7 @@ export function MmluHistogram({ mode = 'overall' }: MmluHistogramProps) {
       bins.push({ range: `${start}-${start + binSize}%`, count: 0 })
     }
 
-    data.forEach((entry: any) => {
+    data.forEach((entry) => {
       const pct = Math.max(0, Math.min(99.999, entry.average_score * 100))
       const binIndex = Math.floor(pct / binSize)
       bins[binIndex].count += 1
@@ -39,8 +39,8 @@ export function MmluHistogram({ mode = 'overall' }: MmluHistogramProps) {
 
   // Group by model to show per-model histograms
   const perModel = useMemo(() => {
-    const groups: Record<string, any[]> = {}
-    data.forEach((e: any) => {
+    const groups: Record<string, typeof data> = {}
+    data.forEach((e) => {
       const model = e.model_name || 'Unknown Model'
       if (!groups[model]) groups[model] = []
       groups[model].push(e)
@@ -51,7 +51,7 @@ export function MmluHistogram({ mode = 'overall' }: MmluHistogramProps) {
       for (let start = 0; start < 100; start += binSize) {
         bins.push({ range: `${start}-${start + binSize}%`, count: 0 })
       }
-      entries.forEach((entry: any) => {
+      entries.forEach((entry) => {
         const pct = Math.max(0, Math.min(99.999, entry.average_score * 100))
         bins[Math.floor(pct / binSize)].count += 1
       })
@@ -82,7 +82,7 @@ export function MmluHistogram({ mode = 'overall' }: MmluHistogramProps) {
                   <YAxis allowDecimals={false} tick={{ fontSize: 10, fill: 'currentColor' }} stroke="currentColor" opacity={0.7} />
                   <Tooltip formatter={(value: number) => [value, 'count']} contentStyle={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '8px', color: 'var(--color-fg)' }} />
                   <Bar dataKey="count" radius={[4, 4, 0, 0]}>
-                    {bins.map((_: any, idx: number) => (
+                    {bins.map((_, idx: number) => (
                       <Cell key={idx} fill={COLORS[idx % COLORS.length]} stroke="var(--color-border)" strokeWidth={0.6} />
                     ))}
                   </Bar>
@@ -104,7 +104,7 @@ export function MmluHistogram({ mode = 'overall' }: MmluHistogramProps) {
           <YAxis allowDecimals={false} tick={{ fontSize: 10, fill: 'currentColor' }} stroke="currentColor" opacity={0.7} />
           <Tooltip formatter={(value: number) => [value, 'count']} contentStyle={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '8px', color: 'var(--color-fg)' }} />
           <Bar dataKey="count" radius={[4, 4, 0, 0]}>
-            {histogramData.map((_: any, idx: number) => (
+            {histogramData.map((_, idx: number) => (
               <Cell key={idx} fill={COLORS[idx % COLORS.length]} stroke="var(--color-border)" strokeWidth={0.6} />
             ))}
           </Bar>

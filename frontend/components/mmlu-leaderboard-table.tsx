@@ -31,7 +31,7 @@ export function MmluLeaderboardTable() {
 
   // Filter data based on selected models
   const filteredData = useMemo(() => {
-    return data.filter((entry: any) => {
+    return data.filter((entry) => {
       const modelName = entry.model_name || 'Unknown Model'
       return selectedModels.includes(modelName)
     })
@@ -106,7 +106,7 @@ export function MmluLeaderboardTable() {
         </div>
       )}
 
-      {filteredData.map((entry: any, index: number) => (
+      {filteredData.map((entry, index: number) => (
         <div
           key={`${entry.sampler_name}-${entry.model_name || 'unknown'}-${index}`}
           className="border border-border rounded-2xl p-4 sm:p-6 hover:shadow-md transition-all duration-300 bg-surface"
@@ -142,7 +142,7 @@ export function MmluLeaderboardTable() {
             <div>
               <h4 className="font-medium mb-2 sm:mb-3 text-fg transition-colors duration-300">Accuracy</h4>
               <div className="space-y-2">
-                {Object.entries(entry.criteria_breakdown).map(([criterion, score]: [string, any]) => (
+                {Object.entries(entry.criteria_breakdown).map(([criterion, score]: [string, number]) => (
                   <div key={criterion} className="flex items-center justify-between gap-2 group hover:bg-muted p-2 rounded-2xl transition-all duration-200">
                     <span className="text-sm capitalize text-fg transition-colors duration-300 break-words">
                       {criterion.replace(/_/g, ' ')}
@@ -163,7 +163,7 @@ export function MmluLeaderboardTable() {
               <div>
                 <h4 className="font-medium mb-2 sm:mb-3 text-fg transition-colors duration-300">Sampling Parameters</h4>
                 <div className="flex flex-wrap gap-2">
-                  {Object.entries(entry.parameters).map(([key, value]: [string, any]) => (
+                  {Object.entries(entry.parameters).map(([key, value]: [string, unknown]) => (
                     <Badge key={key} variant="secondary" className="text-xs transition-all duration-300 hover:scale-105">
                       {key}: {String(value)}
                     </Badge>

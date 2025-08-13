@@ -23,7 +23,7 @@ export function MmluSamplerDistribution() {
     // Group entries by actual sampler name
     const samplerGroups = new Map<string, { totalWeighted: number; weight: number; perModel: Map<string, number> }>()
 
-    data.forEach((entry: any) => {
+    data.forEach((entry) => {
       let actualSampler = entry.sampler_name
       const match = entry.sampler_name.match(/^([^(]+)(?:\s*\([^)]+\))?/)
       if (match) {
@@ -58,7 +58,7 @@ export function MmluSamplerDistribution() {
 
     // Sort by mean accuracy desc for nicer ordering, and remove model suffix from sampler label duplicates
     bars.sort((a, b) => b.meanAccuracy - a.meanAccuracy)
-    const order = new Map(bars.map((b, idx) => [b.sampler, idx]))
+    const order = new Map<string, number>(bars.map((b, idx) => [b.sampler, idx]))
     points.sort((a, b) => (order.get(a.sampler)! - order.get(b.sampler)!))
 
     return { bars, points, models: Array.from(modelSet) }
