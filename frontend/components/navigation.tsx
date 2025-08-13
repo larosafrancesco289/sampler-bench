@@ -8,6 +8,7 @@ import { Github } from 'lucide-react'
 
 const navItems = [
   { href: '/', label: 'Leaderboard' },
+  { href: '/mmlu', label: 'MMLU' },
   { href: '/findings', label: 'Key Findings' },
   { href: '/methodology', label: 'Methodology' },
   { href: '/visualizer', label: 'Visualizer' },
@@ -24,7 +25,7 @@ export function Navigation() {
           Sampler Bench
           </h1>
           <p className="text-sm sm:text-lg text-fg-muted">
-            Comparing LLM sampling strategies for creative writing
+            Comparing LLM sampling strategies for creative writing and MMLU accuracy
           </p>
         </div>
         <div className="flex items-center gap-2 sm:gap-4">

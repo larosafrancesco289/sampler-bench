@@ -5,11 +5,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Navigation } from '@/components/navigation';
+import { useMmluContext, MmluProvider } from '@/contexts/mmlu-context';
 import { useBenchmarkContext } from '@/contexts/benchmark-context';
 import { useMemo } from 'react';
 
-export default function FindingsPage() {
+function FindingsContent() {
   const { data, summary, loading, error } = useBenchmarkContext();
+  const mmlu = useMmluContext();
 
   // Calculate dynamic insights
   const insights = useMemo(() => {
@@ -139,7 +141,7 @@ export default function FindingsPage() {
       <div className="mb-8">
         <h1 className="text-2xl sm:text-4xl font-bold text-fg mb-1 sm:mb-2">Key Findings & Insights</h1>
         <p className="text-sm sm:text-lg text-fg-muted">
-          Analysis of benchmark results showing model performance differences and evaluation insights.
+          Creative writing quality results with multi-judge scoring, plus a new MMLU-Pro subset accuracy leaderboard.
         </p>
       </div>
 
@@ -170,7 +172,7 @@ export default function FindingsPage() {
               <div className="text-3xl font-bold text-fg">
                 {summary?.total_samples || data.reduce((sum, entry) => sum + entry.total_samples, 0)}
               </div>
-              <div className="text-sm text-fg-muted">Total Samples</div>
+              <div className="text-sm text-fg-muted">Total Writing Samples</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-fg">
@@ -264,7 +266,7 @@ export default function FindingsPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingDown className="h-5 w-5" />
-            Sampling Strategy Analysis
+            Sampling Strategy Analysis (Writing Quality)
           </CardTitle>
           <CardDescription>
             Performance comparison across different sampling methods
@@ -289,7 +291,7 @@ export default function FindingsPage() {
                 </p>
                  <div className="space-y-2">
                   {insights.samplerPerformance.slice(0, 5).map((sampler) => (
-                     <div key={sampler.name} className="flex items-center justify-between p-2 bg-muted rounded-2xl">
+                      <div key={sampler.name} className="flex items-center justify-between p-2 bg-muted rounded-2xl">
                        <span className="font-medium text-xs sm:text-sm break-words">{sampler.name}</span>
                        <div className="flex items-center gap-2">
                          <span className="font-bold text-sm sm:text-base">{sampler.avgScore.toFixed(3)}</span>
@@ -303,7 +305,7 @@ export default function FindingsPage() {
                 {insights.samplerPerformance.length > 1 && (
                    <div className="mt-4 p-3 bg-muted rounded-2xl">
                     <p className="text-xs sm:text-sm">
-                      <strong>Key Finding:</strong> {
+                       <strong>Key Finding (Writing):</strong> {
                         (insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore) < 0.3 
                           ? "Sampling parameters have minimal impact on creative writing quality. Model choice appears more important than sampling strategy."
                           : (insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore) < 0.8
@@ -317,12 +319,120 @@ export default function FindingsPage() {
             </AlertDescription>
           </Alert>
 
+          {/* MMLU Analysis Section */}
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold mb-2">MMLU Accuracy Analysis</h3>
+            {mmlu.loading && (
+              <div className="text-sm text-fg-muted">Loading MMLU data...</div>
+            )}
+            {mmlu.error && (
+              <Alert>
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>Unable to Load MMLU</AlertTitle>
+                <AlertDescription>{mmlu.error}</AlertDescription>
+              </Alert>
+            )}
+            {!mmlu.loading && !mmlu.error && mmlu.data && mmlu.data.length > 0 && (
+              <div className="space-y-6">
+                {/* Executive-style summary, matched to Writing section styling */}
+                {(() => {
+                  const samplerStats = new Map<string, { mean: number; n: number; best: { model: string; acc: number }; worst: { model: string; acc: number } }>()
+                  mmlu.data.forEach((e: any) => {
+                    let sampler = e.sampler_name
+                    const match = sampler.match(/^([^(]+)(?:\s*\([^)]+\))?/)
+                    if (match) sampler = match[1].trim()
+                    const model = e.model_name || 'Unknown Model'
+                    const acc = e.average_score * 100
+                    if (!samplerStats.has(sampler)) {
+                      samplerStats.set(sampler, { mean: 0, n: 0, best: { model, acc: -1 }, worst: { model, acc: 101 } })
+                    }
+                    const s = samplerStats.get(sampler)!
+                    s.mean += acc
+                    s.n += 1
+                    if (acc > s.best.acc) s.best = { model, acc }
+                    if (acc < s.worst.acc) s.worst = { model, acc }
+                  })
+                  const rows = Array.from(samplerStats.entries()).map(([sampler, s]) => ({
+                    sampler,
+                    mean: s.n ? s.mean / s.n : 0,
+                    best: s.best,
+                    worst: s.worst,
+                  })).sort((a, b) => b.mean - a.mean)
+
+                  const top = rows[0]
+                  const bottom = rows[rows.length - 1]
+                  const spread = (top.mean - bottom.mean).toFixed(1)
+
+                  return (
+                    <>
+                      <Alert>
+                        <TrendingUp className="h-4 w-4" />
+                        <AlertTitle>Executive Summary (MMLU)</AlertTitle>
+                        <AlertDescription>
+                          <div className="mt-2 text-sm">
+                            <div className="mb-1">
+                              <strong>{top.sampler}</strong> leads with {top.mean.toFixed(1)}% mean accuracy.
+                            </div>
+                            <div className="text-fg-muted">Range across samplers: {spread}%</div>
+                          </div>
+                        </AlertDescription>
+                      </Alert>
+
+                      {/* Top samplers list */}
+                      <div>
+                        <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">Sampler Ranking (MMLU)</h3>
+                        <div className="space-y-2">
+                          {rows.map((r, idx) => (
+                            <div key={r.sampler} className={`flex items-center justify-between p-2 sm:p-3 bg-muted rounded-lg`}>
+                              <div className="flex items-center gap-3">
+                                <span className="font-medium break-words">{idx + 1}{idx === 0 ? 'st' : idx === 1 ? 'nd' : idx === 2 ? 'rd' : 'th'}</span>
+                                <span className="font-medium break-words">{r.sampler}</span>
+                              </div>
+                              <span className="font-bold text-sm sm:text-base">{r.mean.toFixed(1)}%</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Best/Worst per sampler details */}
+                      <div>
+                        <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">Best/Worst Models per Sampler</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                          {rows.slice(0, 6).map((r) => (
+                            <div key={r.sampler} className="p-3 bg-muted rounded-2xl">
+                              <div className="flex items-center justify-between">
+                                <span className="font-medium text-xs sm:text-sm break-words">{r.sampler}</span>
+                                <span className="font-bold text-sm sm:text-base">{r.mean.toFixed(1)}%</span>
+                              </div>
+                              <div className="mt-1 text-[11px] sm:text-xs text-fg-muted">
+                                Best: {r.best.model} ({r.best.acc.toFixed(1)}%) • Worst: {r.worst.model} ({r.worst.acc.toFixed(1)}%)
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  )
+                })()}
+              </div>
+            )}
+          </div>
+
+          {/* MMLU highlight */}
+          <Alert>
+            <BarChart3 className="h-4 w-4" />
+            <AlertTitle>MMLU-Pro Subset Added</AlertTitle>
+            <AlertDescription>
+              Accuracy-focused leaderboard now available under the MMLU tab. Results are computed from letter-only answers and shown as percentage accuracy.
+            </AlertDescription>
+          </Alert>
+
           {/* Instruction Following Analysis */}
           {insights.modelPerformance.length > 1 && (
             <div>
               <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-[var(--color-accent)]" />
-                Instruction Following Analysis
+                 <CheckCircle className="h-5 w-5 text-[var(--color-accent)]" />
+                 Instruction Following Analysis
               </h3>
               <div className="p-4 bg-muted rounded-2xl">
                 <p className="text-xs sm:text-sm mb-3">
@@ -440,4 +550,12 @@ export default function FindingsPage() {
       </Card>
     </div>
   );
+}
+
+export default function FindingsPage() {
+  return (
+    <MmluProvider>
+      <FindingsContent />
+    </MmluProvider>
+  )
 }

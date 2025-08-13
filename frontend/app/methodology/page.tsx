@@ -18,7 +18,7 @@ export default function MethodologyPage() {
           Benchmark Methodology
         </h1>
         <p className="text-sm sm:text-lg text-fg-muted">
-          How we evaluate LLM sampling strategies for creative writing
+          How we evaluate LLM sampling strategies for creative writing, and how we compute MMLU accuracy
         </p>
       </div>
 
@@ -30,7 +30,7 @@ export default function MethodologyPage() {
             Overview
           </CardTitle>
           <CardDescription>
-            Comparing 5 sampling strategies across multiple models using LLM judges
+            Comparing 5 sampling strategies across multiple models using LLM judges (writing) and objective accuracy (MMLU)
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -38,11 +38,13 @@ export default function MethodologyPage() {
             This benchmark generates creative writing samples using different sampling strategies, then evaluates them 
             using multiple LLM judges. We focus on 5 proven sampling methods across various models, with 20 samples 
             per strategy to ensure statistical reliability.
+            In addition, the MMLU-Pro subset runner prompts the model to output only a single letter choice per question. Accuracy is computed directly from letter matches.
           </p>
           <div className="flex flex-wrap gap-2">
             <Badge variant="secondary">5 Sampling Methods</Badge>
             <Badge variant="secondary">20 Samples Each</Badge>
-            <Badge variant="secondary">Cross-Cultural Multi-Judge</Badge>
+            <Badge variant="secondary">Cross-Cultural Multi-Judge (Writing)</Badge>
+            <Badge variant="secondary">Objective Accuracy (MMLU)</Badge>
             <Badge variant="secondary">Creative Writing Focus</Badge>
             <Badge variant="secondary">Instruction Following Tracking</Badge>
           </div>
@@ -62,7 +64,7 @@ export default function MethodologyPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <h4 className="font-medium mb-3">Generation</h4>
-              <div className="space-y-3">
+             <div className="space-y-3">
                 <div>
                   <h5 className="font-medium mb-1">Model Setup</h5>
                    <p className="text-xs sm:text-sm text-fg-muted">
@@ -79,6 +81,12 @@ export default function MethodologyPage() {
                   <h5 className="font-medium mb-1">Target Length</h5>
                    <p className="text-xs sm:text-sm text-fg-muted">
                     300-400 words per story with compliance scoring
+                  </p>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-1">MMLU Mode</h5>
+                  <p className="text-xs sm:text-sm text-fg-muted">
+                    Multiple-choice questions where the model outputs a single letter only; answers are judged correct/incorrect without LLM judges.
                   </p>
                 </div>
               </div>
@@ -314,17 +322,23 @@ Respond ONLY in the specified JSON format with no additional text.`}
             </div>
 
             <div className="p-4 bg-muted rounded-lg">
-              <h4 className="font-medium mb-2">Judge Models</h4>
+               <h4 className="font-medium mb-2">Judge Models (Writing)</h4>
               <p className="text-xs sm:text-sm text-fg-muted">
                 <strong>Kimi-K2 (Chinese) and Mistral Medium 3 (European):</strong> Leading open-weight models from different cultural backgrounds, 
                 selected for their strong creative writing evaluation capabilities and cross-cultural perspective diversity. 
                 Multiple judges reduce individual model bias while providing culturally diverse evaluation viewpoints.
               </p>
               <div className="mt-3 text-[11px] sm:text-xs text-fg-muted">
-                <strong>Judge Agreement:</strong> These models have demonstrated high consensus strength in testing, 
+                 <strong>Judge Agreement:</strong> These models have demonstrated high consensus strength in testing, 
                 indicating excellent cross-cultural reliability in creative writing evaluation.
               </div>
             </div>
+             <div className="p-4 bg-muted rounded-lg">
+               <h4 className="font-medium mb-2">MMLU Scoring</h4>
+               <p className="text-xs sm:text-sm text-fg-muted">
+                 For MMLU, we compute accuracy per sampler and model as the fraction of correct letter responses over the subset. No judges are used.
+               </p>
+             </div>
           </div>
         </CardContent>
       </Card>

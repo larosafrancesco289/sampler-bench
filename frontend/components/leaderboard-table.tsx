@@ -235,13 +235,17 @@ export function LeaderboardTable() {
 
               <div>
                 <h4 className="font-medium mb-2 sm:mb-3 text-fg transition-colors duration-300">Sampling Parameters</h4>
-                <div className="flex flex-wrap gap-2">
-                  {Object.entries(entry.parameters).map(([key, value]) => (
-                    <Badge key={key} variant="secondary" className="text-xs transition-all duration-300 hover:scale-105">
-                      {key}: {value}
-                    </Badge>
-                  ))}
-                </div>
+                {Object.keys(entry.parameters || {}).length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {Object.entries(entry.parameters).map(([key, value]) => (
+                      <Badge key={key} variant="secondary" className="text-xs transition-all duration-300 hover:scale-105">
+                        {key}: {String(value)}
+                      </Badge>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-xs text-fg-muted">Parameters: Not specified in file; inferred from samples not available.</div>
+                )}
               </div>
             </div>
           </div>

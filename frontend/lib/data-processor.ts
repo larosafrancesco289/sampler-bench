@@ -87,6 +87,34 @@ export function processBenchmarkData(benchmarkData: BenchmarkResults): Leaderboa
     
     // Get sampler configuration
     const samplerConfig = benchmarkData.sampler_configs[samplerName]
+
+    // Derive fallback parameters when config is missing/incomplete (e.g., model_default)
+    const aggregatedParameters: Record<string, any> = {}
+    try {
+      const paramValueCounts = new Map<string, Map<string, number>>()
+      samples.forEach((sample: Sample) => {
+        const cfg = (sample as any).sampler_config || {}
+        Object.entries(cfg).forEach(([key, value]) => {
+          const strVal = typeof value === 'number' ? String(Number(value)) : String(value)
+          if (!paramValueCounts.has(key)) paramValueCounts.set(key, new Map())
+          const counts = paramValueCounts.get(key)!
+          counts.set(strVal, (counts.get(strVal) || 0) + 1)
+        })
+      })
+      // Use mode per parameter
+      paramValueCounts.forEach((counts, key) => {
+        let bestVal = ''
+        let bestCount = -1
+        counts.forEach((count, val) => {
+          if (count > bestCount) { bestCount = count; bestVal = val }
+        })
+        // Cast numeric strings back to numbers
+        const num = Number(bestVal)
+        aggregatedParameters[key] = Number.isFinite(num) ? num : bestVal
+      })
+    } catch {
+      // Ignore aggregation errors
+    }
     
     const entry: LeaderboardEntry = {
       sampler_name: samplerName,
@@ -94,7 +122,9 @@ export function processBenchmarkData(benchmarkData: BenchmarkResults): Leaderboa
       total_samples: totalSamples,
       criteria_breakdown: criteriaBreakdown,
       description: samplerConfig?.description || 'No description available',
-      parameters: samplerConfig?.parameters || {},
+      parameters: (samplerConfig?.parameters && Object.keys(samplerConfig.parameters).length > 0)
+        ? samplerConfig.parameters
+        : aggregatedParameters,
       avg_word_count: avgWordCount,
       // Consistency metrics
       overall_std: overall_std ? Number(overall_std.toFixed(3)) : undefined,

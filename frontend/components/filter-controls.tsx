@@ -22,6 +22,7 @@ interface FilterControlsProps {
   onReset: () => void
   aggregateAcrossModels: boolean
   onAggregateChange: (aggregate: boolean) => void
+  hideAggregation?: boolean
 }
 
 export function FilterControls({
@@ -33,7 +34,8 @@ export function FilterControls({
   onSamplerChange,
   onReset,
   aggregateAcrossModels,
-  onAggregateChange
+  onAggregateChange,
+  hideAggregation
 }: FilterControlsProps) {
   const [isExpanded, setIsExpanded] = useState(true) // Default to expanded
 
@@ -193,26 +195,28 @@ export function FilterControls({
           </div>
 
           {/* Aggregation Toggle */}
-          <div className="pt-3 border-t border-border">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="text-sm font-medium text-fg mb-1">
-                  Aggregate Across Models
-                </h4>
-                <p className="text-xs text-fg-muted">
-                  Combine scores from all models to compare sampling strategies directly
-                </p>
+          {!hideAggregation && (
+            <div className="pt-3 border-t border-border">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-sm font-medium text-fg mb-1">
+                    Aggregate Across Models
+                  </h4>
+                  <p className="text-xs text-fg-muted">
+                    Combine scores from all models to compare sampling strategies directly
+                  </p>
+                </div>
+                <Button
+                  variant={aggregateAcrossModels ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => onAggregateChange(!aggregateAcrossModels)}
+                  className="ml-4"
+                >
+                  {aggregateAcrossModels ? "Aggregated" : "Per Model"}
+                </Button>
               </div>
-              <Button
-                variant={aggregateAcrossModels ? "default" : "outline"}
-                size="sm"
-                onClick={() => onAggregateChange(!aggregateAcrossModels)}
-                className="ml-4"
-              >
-                {aggregateAcrossModels ? "Aggregated" : "Per Model"}
-              </Button>
             </div>
-          </div>
+          )}
 
           {/* Active Filters Summary */}
           {hasActiveFilters && (

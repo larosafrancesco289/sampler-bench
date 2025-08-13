@@ -13,7 +13,7 @@ Benchmark and compare text generation sampling strategies with a Python backend,
 - Multiple samplers: temperature, top-p, top-k, min-p, top-n-sigma.
 - Single-judge or multi-judge scoring with an LLM as a judge.
 - JSON results suitable for analysis or visualization.
-- Next.js frontend for leaderboards, criteria breakdowns, and distributions.
+- Next.js frontend for leaderboards, criteria breakdowns, distributions, and an MMLU accuracy leaderboard.
 
 ### Setup
 Prerequisites
@@ -43,6 +43,14 @@ python scripts/judge_results.py --auto-find
 
 # 3) Start the dashboard
 cd frontend && npm run dev
+```
+
+MMLU-Pro subset (objective accuracy):
+```bash
+# Evaluate a 50-question subset using configured samplers and model
+python scripts/run_mmlu_pro_subset.py --config backend/config/mmlu_pro_subset.yaml
+
+# Results are saved under results/mmlu/*.json and appear in the frontend at /mmlu
 ```
 
 Starting a local server
@@ -76,6 +84,8 @@ Backend
 
 Frontend
 - `frontend/`: Next.js dashboard and API route for results
+  - `frontend/app/api/mmlu/route.ts`: API route for MMLU leaderboard
+  - `frontend/app/mmlu/page.tsx`: MMLU leaderboard page
 
 Scripts
 - `scripts/run_benchmark.py`: generation only
@@ -83,6 +93,7 @@ Scripts
 - `scripts/run_full_benchmark.py`: generation then judging
 - `scripts/analyze_results.py`: quick stats on judged results
 - `scripts/generate_logits_data.py`: data for the probability visualizer
+- `scripts/run_mmlu_pro_subset.py`: evaluate MMLU-Pro subset accuracy
 - `scripts/start_koboldcpp.sh`, `scripts/start_llamacpp.sh`: wrappers around legacy server starters
 
 Code tree
