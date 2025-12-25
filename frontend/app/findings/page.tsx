@@ -1,67 +1,56 @@
-'use client';
+"use client"
 
-import { AlertTriangle, CheckCircle, TrendingUp, TrendingDown, Users, BarChart3, Brain } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
-import { Navigation } from '@/components/navigation';
-import { useMmluContext, MmluProvider } from '@/contexts/mmlu-context';
-import { useBenchmarkContext } from '@/contexts/benchmark-context';
-import { useMemo } from 'react';
+import { useMemo } from 'react'
+import { motion } from 'motion/react'
+import { Navigation } from '@/components/navigation'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Badge, RankBadge } from '@/components/ui/badge'
+import { GlassPanel } from '@/components/observatory/glass-panel'
+import { ProbabilityBackdrop, CurveDivider } from '@/components/observatory/probability-backdrop'
+import { useMmluContext, MmluProvider } from '@/contexts/mmlu-context'
+import { useBenchmarkContext } from '@/contexts/benchmark-context'
+import { TrendingUp, Users, BarChart3, Brain, CheckCircle, AlertTriangle } from 'lucide-react'
 
 function FindingsContent() {
-  const { data, summary, loading, error } = useBenchmarkContext();
-  const mmlu = useMmluContext();
+  const { data, summary, loading, error } = useBenchmarkContext()
+  const mmlu = useMmluContext()
 
-  // Calculate dynamic insights
   const insights = useMemo(() => {
-    if (!data || data.length === 0) return null;
+    if (!data || data.length === 0) return null
 
-    // Get unique models
-    const models = [...new Set(data.map(entry => entry.model_name).filter(Boolean))];
-    
-    // Calculate model performance rankings (filter out models with too few samples)
+    const models = [...new Set(data.map(entry => entry.model_name).filter(Boolean))]
+
     const modelPerformance = models.map(model => {
-      const modelEntries = data.filter(entry => entry.model_name === model);
-      const avgScore = modelEntries.reduce((sum, entry) => sum + entry.average_score, 0) / modelEntries.length;
-      const totalSamples = modelEntries.reduce((sum, entry) => sum + entry.total_samples, 0);
-      
-      return {
-        model,
-        avgScore,
-        totalSamples,
-        entries: modelEntries
-      };
-    }).filter(model => model.totalSamples >= 15) // Filter out models with < 15 samples
-      .sort((a, b) => b.avgScore - a.avgScore);
+      const modelEntries = data.filter(entry => entry.model_name === model)
+      const avgScore = modelEntries.reduce((sum, entry) => sum + entry.average_score, 0) / modelEntries.length
+      const totalSamples = modelEntries.reduce((sum, entry) => sum + entry.total_samples, 0)
 
-    // Calculate sampler performance (only from models with sufficient samples)
-    const samplerGroups = new Map<string, { scores: number[], totalSamples: number }>();
-    
-    // Filter data to only include models with sufficient samples
+      return { model, avgScore, totalSamples, entries: modelEntries }
+    }).filter(model => model.totalSamples >= 15)
+      .sort((a, b) => b.avgScore - a.avgScore)
+
+    const samplerGroups = new Map<string, { scores: number[], totalSamples: number }>()
+
     const filteredData = data.filter(entry => {
-      const modelName = entry.model_name || '';
-      const modelEntries = data.filter(e => e.model_name === modelName);
-      const totalSamples = modelEntries.reduce((sum, e) => sum + e.total_samples, 0);
-      return totalSamples >= 15;
-    });
-    
+      const modelName = entry.model_name || ''
+      const modelEntries = data.filter(e => e.model_name === modelName)
+      const totalSamples = modelEntries.reduce((sum, e) => sum + e.total_samples, 0)
+      return totalSamples >= 15
+    })
+
     filteredData.forEach(entry => {
-      let samplerName = entry.sampler_name;
-      // Remove model name from sampler name if present
-      const match = samplerName.match(/^([^(]+)(?:\s*\([^)]+\))?/);
-      if (match) {
-        samplerName = match[1].trim();
-      }
-      
+      let samplerName = entry.sampler_name
+      const match = samplerName.match(/^([^(]+)(?:\s*\([^)]+\))?/)
+      if (match) samplerName = match[1].trim()
+
       if (!samplerGroups.has(samplerName)) {
-        samplerGroups.set(samplerName, { scores: [], totalSamples: 0 });
+        samplerGroups.set(samplerName, { scores: [], totalSamples: 0 })
       }
-      
-      const group = samplerGroups.get(samplerName)!;
-      group.scores.push(entry.average_score);
-      group.totalSamples += entry.total_samples;
-    });
+
+      const group = samplerGroups.get(samplerName)!
+      group.scores.push(entry.average_score)
+      group.totalSamples += entry.total_samples
+    })
 
     const samplerPerformance = Array.from(samplerGroups.entries())
       .map(([name, data]) => ({
@@ -69,502 +58,302 @@ function FindingsContent() {
         avgScore: data.scores.reduce((sum, score) => sum + score, 0) / data.scores.length,
         totalSamples: data.totalSamples
       }))
-      .sort((a, b) => b.avgScore - a.avgScore);
+      .sort((a, b) => b.avgScore - a.avgScore)
 
-    // Calculate consensus strength (only from filtered data)
     const consensusStrengths = filteredData
       .filter(entry => entry.avg_consensus_strength != null)
-      .map(entry => entry.avg_consensus_strength!);
-    
-    const avgConsensus = consensusStrengths.length > 0 
-      ? consensusStrengths.reduce((sum, val) => sum + val, 0) / consensusStrengths.length 
-      : 0;
+      .map(entry => entry.avg_consensus_strength!)
 
-    return {
-      modelPerformance,
-      samplerPerformance,
-      avgConsensus,
-      excludedModels: models.filter(model => {
-        const modelEntries = data.filter(entry => entry.model_name === model);
-        const totalSamples = modelEntries.reduce((sum, entry) => sum + entry.total_samples, 0);
-        return totalSamples < 15;
-      }).map(model => {
-        const modelEntries = data.filter(entry => entry.model_name === model);
-        const totalSamples = modelEntries.reduce((sum, entry) => sum + entry.total_samples, 0);
-        return { model, totalSamples };
-      })
-    };
-  }, [data]);
+    const avgConsensus = consensusStrengths.length > 0
+      ? consensusStrengths.reduce((sum, val) => sum + val, 0) / consensusStrengths.length
+      : 0
+
+    return { modelPerformance, samplerPerformance, avgConsensus }
+  }, [data])
 
   if (loading) {
     return (
-      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 max-w-6xl">
-        <Navigation />
-        <div className="mb-8">
-          <h1 className="text-2xl sm:text-4xl font-bold text-fg mb-1 sm:mb-2">Key Findings & Insights</h1>
-          <p className="text-sm sm:text-lg text-fg-muted">
-            Loading benchmark analysis...
-          </p>
-        </div>
-        <div className="animate-pulse space-y-4">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="h-32 bg-muted rounded-2xl"></div>
-          ))}
+      <div className="min-h-screen">
+        <div className="container py-6 md:py-10">
+          <Navigation />
+          <div className="flex justify-center py-20">
+            <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+          </div>
         </div>
       </div>
-    );
+    )
   }
 
   if (error || !data || !insights) {
     return (
-      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 max-w-6xl">
-        <Navigation />
-        <div className="mb-8">
-          <h1 className="text-2xl sm:text-4xl font-bold text-fg mb-1 sm:mb-2">Key Findings & Insights</h1>
-          <p className="text-sm sm:text-lg text-fg-muted">
-            Analysis of benchmark results showing model performance differences and evaluation insights.
-          </p>
+      <div className="min-h-screen">
+        <div className="container py-6 md:py-10">
+          <Navigation />
+          <GlassPanel variant="subtle" className="text-center py-12 mt-8">
+            <AlertTriangle className="w-8 h-8 text-accent mx-auto mb-4" />
+            <p className="text-fg-muted">Unable to load benchmark data</p>
+          </GlassPanel>
         </div>
-        <Alert>
-          <AlertTriangle className="h-4 w-4" />
-          <AlertTitle>Unable to Load Data</AlertTitle>
-          <AlertDescription>
-            {error || "No benchmark data available. Please run a benchmark first."}
-          </AlertDescription>
-        </Alert>
       </div>
-    );
+    )
   }
+
   return (
-    <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 max-w-6xl">
-      <Navigation />
-      <div className="mb-8">
-        <h1 className="text-2xl sm:text-4xl font-bold text-fg mb-1 sm:mb-2">Key Findings & Insights</h1>
-        <p className="text-sm sm:text-lg text-fg-muted">
-          Creative writing quality results with multi-judge scoring, plus a new MMLU-Pro subset accuracy leaderboard.
-        </p>
-      </div>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="relative py-6 md:py-10">
+        <ProbabilityBackdrop variant="subtle" className="opacity-40" />
+
+        <div className="container relative z-10">
+          <Navigation />
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-3xl"
+          >
+            <Badge variant="accent" className="mb-4">Research Findings</Badge>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl text-fg mb-4">
+              Key Insights
+            </h1>
+            <p className="text-lg md:text-xl text-fg-muted leading-relaxed">
+              Analysis of {summary?.total_samples || data.reduce((sum, entry) => sum + entry.total_samples, 0)} samples
+              across {insights.modelPerformance.length} models reveals how different sampling strategies
+              affect output quality.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      <CurveDivider className="opacity-30" />
 
       {/* Executive Summary */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BarChart3 className="h-5 w-5" />
-            Executive Summary
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-fg">
+      <section className="py-12 md:py-16">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="grid md:grid-cols-3 gap-6 mb-12"
+          >
+            <GlassPanel variant="accent" className="text-center py-8">
+              <BarChart3 className="w-8 h-8 text-accent mx-auto mb-3" />
+              <p className="text-4xl font-display text-fg mb-1">
                 {insights.modelPerformance.length}
-              </div>
-              <div className="text-sm text-fg-muted">
-                Models Evaluated
-                {insights.excludedModels.length > 0 && (
-                  <div className="text-xs text-fg-muted mt-1">
-                    ({insights.excludedModels.length} excluded)
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-fg">
-                {summary?.total_samples || data.reduce((sum, entry) => sum + entry.total_samples, 0)}
-              </div>
-              <div className="text-sm text-fg-muted">Total Writing Samples</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-fg">
-                {(insights.avgConsensus * 100).toFixed(1)}%
-              </div>
-              <div className="text-sm text-fg-muted">Average Judge Consensus</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+              </p>
+              <p className="text-sm text-fg-muted">Models Evaluated</p>
+            </GlassPanel>
 
-      {/* Performance Insights */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5" />
-            Model Performance Analysis
-          </CardTitle>
-          <CardDescription>
-            Dynamic analysis of model performance based on current benchmark data
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Top Model Analysis */}
-          {insights.modelPerformance.length > 0 && (
-            <Alert>
-              <Brain className="h-4 w-4" />
-              <AlertTitle>Top Performing Model: {insights.modelPerformance[0].model}</AlertTitle>
-              <AlertDescription>
-                <div className="mt-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-medium">Overall Score:</span>
-                    <Badge variant="outline">
-                      {insights.modelPerformance[0].avgScore.toFixed(3)} / 10
-                    </Badge>
-                  </div>
-                  <p className="text-sm">
-                    {insights.modelPerformance[0].model} achieved the highest average score with {insights.modelPerformance[0].totalSamples} samples.
-                    {insights.modelPerformance.length > 1 && (
-                      <span> Performance advantage over second-place {insights.modelPerformance[1].model}: <strong>+{(insights.modelPerformance[0].avgScore - insights.modelPerformance[1].avgScore).toFixed(3)} points</strong></span>
-                    )}
-                  </p>
-                  
-                  {/* Show criteria breakdown for top model */}
-                   {insights.modelPerformance[0].entries.length > 0 && (
-                    <div className="mt-3 grid grid-cols-2 md:grid-cols-5 gap-2 text-[11px] sm:text-xs">
-                      {Object.entries(insights.modelPerformance[0].entries[0].criteria_breakdown).map(([criterion, score]) => (
-                        <div key={criterion}>
-                          <div className="font-medium">{criterion.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</div>
-                          <div className="text-fg-muted">{score.toFixed(2)}</div>
-                        </div>
-                      ))}
+            <GlassPanel variant="default" className="text-center py-8">
+              <TrendingUp className="w-8 h-8 text-accent mx-auto mb-3" />
+              <p className="text-4xl font-display text-fg mb-1">
+                {insights.modelPerformance[0]?.avgScore.toFixed(2) || 'N/A'}
+              </p>
+              <p className="text-sm text-fg-muted">Top Score /10</p>
+            </GlassPanel>
+
+            <GlassPanel variant="default" className="text-center py-8">
+              <Users className="w-8 h-8 text-accent mx-auto mb-3" />
+              <p className="text-4xl font-display text-fg mb-1">
+                {(insights.avgConsensus * 100).toFixed(0)}%
+              </p>
+              <p className="text-sm text-fg-muted">Judge Consensus</p>
+            </GlassPanel>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Model Performance */}
+      <section className="py-12 md:py-16 border-t border-border-subtle">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <Brain className="w-6 h-6 text-accent" />
+              <h2 className="text-2xl md:text-3xl text-fg">Model Performance</h2>
+            </div>
+
+            {insights.modelPerformance.length > 0 && (
+              <Card variant="accent" glow className="mb-8">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <RankBadge rank={1} />
+                    Top Performer: {insights.modelPerformance[0].model}
+                  </CardTitle>
+                  <CardDescription>
+                    Achieved the highest average score across all samplers
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <p className="text-sm text-fg-muted mb-1">Overall Score</p>
+                      <p className="text-4xl font-display text-fg">
+                        {insights.modelPerformance[0].avgScore.toFixed(3)}
+                        <span className="text-lg text-fg-muted">/10</span>
+                      </p>
                     </div>
-                  )}
-                </div>
-              </AlertDescription>
-            </Alert>
-          )}
-
-          {/* Model Ranking */}
-          <div>
-            <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">Model Performance Ranking</h3>
-            <div className="space-y-2">
-              {insights.modelPerformance.map((model, index) => {
-               const bgColor = 'bg-muted';
-                
-               const badgeColor = 'bg-accent text-black';
-                
-                return (
-                  <div key={model.model} className={`flex items-center justify-between p-2 sm:p-3 ${bgColor} rounded-lg`}>
-                    <div className="flex items-center gap-3">
-                      <Badge variant="outline" className={badgeColor}>
-                        {index + 1}{index === 0 ? 'st' : index === 1 ? 'nd' : index === 2 ? 'rd' : 'th'}
-                      </Badge>
-                      <span className="font-medium break-words">{model.model}</span>
-                      <span className="text-xs sm:text-sm text-fg-muted">
-                        ({model.totalSamples} samples)
-                      </span>
+                    <div>
+                      <p className="text-sm text-fg-muted mb-1">Samples Evaluated</p>
+                      <p className="text-4xl font-display text-fg">
+                        {insights.modelPerformance[0].totalSamples}
+                      </p>
                     </div>
-                    <span className="font-bold text-sm sm:text-base">{model.avgScore.toFixed(3)}</span>
                   </div>
-                );
-              })}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+                </CardContent>
+              </Card>
+            )}
 
-      {/* Sampling Strategy Insights */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingDown className="h-5 w-5" />
-            Sampling Strategy Analysis (Writing Quality)
-          </CardTitle>
-          <CardDescription>
-            Performance comparison across different sampling methods
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <Alert>
-            <BarChart3 className="h-4 w-4" />
-            <AlertTitle>
-              {insights.samplerPerformance.length > 1 && (insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore) < 0.5 
-                ? "Minimal Impact of Sampling Strategies" 
-                : "Significant Sampling Strategy Differences"}
-            </AlertTitle>
-            <AlertDescription>
-                 <div className="mt-2">
-                  <p className="text-xs sm:text-sm mb-3">
-                  {insights.samplerPerformance.length > 1 ? (
-                    (insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore) < 0.5 
-                      ? `Across ${insights.samplerPerformance.reduce((sum, s) => sum + s.totalSamples, 0)} samples, different sampling strategies show surprisingly small performance differences (${(insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore).toFixed(3)} point range).`
-                      : `Analysis of ${insights.samplerPerformance.reduce((sum, s) => sum + s.totalSamples, 0)} samples reveals meaningful differences between sampling strategies (${(insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore).toFixed(3)} point range).`
-                  ) : `Single sampling strategy evaluated with ${insights.samplerPerformance[0]?.totalSamples || 0} samples.`}
-                </p>
-                 <div className="space-y-2">
-                  {insights.samplerPerformance.slice(0, 5).map((sampler) => (
-                      <div key={sampler.name} className="flex items-center justify-between p-2 bg-muted rounded-2xl">
-                       <span className="font-medium text-xs sm:text-sm break-words">{sampler.name}</span>
-                       <div className="flex items-center gap-2">
-                         <span className="font-bold text-sm sm:text-base">{sampler.avgScore.toFixed(3)}</span>
-                         <span className="text-[11px] sm:text-xs text-fg-muted">({sampler.totalSamples} samples)</span>
+            <Card>
+              <CardHeader>
+                <CardTitle>Full Rankings</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {insights.modelPerformance.map((model, index) => (
+                    <motion.div
+                      key={model.model}
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.05 }}
+                      className="flex items-center gap-4 p-4 rounded-xl bg-surface-elevated/50 border border-border-subtle"
+                    >
+                      <RankBadge rank={index + 1} />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-fg truncate">{model.model}</p>
+                        <p className="text-sm text-fg-muted">{model.totalSamples} samples</p>
                       </div>
-                    </div>
+                      <p className="text-xl font-mono font-medium text-accent">
+                        {model.avgScore.toFixed(3)}
+                      </p>
+                    </motion.div>
                   ))}
                 </div>
-                
-                {/* Analysis based on actual performance differences */}
-                {insights.samplerPerformance.length > 1 && (
-                   <div className="mt-4 p-3 bg-muted rounded-2xl">
-                    <p className="text-xs sm:text-sm">
-                       <strong>Key Finding (Writing):</strong> {
-                        (insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore) < 0.3 
-                          ? "Sampling parameters have minimal impact on creative writing quality. Model choice appears more important than sampling strategy."
-                          : (insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore) < 0.8
-                          ? `Minimal sampling strategy effects observed. The ${(insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore).toFixed(3)} difference represents only ${((insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore) / 10 * 100).toFixed(1)}% of the evaluation scale and is below typical human judgment noise levels.`
-                          : "Strong sampling strategy effects detected. Choice of sampling parameters significantly impacts output quality."
-                      }
-                    </p>
-                  </div>
-                )}
-              </div>
-            </AlertDescription>
-          </Alert>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      </section>
 
-          {/* MMLU Analysis Section */}
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold mb-2">MMLU Accuracy Analysis</h3>
-            {mmlu.loading && (
-              <div className="text-sm text-fg-muted">Loading MMLU data...</div>
-            )}
-            {mmlu.error && (
-              <Alert>
-                <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>Unable to Load MMLU</AlertTitle>
-                <AlertDescription>{mmlu.error}</AlertDescription>
-              </Alert>
-            )}
-            {!mmlu.loading && !mmlu.error && mmlu.data && mmlu.data.length > 0 && (
-              <div className="space-y-6">
-                {(() => {
-                  const samplerStats = new Map<string, { mean: number; n: number; best: { model: string; acc: number }; worst: { model: string; acc: number }; samples: number }>()
-                  mmlu.data.forEach((e) => {
-                    let sampler = e.sampler_name
-                    const match = sampler.match(/^([^(]+)(?:\s*\([^)]+\))?/)
-                    if (match) sampler = match[1].trim()
-                    const model = e.model_name || 'Unknown Model'
-                    const acc = e.average_score * 100
-                    const samples = e.total_samples || 0
-                    if (!samplerStats.has(sampler)) {
-                      samplerStats.set(sampler, { mean: 0, n: 0, best: { model, acc: -1 }, worst: { model, acc: 101 }, samples: 0 })
-                    }
-                    const s = samplerStats.get(sampler)!
-                    s.mean += acc
-                    s.n += 1
-                    s.samples += samples
-                    if (acc > s.best.acc) s.best = { model, acc }
-                    if (acc < s.worst.acc) s.worst = { model, acc }
-                  })
-                  const rows = Array.from(samplerStats.entries()).map(([sampler, s]) => ({
-                    sampler,
-                    mean: s.n ? s.mean / s.n : 0,
-                    best: s.best,
-                    worst: s.worst,
-                    samples: s.samples
-                  })).sort((a, b) => b.mean - a.mean)
+      {/* Sampler Analysis */}
+      <section className="py-12 md:py-16 border-t border-border-subtle">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <BarChart3 className="w-6 h-6 text-accent" />
+              <h2 className="text-2xl md:text-3xl text-fg">Sampling Strategy Impact</h2>
+            </div>
 
-                  const top = rows[0]
-                  const bottom = rows[rows.length - 1]
-                  const spreadVal = top && bottom ? (top.mean - bottom.mean) : 0
-                  const spread = spreadVal.toFixed(1)
-                  const totalQuestions = rows.reduce((sum, r) => sum + r.samples, 0)
+            <div className="prose max-w-none mb-8">
+              <p className="text-fg-muted text-lg">
+                {insights.samplerPerformance.length > 1 ? (
+                  (insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore) < 0.5
+                    ? `Across all evaluated samples, different sampling strategies show surprisingly small performance differences (${(insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore).toFixed(3)} point range). This suggests that for creative writing tasks, the choice of sampler has limited impact on overall quality.`
+                    : `Analysis reveals meaningful differences between sampling strategies (${(insights.samplerPerformance[0].avgScore - insights.samplerPerformance[insights.samplerPerformance.length - 1].avgScore).toFixed(3)} point range). The choice of sampler can meaningfully affect output quality.`
+                ) : 'Single sampling strategy evaluated.'}
+              </p>
+            </div>
 
-                  const title = spreadVal < 3
-                    ? 'Minimal Impact of Sampling Strategies'
-                    : spreadVal < 6
-                    ? 'Modest Sampling Strategy Differences'
-                    : 'Significant Sampling Strategy Differences'
-
-                  return (
-                    <>
-                      <Alert>
-                        <BarChart3 className="h-4 w-4" />
-                        <AlertTitle>{title}</AlertTitle>
-                        <AlertDescription>
-                          <div className="mt-2">
-                            <p className="text-xs sm:text-sm mb-3">
-                              {`Across ${totalQuestions} questions, different sampling strategies show ${spreadVal < 6 ? 'surprisingly small' : 'meaningful'} accuracy differences (${spread}% range).`}
-                            </p>
-                            <div className="space-y-2">
-                              {rows.map((r) => (
-                                <div key={r.sampler} className="flex items-center justify-between p-2 bg-muted rounded-2xl">
-                                  <span className="font-medium text-xs sm:text-sm break-words">{r.sampler}</span>
-                                  <div className="flex items-center gap-2">
-                                    <span className="font-bold text-sm sm:text-base">{r.mean.toFixed(1)}%</span>
-                                    <span className="text-[11px] sm:text-xs text-fg-muted">({r.samples} questions)</span>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                            {rows.length > 1 && (
-                              <div className="mt-4 p-3 bg-muted rounded-2xl">
-                                <p className="text-xs sm:text-sm">
-                                  <strong>Key Finding (MMLU):</strong> {spreadVal < 3
-                                    ? 'Sampling parameters have minimal impact on MMLU accuracy. Model choice likely matters more than sampler.'
-                                    : spreadVal < 6
-                                    ? `Minimal sampling strategy effects observed. The ${spread}% difference represents a small portion of the accuracy scale.`
-                                    : 'Strong sampling effects detected. Choice of sampling parameters can materially change accuracy.'}
-                                </p>
-                              </div>
-                            )}
-                          </div>
-                        </AlertDescription>
-                      </Alert>
-
-                      {/* Best/Worst per sampler details */}
-                      <div>
-                        <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">Best/Worst Models per Sampler</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                          {rows.slice(0, 6).map((r) => (
-                            <div key={r.sampler} className="p-3 bg-muted rounded-2xl">
-                              <div className="flex items-center justify-between">
-                                <span className="font-medium text-xs sm:text-sm break-words">{r.sampler}</span>
-                                <span className="font-bold text-sm sm:text-base">{r.mean.toFixed(1)}%</span>
-                              </div>
-                              <div className="mt-1 text-[11px] sm:text-xs text-fg-muted">
-                                Best: {r.best.model} ({r.best.acc.toFixed(1)}%) • Worst: {r.worst.model} ({r.worst.acc.toFixed(1)}%)
-                              </div>
-                            </div>
-                          ))}
-                        </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Strategy Rankings</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {insights.samplerPerformance.map((sampler, index) => (
+                    <motion.div
+                      key={sampler.name}
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.05 }}
+                      className="flex items-center gap-4 p-4 rounded-xl bg-surface-elevated/50 border border-border-subtle"
+                    >
+                      <Badge variant={index === 0 ? 'default' : 'outline'}>
+                        #{index + 1}
+                      </Badge>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-fg truncate">{sampler.name}</p>
+                        <p className="text-sm text-fg-muted">{sampler.totalSamples} samples</p>
                       </div>
-                    </>
-                  )
-                })()}
+                      <p className="text-xl font-mono font-medium text-accent">
+                        {sampler.avgScore.toFixed(3)}
+                      </p>
+                    </motion.div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* MMLU Section */}
+      {!mmlu.loading && !mmlu.error && mmlu.data && mmlu.data.length > 0 && (
+        <section className="py-12 md:py-16 border-t border-border-subtle">
+          <div className="container">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <CheckCircle className="w-6 h-6 text-accent" />
+                <h2 className="text-2xl md:text-3xl text-fg">MMLU-Pro Accuracy</h2>
               </div>
-            )}
+
+              <div className="prose max-w-none mb-8">
+                <p className="text-fg-muted text-lg">
+                  Objective accuracy testing on MMLU-Pro subset reveals how samplers affect factual correctness.
+                </p>
+              </div>
+
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {mmlu.data.slice(0, 6).map((entry, index) => (
+                      <motion.div
+                        key={`${entry.model_name}-${entry.sampler_name}`}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: index * 0.05 }}
+                        className="p-4 rounded-xl bg-surface-elevated/50 border border-border-subtle"
+                      >
+                        <p className="font-medium text-fg truncate mb-1">{entry.model_name}</p>
+                        <p className="text-sm text-fg-muted truncate mb-3">{entry.sampler_name}</p>
+                        <p className="text-2xl font-mono font-medium text-accent">
+                          {(entry.average_score * 100).toFixed(1)}%
+                        </p>
+                      </motion.div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
-
-          {/* MMLU highlight */}
-          <Alert>
-            <BarChart3 className="h-4 w-4" />
-            <AlertTitle>MMLU-Pro Subset Added</AlertTitle>
-            <AlertDescription>
-              Accuracy-focused leaderboard now available under the MMLU tab. Results are computed from letter-only answers and shown as percentage accuracy.
-            </AlertDescription>
-          </Alert>
-
-          {/* Instruction Following Analysis */}
-          {insights.modelPerformance.length > 1 && (
-            <div>
-              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                 <CheckCircle className="h-5 w-5 text-[var(--color-accent)]" />
-                 Instruction Following Analysis
-              </h3>
-              <div className="p-4 bg-muted rounded-2xl">
-                <p className="text-xs sm:text-sm mb-3">
-                  Word count compliance serves as an objective measure of instruction following.
-                </p>
-                <div className="space-y-2">
-                  {insights.modelPerformance.map((model) => {
-                    // Calculate compliance based on word count consistency
-                    const wordCounts = model.entries.map(e => e.avg_word_count).filter(Boolean);
-                    const avgWordCount = wordCounts.reduce((sum, count) => sum + count, 0) / wordCounts.length;
-                    const targetRange = [300, 400]; // Expected range
-                    const compliance = wordCounts.filter(count => count >= targetRange[0] && count <= targetRange[1]).length / wordCounts.length;
-                    
-                    const complianceColor = compliance > 0.9 ? 'text-fg bg-muted' : compliance > 0.7 ? 'text-fg bg-muted' : 'text-fg bg-muted';
-                    
-                      return (
-                        <div key={model.model} className="flex justify-between items-center">
-                          <span className="font-medium text-sm break-words">{model.model}:</span>
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline" className={complianceColor}>
-                              {(compliance * 100).toFixed(0)}% compliance
-                            </Badge>
-                            <span className="text-[11px] sm:text-xs text-fg-muted">
-                              (avg: {avgWordCount.toFixed(0)} words)
-                            </span>
-                          </div>
-                        </div>
-                      );
-                  })}
-                </div>
-                <p className="text-[11px] sm:text-xs text-fg-muted mt-3">
-                  Models with higher instruction compliance typically achieve better overall quality scores, suggesting this metric captures important capabilities.
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Judge Consensus Analysis */}
-          {insights.avgConsensus > 0 && (
-            <div>
-              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                <Users className="h-5 w-5 text-[var(--color-accent)]" />
-                Judge Consensus Analysis
-              </h3>
-              <div className="p-4 bg-muted rounded-2xl">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-medium">Average Consensus:</span>
-                  <Badge variant="secondary" className="">
-                    {(insights.avgConsensus * 100).toFixed(1)}%
-                  </Badge>
-                </div>
-                <p className="text-xs sm:text-sm">
-                  {insights.avgConsensus > 0.85 ? "High judge agreement indicates clear quality differences and reliable evaluation."
-                   : insights.avgConsensus > 0.7 ? "Moderate judge agreement suggests some subjectivity but reasonable consistency."
-                   : "Low judge agreement indicates high evaluation subjectivity or potential issues with judge models."}
-                </p>
-               <p className="text-[11px] sm:text-xs text-fg-muted mt-2">
-                  Creative writing evaluation naturally involves subjectivity. {(insights.avgConsensus * 100).toFixed(1)}% consensus is {insights.avgConsensus > 0.8 ? "strong" : insights.avgConsensus > 0.7 ? "reasonable" : "concerning"} for this domain.
-                </p>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Excluded Models Notice */}
-      {insights.excludedModels && insights.excludedModels.length > 0 && (
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-[var(--color-accent)]" />
-              Excluded from Analysis
-            </CardTitle>
-            <CardDescription>
-              Models with insufficient sample sizes for reliable comparison
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {insights.excludedModels.map((model) => (
-                <div key={model.model} className="flex items-center justify-between p-3 bg-muted rounded-2xl">
-                  <span className="font-medium">{model.model}</span>
-                  <span className="text-sm text-fg-muted">
-                    {model.totalSamples} samples (minimum: 15)
-                  </span>
-                </div>
-              ))}
-            </div>
-            <p className="text-sm text-fg-muted mt-3">
-              Models with fewer than 15 samples are excluded from performance analysis to ensure statistical reliability.
-            </p>
-          </CardContent>
-        </Card>
+        </section>
       )}
 
-      {/* Data Freshness Notice */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <CheckCircle className="h-5 w-5 text-[var(--color-accent)]" />
-            Live Data Analysis
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-xs sm:text-sm text-fg-muted">
-            This analysis is automatically generated from your current benchmark data. 
-            Results will update when you run new benchmarks or modify the dataset.
-          </p>
+      {/* Footer */}
+      <footer className="py-8 border-t border-border-subtle">
+        <div className="container text-center text-sm text-fg-subtle">
+          <p>Data refreshes on each benchmark run</p>
           {summary?.last_updated && (
-            <p className="text-[11px] sm:text-xs text-fg-muted mt-2">
-              Last updated: {new Date(summary.last_updated).toLocaleString()}
-            </p>
+            <p className="mt-1">Last updated: {new Date(summary.last_updated).toLocaleString()}</p>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </footer>
     </div>
-  );
+  )
 }
 
 export default function FindingsPage() {

@@ -1,5 +1,25 @@
 import type { BenchmarkResults, LeaderboardEntry, Sample } from '../types/benchmark'
 
+// Target word count range for instruction following
+const TARGET_WORD_COUNT_MIN = 300
+const TARGET_WORD_COUNT_MAX = 400
+
+// Calculate compliance score for a single sample (0-1 scale)
+function calculateWordCountCompliance(wordCount: number): number {
+  if (wordCount >= TARGET_WORD_COUNT_MIN && wordCount <= TARGET_WORD_COUNT_MAX) {
+    return 1.0 // Perfect compliance
+  }
+
+  // Calculate deviation from target range
+  const deviation = wordCount < TARGET_WORD_COUNT_MIN
+    ? TARGET_WORD_COUNT_MIN - wordCount
+    : wordCount - TARGET_WORD_COUNT_MAX
+
+  // Apply graduated penalty (100 words off = 0 compliance)
+  const maxDeviation = 100
+  return Math.max(0, 1 - deviation / maxDeviation)
+}
+
 export function processBenchmarkData(benchmarkData: BenchmarkResults): LeaderboardEntry[] {
   const samplerGroups = new Map<string, Sample[]>()
   
@@ -84,7 +104,14 @@ export function processBenchmarkData(benchmarkData: BenchmarkResults): Leaderboa
     // Calculate average word count
     const totalWordCount = samples.reduce((sum: number, sample: Sample) => sum + sample.word_count, 0)
     const avgWordCount = Math.round(totalWordCount / totalSamples)
-    
+
+    // Calculate instruction following compliance
+    const complianceScores = samples.map((sample: Sample) => calculateWordCountCompliance(sample.word_count))
+    const avgCompliance = complianceScores.reduce((sum, score) => sum + score, 0) / complianceScores.length
+    const samplesInRange = samples.filter((sample: Sample) =>
+      sample.word_count >= TARGET_WORD_COUNT_MIN && sample.word_count <= TARGET_WORD_COUNT_MAX
+    ).length
+
     // Get sampler configuration
     const samplerConfig = benchmarkData.sampler_configs[samplerName]
 
@@ -126,10 +153,13 @@ export function processBenchmarkData(benchmarkData: BenchmarkResults): Leaderboa
         ? samplerConfig.parameters
         : aggregatedParameters,
       avg_word_count: avgWordCount,
+      // Instruction following compliance
+      instruction_compliance: Number(avgCompliance.toFixed(3)),
+      samples_in_range: samplesInRange,
       // Consistency metrics
       overall_std: overall_std ? Number(overall_std.toFixed(3)) : undefined,
       avg_consensus_strength: avg_consensus_strength ? Number(avg_consensus_strength.toFixed(3)) : undefined,
-      criteria_std: Object.keys(criteriaStd).length > 0 ? 
+      criteria_std: Object.keys(criteriaStd).length > 0 ?
         Object.fromEntries(Object.entries(criteriaStd).map(([k, v]) => [k, Number(v.toFixed(3))])) : undefined,
       judge_count: judge_count,
       judge_models: judge_models

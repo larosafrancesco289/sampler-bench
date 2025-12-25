@@ -1,518 +1,499 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'motion/react'
 import { Navigation } from "@/components/navigation"
-import { Target, BarChart, Settings, Zap, ChevronDown } from "lucide-react"
-import { useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { GlassPanel } from "@/components/observatory/glass-panel"
+import { ProbabilityBackdrop, CurveDivider } from "@/components/observatory/probability-backdrop"
+import {
+  Target,
+  BarChart3,
+  Settings,
+  Zap,
+  ChevronDown,
+  Scale,
+  BookOpen,
+  Gauge,
+  Activity,
+  FileText,
+  CheckCircle
+} from "lucide-react"
+
+const criteriaData = [
+  {
+    name: "Narrative Coherence",
+    weight: "25%",
+    description: "How well the story flows and maintains logical consistency throughout the narrative arc."
+  },
+  {
+    name: "Creativity & Originality",
+    weight: "25%",
+    description: "Uniqueness of ideas, plot elements, and creative expression that distinguishes the work."
+  },
+  {
+    name: "Character Development",
+    weight: "20%",
+    description: "Depth and believability of characters, their motivations, and growth within the story."
+  },
+  {
+    name: "Engagement & Readability",
+    weight: "20%",
+    description: "How engaging and accessible the text is for readers, maintaining interest throughout."
+  },
+  {
+    name: "Stylistic Quality",
+    weight: "10%",
+    description: "Writing style, language use, sentence variety, and literary technique mastery."
+  }
+]
+
+const samplerStrategies = [
+  {
+    name: "model_default",
+    icon: <Settings className="w-5 h-5" />,
+    badge: "Dynamic",
+    description: "Resolves to model-specific optimal settings (e.g., Llama: temp 0.6, top_p 0.9)"
+  },
+  {
+    name: "standard_minp",
+    icon: <Gauge className="w-5 h-5" />,
+    badge: "temp 0.7, min_p 0.02",
+    description: "Conservative min-p sampling with lower temperature for controlled creativity"
+  },
+  {
+    name: "creative_minp",
+    icon: <Gauge className="w-5 h-5" />,
+    badge: "temp 1.0, min_p 0.02",
+    description: "Moderate min-p sampling with standard temperature for balanced output"
+  },
+  {
+    name: "standard_sigma",
+    icon: <Activity className="w-5 h-5" />,
+    badge: "temp 1.5, σ 1.0",
+    description: "Top-nσ with high temperature and tight deviation threshold"
+  },
+  {
+    name: "creative_sigma",
+    icon: <Activity className="w-5 h-5" />,
+    badge: "temp 1.0, σ 1.5",
+    description: "Top-nσ with moderate temperature and relaxed sigma threshold"
+  }
+]
+
+const scoreInterpretation = [
+  { range: "9-10", label: "Exceptional", color: "text-accent", description: "Outstanding creative writing with excellence across all criteria" },
+  { range: "7-8", label: "Good", color: "text-fg", description: "Strong writing with minor areas for improvement" },
+  { range: "5-6", label: "Average", color: "text-fg-muted", description: "Adequate quality with balanced strengths and weaknesses" },
+  { range: "1-4", label: "Below Average", color: "text-fg-subtle", description: "Significant issues requiring attention" }
+]
 
 export default function MethodologyPage() {
   const [isPromptsOpen, setIsPromptsOpen] = useState(false)
-  
+
   return (
-    <div className="container mx-auto py-6 sm:py-8 px-3 sm:px-4">
-      <Navigation />
-      <div className="mb-8">
-        <h1 className="text-2xl sm:text-4xl font-bold text-fg mb-1 sm:mb-2">
-          Benchmark Methodology
-        </h1>
-        <p className="text-sm sm:text-lg text-fg-muted">
-          How we evaluate LLM sampling strategies for creative writing, and how we compute MMLU accuracy
-        </p>
-      </div>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="relative py-6 md:py-10">
+        <ProbabilityBackdrop variant="subtle" className="opacity-30" />
 
-      {/* Overview Section */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Target className="h-5 w-5" />
-            Overview
-          </CardTitle>
-          <CardDescription>
-            Comparing 5 sampling strategies across multiple models using LLM judges (writing) and objective accuracy (MMLU)
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm leading-relaxed">
-            This benchmark generates creative writing samples using different sampling strategies, then evaluates them 
-            using multiple LLM judges. We focus on 5 proven sampling methods across various models, with 20 samples 
-            per strategy to ensure statistical reliability.
-            In addition, the MMLU-Pro subset runner prompts the model to output only a single letter choice per question. Accuracy is computed directly from letter matches.
-          </p>
-          <div className="flex flex-wrap gap-2">
-            <Badge variant="secondary">5 Sampling Methods</Badge>
-            <Badge variant="secondary">20 Samples Each</Badge>
-            <Badge variant="secondary">Cross-Cultural Multi-Judge (Writing)</Badge>
-            <Badge variant="secondary">Objective Accuracy (MMLU)</Badge>
-            <Badge variant="secondary">Creative Writing Focus</Badge>
-            <Badge variant="secondary">Instruction Following Tracking</Badge>
-          </div>
-        </CardContent>
-      </Card>
+        <div className="container relative z-10">
+          <Navigation />
 
-      {/* Process Overview */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Settings className="h-5 w-5" />
-            Process
-          </CardTitle>
-          <CardDescription>How samples are generated and evaluated</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-            <div>
-              <h4 className="font-medium mb-3">Generation</h4>
-             <div className="space-y-3">
-                <div>
-                  <h5 className="font-medium mb-1">Model Setup</h5>
-                   <p className="text-xs sm:text-sm text-fg-muted">
-                    Local inference using KoboldCpp server
-                  </p>
-                </div>
-                <div>
-                  <h5 className="font-medium mb-1">Sampling</h5>
-                   <p className="text-xs sm:text-sm text-fg-muted">
-                    20 samples per strategy using 5 creative writing prompts (4 repetitions each)
-                  </p>
-                </div>
-                <div>
-                  <h5 className="font-medium mb-1">Target Length</h5>
-                   <p className="text-xs sm:text-sm text-fg-muted">
-                    300-400 words per story with compliance scoring
-                  </p>
-                </div>
-                <div>
-                  <h5 className="font-medium mb-1">MMLU Mode</h5>
-                  <p className="text-xs sm:text-sm text-fg-muted">
-                    Multiple-choice questions where the model outputs a single letter only; answers are judged correct/incorrect without LLM judges.
-                  </p>
-                </div>
-              </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-3xl"
+          >
+            <Badge variant="accent" className="mb-4">Documentation</Badge>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl text-fg mb-4">
+              Methodology
+            </h1>
+            <p className="text-lg md:text-xl text-fg-muted leading-relaxed">
+              How we evaluate LLM sampling strategies through creative writing quality
+              and MMLU-Pro accuracy benchmarks.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      <CurveDivider className="opacity-30" />
+
+      {/* Quick Overview Stats */}
+      <section className="py-12 md:py-16">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"
+          >
+            {[
+              { value: "5", label: "Sampling Strategies" },
+              { value: "20", label: "Samples Per Strategy" },
+              { value: "2", label: "LLM Judges" },
+              { value: "5", label: "Quality Criteria" }
+            ].map((stat, index) => (
+              <GlassPanel
+                key={stat.label}
+                variant={index === 0 ? "accent" : "default"}
+                className="text-center py-6"
+              >
+                <p className="text-3xl md:text-4xl font-display text-fg mb-1">{stat.value}</p>
+                <p className="text-xs md:text-sm text-fg-muted">{stat.label}</p>
+              </GlassPanel>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Process Section */}
+      <section className="py-12 md:py-16 border-t border-border-subtle">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-3 mb-8">
+              <Settings className="w-6 h-6 text-accent" />
+              <h2 className="text-2xl md:text-3xl text-fg">Evaluation Process</h2>
             </div>
-            <div>
-              <h4 className="font-medium mb-3">Evaluation</h4>
-              <div className="space-y-3">
-                <div>
-                  <h5 className="font-medium mb-1">Judge Models</h5>
-                   <p className="text-xs sm:text-sm text-fg-muted">
-                    Kimi-K2 (Chinese) and Mistral Medium 3 (European) leading open-weight models
-                  </p>
-                </div>
-                <div>
-                  <h5 className="font-medium mb-1">Consensus Scoring</h5>
-                   <p className="text-xs sm:text-sm text-fg-muted">
-                    Multiple judges evaluate each sample, scores averaged with reliability metrics
-                  </p>
-                </div>
-                <div>
-                  <h5 className="font-medium mb-1">Quality Control</h5>
-                   <p className="text-xs sm:text-sm text-fg-muted">
-                    Word count compliance tracking (300-400 words), instruction following analysis, generation failure detection
-                  </p>
-                </div>
-              </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Generation */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-accent" />
+                    Generation
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-3">
+                    <div className="p-3 rounded-lg bg-surface-elevated/50 border border-border-subtle">
+                      <h4 className="font-medium text-fg text-sm mb-1">Model Setup</h4>
+                      <p className="text-xs text-fg-muted">Local inference using KoboldCpp server</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-surface-elevated/50 border border-border-subtle">
+                      <h4 className="font-medium text-fg text-sm mb-1">Sampling</h4>
+                      <p className="text-xs text-fg-muted">20 samples per strategy using 5 creative prompts (4 reps each)</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-surface-elevated/50 border border-border-subtle">
+                      <h4 className="font-medium text-fg text-sm mb-1">Target Length</h4>
+                      <p className="text-xs text-fg-muted">300-400 words per story with compliance scoring</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-surface-elevated/50 border border-border-subtle">
+                      <h4 className="font-medium text-fg text-sm mb-1">MMLU Mode</h4>
+                      <p className="text-xs text-fg-muted">Multiple-choice with single letter answers, exact match scoring</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Evaluation */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Scale className="w-5 h-5 text-accent" />
+                    Evaluation
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-3">
+                    <div className="p-3 rounded-lg bg-surface-elevated/50 border border-border-subtle">
+                      <h4 className="font-medium text-fg text-sm mb-1">Judge Models</h4>
+                      <p className="text-xs text-fg-muted">Kimi-K2 (Chinese) and Mistral Medium 3 (European)</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-surface-elevated/50 border border-border-subtle">
+                      <h4 className="font-medium text-fg text-sm mb-1">Consensus Scoring</h4>
+                      <p className="text-xs text-fg-muted">Multiple judges evaluate each sample, scores averaged</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-surface-elevated/50 border border-border-subtle">
+                      <h4 className="font-medium text-fg text-sm mb-1">Quality Control</h4>
+                      <p className="text-xs text-fg-muted">Word count compliance, instruction following analysis</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-surface-elevated/50 border border-border-subtle">
+                      <h4 className="font-medium text-fg text-sm mb-1">MMLU Accuracy</h4>
+                      <p className="text-xs text-fg-muted">Fraction of correct responses, no judges needed</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </motion.div>
+        </div>
+      </section>
 
       {/* Quality Criteria */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BarChart className="h-5 w-5" />
-            Quality Evaluation Criteria
-          </CardTitle>
-          <CardDescription>
-            Why these metrics matter for creative writing evaluation
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-           <div className="mb-6 p-4 bg-muted rounded-lg">
-            <p className="text-xs sm:text-sm">
-              <strong>Rationale:</strong> Creative writing quality is multifaceted and subjective. We use structured criteria 
-              to make evaluation more consistent and transparent. These dimensions capture the key elements that differentiate 
-              good from poor creative writing. The specific judging prompts and criteria implementations can be found in the 
-              backend evaluation pipeline at <code>backend/evaluation/llm_judge.py</code>.
-            </p>
-          </div>
+      <section className="py-12 md:py-16 border-t border-border-subtle">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-3 mb-8">
+              <BarChart3 className="w-6 h-6 text-accent" />
+              <h2 className="text-2xl md:text-3xl text-fg">Quality Criteria</h2>
+            </div>
 
-          {/* Judging Prompts Dropdown */}
-          <div className="mt-6">
-              <Button 
-              variant="outline" 
-              className="w-full justify-between"
-              onClick={() => setIsPromptsOpen(!isPromptsOpen)}
-            >
-              View Actual Judging Prompts Used in Pipeline
-              <ChevronDown className={`h-4 w-4 transition-transform ${isPromptsOpen ? 'rotate-180' : ''}`} />
-            </Button>
-            
-            {isPromptsOpen && (
-              <div className="mt-4 space-y-4">
-                <div className="p-4 bg-muted rounded-lg">
-                  <h4 className="font-medium mb-2">System Prompt</h4>
-                  <pre className="text-[11px] sm:text-xs text-fg-muted whitespace-pre-wrap overflow-x-auto">
+            <Card className="mb-6">
+              <CardContent className="pt-6">
+                <div className="space-y-3">
+                  {criteriaData.map((criterion, index) => (
+                    <motion.div
+                      key={criterion.name}
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.05 }}
+                      className="flex items-start gap-4 p-4 rounded-xl bg-surface-elevated/50 border border-border-subtle"
+                    >
+                      <Badge variant="outline" className="shrink-0 mt-0.5">
+                        {criterion.weight}
+                      </Badge>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-fg mb-1">{criterion.name}</h4>
+                        <p className="text-sm text-fg-muted">{criterion.description}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Judging Prompts Expandable */}
+            <Card>
+              <CardHeader className="cursor-pointer" onClick={() => setIsPromptsOpen(!isPromptsOpen)}>
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="w-5 h-5 text-accent" />
+                    Judging Prompt Details
+                  </div>
+                  <motion.div
+                    animate={{ rotate: isPromptsOpen ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <ChevronDown className="w-5 h-5 text-fg-muted" />
+                  </motion.div>
+                </CardTitle>
+                <CardDescription>
+                  View the actual prompts used in the evaluation pipeline
+                </CardDescription>
+              </CardHeader>
+
+              <AnimatePresence>
+                {isPromptsOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <CardContent className="pt-0 space-y-4">
+                      <div className="p-4 rounded-xl bg-surface border border-border-subtle">
+                        <h4 className="font-medium text-fg mb-3">System Prompt</h4>
+                        <pre className="text-xs text-fg-muted whitespace-pre-wrap font-mono leading-relaxed">
 {`You are an expert literary critic and creative writing evaluator. Your task is to objectively assess creative writing samples based on specific criteria.
 
 You will evaluate texts on a 1-10 scale for each criterion, where:
 - 1-2: Poor quality with major issues
-- 3-4: Below average with notable problems  
+- 3-4: Below average with notable problems
 - 5-6: Average quality, adequate but unremarkable
 - 7-8: Good quality with strong elements
 - 9-10: Excellent quality, exceptional work
 
-Be objective, consistent, and provide specific reasoning for your scores. Focus on the writing quality rather than personal preferences about content or themes.
+Be objective, consistent, and provide specific reasoning for your scores.`}
+                        </pre>
+                      </div>
 
-Respond ONLY in the specified JSON format with no additional text.`}
-                  </pre>
-                </div>
-                
-                <div className="p-4 bg-muted rounded-lg">
-                  <h4 className="font-medium mb-2">Evaluation Criteria (with weights)</h4>
-                  <div className="space-y-2 text-xs sm:text-sm">
-                    <div className="flex justify-between">
-                      <span><strong>Narrative Coherence:</strong> How well the story flows and maintains logical consistency</span>
-                      <Badge variant="outline">25%</Badge>
-                    </div>
-                    <div className="flex justify-between">
-                      <span><strong>Creativity Originality:</strong> Uniqueness of ideas, plot elements, and creative expression</span>
-                      <Badge variant="outline">25%</Badge>
-                    </div>
-                    <div className="flex justify-between">
-                      <span><strong>Character Development:</strong> Depth and believability of characters and their development</span>
-                      <Badge variant="outline">20%</Badge>
-                    </div>
-                    <div className="flex justify-between">
-                      <span><strong>Engagement Readability:</strong> How engaging and readable the text is for the audience</span>
-                      <Badge variant="outline">20%</Badge>
-                    </div>
-                    <div className="flex justify-between">
-                      <span><strong>Stylistic Quality:</strong> Writing style, language use, and literary technique</span>
-                      <Badge variant="outline">10%</Badge>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="p-4 bg-muted rounded-lg">
-                  <h4 className="font-medium mb-2">User Prompt Template</h4>
-                   <pre className="text-[11px] sm:text-xs text-fg-muted whitespace-pre-wrap overflow-x-auto">
-{`**TASK**: Evaluate the following creative writing sample based on the specified criteria.
-
-**ORIGINAL PROMPT**: [Original writing prompt]
-
-**GENERATED TEXT**:
-[Generated text to evaluate]
-
-**SAMPLING CONFIGURATION**: [Temperature and sampler info]
-
-**EVALUATION CRITERIA**:
-- **Narrative Coherence**: How well the story flows and maintains logical consistency
-- **Creativity Originality**: Uniqueness of ideas, plot elements, and creative expression
-- **Character Development**: Depth and believability of characters and their development
-- **Engagement Readability**: How engaging and readable the text is for the audience
-- **Stylistic Quality**: Writing style, language use, and literary technique
-
-**INSTRUCTIONS**: 
-1. Score each criterion on a 1-10 scale
-2. Provide specific reasoning for each score
-3. Calculate an overall weighted score
-4. Give a brief summary assessment
-
-**REQUIRED JSON RESPONSE FORMAT**:
-{
-    "criterion_scores": {
-        "narrative_coherence": {"score": X.X, "reasoning": "detailed explanation"},
-        "creativity_originality": {"score": X.X, "reasoning": "detailed explanation"},
-        "character_development": {"score": X.X, "reasoning": "detailed explanation"},
-        "engagement_readability": {"score": X.X, "reasoning": "detailed explanation"},
-        "stylistic_quality": {"score": X.X, "reasoning": "detailed explanation"}
-    },
-    "overall_score": X.X,
-    "summary": "Brief 2-3 sentence assessment of the text&apos;s overall quality and notable strengths/weaknesses"
+                      <div className="p-4 rounded-xl bg-surface border border-border-subtle">
+                        <h4 className="font-medium text-fg mb-3">Response Format</h4>
+                        <pre className="text-xs text-fg-muted whitespace-pre-wrap font-mono leading-relaxed">
+{`{
+  "criterion_scores": {
+    "narrative_coherence": {"score": X.X, "reasoning": "..."},
+    "creativity_originality": {"score": X.X, "reasoning": "..."},
+    "character_development": {"score": X.X, "reasoning": "..."},
+    "engagement_readability": {"score": X.X, "reasoning": "..."},
+    "stylistic_quality": {"score": X.X, "reasoning": "..."}
+  },
+  "overall_score": X.X,
+  "summary": "Brief 2-3 sentence assessment"
 }`}
-                  </pre>
-                </div>
-              </div>
-            )}
-          </div>
-          
-          <div className="space-y-6 mt-8">
-            <div>
-               <h3 className="font-semibold mb-3 sm:mb-4">Core Evaluation Dimensions</h3>
-              
-              <div className="space-y-4">
-                <div className="p-4 border rounded-lg">
-                  <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-medium">Narrative Structure</h4>
-                    <Badge variant="outline" className="text-xs">30%</Badge>
-                  </div>
-                  <p className="text-xs sm:text-sm text-fg-muted mb-2">
-                    <strong>What it measures:</strong> Story organization, pacing, plot coherence, and logical progression. 
-                    Does the story have a clear beginning, middle, and end? Are events well-sequenced?
-                  </p>
-                   <p className="text-xs sm:text-sm text-fg-muted">
-                    <strong>Why it matters:</strong> Fundamental to readable fiction. Poor structure confuses readers and 
-                    undermines other story elements. Highest weight because it&apos;s essential for story comprehension.
-                  </p>
-                </div>
+                        </pre>
+                      </div>
+                    </CardContent>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </Card>
+          </motion.div>
+        </div>
+      </section>
 
-                <div className="p-4 border rounded-lg">
-                  <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-medium">Creativity Execution</h4>
-                    <Badge variant="outline" className="text-xs">25%</Badge>
-                  </div>
-                  <p className="text-xs sm:text-sm text-fg-muted mb-2">
-                    <strong>What it measures:</strong> Originality of ideas, creative premise handling, and unexpected elements. 
-                    Does the story offer fresh perspectives or novel approaches?
-                  </p>
-                  <p className="text-xs sm:text-sm text-fg-muted">
-                    <strong>Why it matters:</strong> Distinguishes memorable from forgettable writing. Creative stories engage 
-                    readers more effectively and demonstrate the model&apos;s ability to generate novel content.
-                  </p>
-                </div>
-
-                <div className="p-4 border rounded-lg">
-                  <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-medium">Character Voice</h4>
-                    <Badge variant="outline" className="text-xs">20%</Badge>
-                  </div>
-                  <p className="text-xs sm:text-sm text-fg-muted mb-2">
-                    <strong>What it measures:</strong> Character development, authentic dialogue, and distinct character voices. 
-                    Are characters believable and well-developed within the story&apos;s scope?
-                  </p>
-                  <p className="text-xs sm:text-sm text-fg-muted">
-                    <strong>Why it matters:</strong> Characters drive reader engagement. Strong character voices indicate 
-                    sophisticated language modeling and understanding of human psychology.
-                  </p>
-                </div>
-
-                <div className="p-4 border rounded-lg">
-                  <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-medium">Prose Quality</h4>
-                    <Badge variant="outline" className="text-xs">15%</Badge>
-                  </div>
-                  <p className="text-sm text-fg-muted mb-2">
-                    <strong>What it measures:</strong> Writing craft, style, sentence variety, and language use. 
-                    Is the prose well-crafted and pleasant to read?
-                  </p>
-                  <p className="text-sm text-fg-muted">
-                    <strong>Why it matters:</strong> Technical writing quality affects readability and aesthetic appeal. 
-                    Shows the model&apos;s mastery of language mechanics and stylistic variation.
-                  </p>
-                </div>
-
-                <div className="p-4 border rounded-lg">
-                  <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-medium">Engagement</h4>
-                    <Badge variant="outline" className="text-xs">10%</Badge>
-                  </div>
-                  <p className="text-sm text-fg-muted mb-2">
-                    <strong>What it measures:</strong> Reader interest and emotional impact. Does the story hold attention 
-                    and evoke emotional responses?
-                  </p>
-                  <p className="text-sm text-fg-muted">
-                    <strong>Why it matters:</strong> Ultimate goal of creative writing. Lower weight because it&apos;s the most 
-                    subjective criterion and often emerges from the other dimensions.
-                  </p>
-                </div>
-              </div>
+      {/* Sampling Strategies */}
+      <section className="py-12 md:py-16 border-t border-border-subtle">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-3 mb-8">
+              <Zap className="w-6 h-6 text-accent" />
+              <h2 className="text-2xl md:text-3xl text-fg">Sampling Strategies</h2>
             </div>
 
-            <div className="p-4 bg-muted rounded-lg">
-               <h4 className="font-medium mb-2">Judge Models (Writing)</h4>
-              <p className="text-xs sm:text-sm text-fg-muted">
-                <strong>Kimi-K2 (Chinese) and Mistral Medium 3 (European):</strong> Leading open-weight models from different cultural backgrounds, 
-                selected for their strong creative writing evaluation capabilities and cross-cultural perspective diversity. 
-                Multiple judges reduce individual model bias while providing culturally diverse evaluation viewpoints.
-              </p>
-              <div className="mt-3 text-[11px] sm:text-xs text-fg-muted">
-                 <strong>Judge Agreement:</strong> These models have demonstrated high consensus strength in testing, 
-                indicating excellent cross-cultural reliability in creative writing evaluation.
-              </div>
+            <p className="text-fg-muted mb-6 max-w-2xl">
+              The five sampling configurations tested across all models. Each strategy represents
+              a different approach to controlling token selection randomness.
+            </p>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {samplerStrategies.map((strategy, index) => (
+                <motion.div
+                  key={strategy.name}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05 }}
+                >
+                  <GlassPanel
+                    variant="default"
+                    className="h-full hover:border-border-accent transition-colors duration-200"
+                  >
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="p-2 rounded-lg bg-accent/10 text-accent">
+                        {strategy.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-mono font-medium text-fg text-sm">{strategy.name}</h4>
+                        <Badge variant="outline" size="sm" className="mt-1">{strategy.badge}</Badge>
+                      </div>
+                    </div>
+                    <p className="text-sm text-fg-muted">{strategy.description}</p>
+                  </GlassPanel>
+                </motion.div>
+              ))}
             </div>
-             <div className="p-4 bg-muted rounded-lg">
-               <h4 className="font-medium mb-2">MMLU Scoring</h4>
-               <p className="text-xs sm:text-sm text-fg-muted">
-                 For MMLU, we compute accuracy per sampler and model as the fraction of correct letter responses over the subset. No judges are used.
-               </p>
-             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Core Sampling Strategies */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Zap className="h-5 w-5" />
-            Sampling Strategies
-          </CardTitle>
-          <CardDescription>
-            The 5 sampling methods we compare in this benchmark
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-medium text-sm">model_default</h4>
-                  <Badge variant="outline" className="text-xs">Dynamic</Badge>
-                </div>
-                <p className="text-xs text-fg-muted">
-                  Dynamically resolves to model-specific optimal settings (Llama: temp 0.6, top_p 0.9; Mistral Small: temp 0.15; etc.)
-                </p>
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-medium text-sm">standard_minp</h4>
-                  <Badge variant="outline" className="text-xs">temp 0.7, min_p 0.02</Badge>
-                </div>
-                <p className="text-xs text-fg-muted">
-                  Min-p sampling with conservative temperature 0.7 and min_p threshold 0.02
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-medium text-sm">creative_minp</h4>
-                  <Badge variant="outline" className="text-xs">temp 1.0, min_p 0.02</Badge>
-                </div>
-                <p className="text-xs text-fg-muted">
-                  Min-p sampling with moderate temperature 1.0 and min_p threshold 0.02
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-medium text-sm">standard_sigma</h4>
-                  <Badge variant="outline" className="text-xs">temp 1.5, σ 1.0</Badge>
-                </div>
-                <p className="text-xs text-fg-muted">
-                  Top-n-sigma sampling with high temperature 1.5 and standard deviation threshold 1.0
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-medium text-sm">creative_sigma</h4>
-                  <Badge variant="outline" className="text-xs">temp 1.0, σ 1.5</Badge>
-                </div>
-                  <p className="text-xs text-fg-muted">
-                  Top-n-sigma sampling with moderate temperature 1.0 and relaxed sigma threshold 1.5
-                </p>
-              </div>
-
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
+          </motion.div>
+        </div>
+      </section>
 
       {/* Instruction Following */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Target className="h-5 w-5" />
-            Instruction Following Analysis
-          </CardTitle>
-          <CardDescription>
-            How we measure model compliance with specific instructions
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="p-4 bg-muted rounded-lg">
-              <h4 className="font-medium mb-2">Word Count Compliance</h4>
-              <p className="text-sm text-fg-muted">
-                Each prompt specifies exactly 300-400 words. We track compliance rates as an objective measure 
-                of instruction following capability. High compliance indicates better instruction adherence.
-              </p>
+      <section className="py-12 md:py-16 border-t border-border-subtle">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-3 mb-8">
+              <Target className="w-6 h-6 text-accent" />
+              <h2 className="text-2xl md:text-3xl text-fg">Instruction Following</h2>
             </div>
-            
-            <div className="p-4 bg-muted rounded-lg">
-              <h4 className="font-medium mb-2">Methodology Approach</h4>
-              <p className="text-sm text-fg-muted mb-3">
-                Rather than applying score penalties, we use compliance metrics for analysis and reporting. 
-                This preserves the natural quality scores while providing clear visibility into instruction following patterns.
-              </p>
-              <div className="text-xs text-fg-muted space-y-1">
-                <div><strong>Tracked Metrics:</strong></div>
-                <div>• Word count compliance percentage per model/sampler</div>
-                <div>• Average word count deviation from target range</div>
-                <div>• Instruction following consistency across samples</div>
-                <div>• Generation failure rates and meta-commentary detection</div>
-              </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Word Count Compliance</CardTitle>
+                  <CardDescription>Objective measure of instruction adherence</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-fg-muted">
+                    Each prompt specifies exactly 300-400 words. We track compliance rates as an
+                    objective measure of instruction following capability. High compliance indicates
+                    better instruction adherence.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Tracked Metrics</CardTitle>
+                  <CardDescription>What we measure for each sample</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2 text-sm text-fg-muted">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-accent shrink-0" />
+                      Word count compliance percentage
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-accent shrink-0" />
+                      Average deviation from target range
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-accent shrink-0" />
+                      Instruction following consistency
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-accent shrink-0" />
+                      Generation failure detection
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
             </div>
-            
-            <div className="p-4 bg-muted rounded-lg">
-              <h4 className="font-medium mb-2">Why This Matters</h4>
-              <p className="text-sm text-fg-muted">
-                Instruction following correlates with model reliability and real-world usability. Models with 
-                higher compliance rates typically perform better across quality dimensions, suggesting that 
-                instruction adherence is a fundamental capability indicator.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </motion.div>
+        </div>
+      </section>
 
       {/* Score Interpretation */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Score Interpretation</CardTitle>
-          <CardDescription>
-            Understanding the 1-10 quality scale
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">9-10 Points</span>
-                <Badge variant="secondary">Exceptional</Badge>
-              </div>
-              <p className="text-xs text-fg-muted">
-                Exceptional creative writing with outstanding quality across all criteria
-              </p>
+      <section className="py-12 md:py-16 border-t border-border-subtle">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-3 mb-8">
+              <Scale className="w-6 h-6 text-accent" />
+              <h2 className="text-2xl md:text-3xl text-fg">Score Interpretation</h2>
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">7-8 Points</span>
-                <Badge variant="secondary">Good</Badge>
-              </div>
-              <p className="text-xs text-fg-muted">
-                Good quality writing with strong elements and minor areas for improvement
-              </p>
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">5-6 Points</span>
-                <Badge variant="secondary">Average</Badge>
-              </div>
-              <p className="text-xs text-fg-muted">
-                Average, adequate quality with balanced strengths and weaknesses
-              </p>
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">1-4 Points</span>
-                <Badge variant="secondary">Below Average</Badge>
-              </div>
-              <p className="text-xs text-fg-muted">
-                Below average to poor quality with significant issues requiring attention
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
+            <p className="text-fg-muted mb-6 max-w-2xl">
+              Understanding the 1-10 quality scale used for creative writing evaluation.
+            </p>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {scoreInterpretation.map((score, index) => (
+                <motion.div
+                  key={score.range}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05 }}
+                >
+                  <GlassPanel
+                    variant={index === 0 ? "accent" : "default"}
+                    className="h-full text-center"
+                  >
+                    <p className={`text-3xl font-display mb-2 ${score.color}`}>
+                      {score.range}
+                    </p>
+                    <Badge variant={index === 0 ? "default" : "secondary"} className="mb-3">
+                      {score.label}
+                    </Badge>
+                    <p className="text-sm text-fg-muted">{score.description}</p>
+                  </GlassPanel>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-8 border-t border-border-subtle">
+        <div className="container text-center text-sm text-fg-subtle">
+          <p>Methodology documented for transparency and reproducibility</p>
+        </div>
+      </footer>
     </div>
   )
 }

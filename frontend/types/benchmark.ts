@@ -68,6 +68,9 @@ export interface LeaderboardEntry {
   parameters: Record<string, any>;
   avg_word_count: number;
   model_name?: string;
+  // Instruction following metrics
+  instruction_compliance?: number;
+  samples_in_range?: number;
   // Consistency metrics
   overall_std?: number;
   avg_consensus_strength?: number;

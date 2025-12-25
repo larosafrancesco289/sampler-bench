@@ -1,28 +1,32 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useBenchmarkContext } from "@/contexts/benchmark-context"
+import { FileText, Layers, Star, Cpu } from "lucide-react"
+
+const stats = [
+  { key: 'total_samples', label: 'Total Samples', desc: 'Writing samples evaluated', icon: FileText },
+  { key: 'unique_samplers', label: 'Strategies', desc: 'Sampling methods compared', icon: Layers },
+  { key: 'avg_quality_score', label: 'Avg Quality', desc: 'Mean score (1-10)', icon: Star, format: (v: number) => v.toFixed(2) },
+  { key: 'models_tested', label: 'Models', desc: 'LLMs in benchmark', icon: Cpu },
+]
 
 export function DynamicStats() {
   const { summary, loading, error } = useBenchmarkContext()
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="transition-all duration-300 hover:scale-105">
-            <CardHeader className="pb-3">
-              <div className="animate-pulse">
-                <div className="h-4 bg-muted rounded w-3/4 mb-2 transition-colors duration-300"></div>
-                <div className="h-3 bg-muted rounded w-1/2 transition-colors duration-300"></div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="animate-pulse">
-                <div className="h-8 bg-muted rounded w-1/3 transition-colors duration-300"></div>
-              </div>
-            </CardContent>
-          </Card>
+          <div
+            key={i}
+            className="relative p-5 rounded-xl bg-surface border border-border overflow-hidden"
+          >
+            <div className="animate-pulse space-y-3">
+              <div className="h-4 bg-muted rounded w-20" />
+              <div className="h-8 bg-muted rounded w-16" />
+              <div className="h-3 bg-muted rounded w-24" />
+            </div>
+          </div>
         ))}
       </div>
     )
@@ -30,61 +34,45 @@ export function DynamicStats() {
 
   if (error || !summary) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <Card className="transition-all duration-300">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg">Error</CardTitle>
-            <CardDescription>Failed to load statistics</CardDescription>
-          </CardHeader>
-          <CardContent>
-          <div className="text-sm text-fg-muted transition-colors duration-300">Unable to load data</div>
-          </CardContent>
-        </Card>
+      <div className="p-5 rounded-xl bg-surface border border-border mb-8">
+        <p className="text-sm text-fg-muted">Unable to load statistics</p>
       </div>
     )
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-      <Card className="transition-all duration-300 hover:scale-105 hover:shadow-lg dark:hover:shadow-xl group">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg transition-colors duration-300">Total Samples</CardTitle>
-          <CardDescription className="transition-colors duration-300">Evaluated across all strategies</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="text-3xl font-bold text-fg transition-all duration-300 group-hover:scale-110">{summary.total_samples}</div>
-        </CardContent>
-      </Card>
-      
-      <Card className="transition-all duration-300 hover:scale-105 hover:shadow-lg dark:hover:shadow-xl group">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg transition-colors duration-300">Sampling Strategies</CardTitle>
-          <CardDescription className="transition-colors duration-300">Quality-tested approaches</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="text-3xl font-bold text-fg transition-all duration-300 group-hover:scale-110">{summary.unique_samplers}</div>
-        </CardContent>
-      </Card>
-      
-      <Card className="transition-all duration-300 hover:scale-105 hover:shadow-lg dark:hover:shadow-xl group">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg transition-colors duration-300">Avg Quality Score</CardTitle>
-          <CardDescription className="transition-colors duration-300">Overall writing quality (1-10)</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="text-3xl font-bold text-fg transition-all duration-300 group-hover:scale-110">{summary.avg_quality_score.toFixed(2)}</div>
-        </CardContent>
-      </Card>
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      {stats.map((stat, index) => {
+        const Icon = stat.icon
+        const value = summary[stat.key as keyof typeof summary]
+        const displayValue = stat.format ? stat.format(value as number) : value
 
-      <Card className="transition-all duration-300 hover:scale-105 hover:shadow-lg dark:hover:shadow-xl group">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg transition-colors duration-300">Models Tested</CardTitle>
-          <CardDescription className="transition-colors duration-300">Different language models</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="text-3xl font-bold text-fg transition-all duration-300 group-hover:scale-110">{summary.models_tested}</div>
-        </CardContent>
-      </Card>
+        return (
+          <div
+            key={stat.key}
+            className="group relative p-5 rounded-xl bg-surface border border-border hover:border-[var(--color-accent)]/30 transition-all duration-300 hover:shadow-[var(--shadow-elevated)] overflow-hidden"
+            style={{ animationDelay: `${index * 0.05}s` }}
+          >
+            {/* Subtle gradient on hover */}
+            <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-accent)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+            <div className="relative">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="p-1.5 rounded-md bg-[var(--color-accent)]/10 text-[var(--color-accent)]">
+                  <Icon className="w-4 h-4" />
+                </div>
+                <span className="text-sm font-medium text-fg-muted">{stat.label}</span>
+              </div>
+
+              <div className="text-3xl sm:text-4xl font-display font-semibold text-fg tracking-tight mb-1 transition-transform duration-300 group-hover:translate-x-0.5">
+                {displayValue}
+              </div>
+
+              <p className="text-xs text-fg-muted/70">{stat.desc}</p>
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 } 

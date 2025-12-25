@@ -214,16 +214,16 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
   }
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col">
       {/* Scenario Selection and Data Source */}
       {logitsData && logitsData.scenarios && (
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium">Scenario:</label>
+        <div className="space-y-2 mb-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+            <label className="text-sm font-medium shrink-0">Scenario:</label>
             <select 
               value={selectedScenario}
               onChange={(e) => setSelectedScenario(e.target.value)}
-            className="px-3 py-1 text-sm border border-border rounded-2xl bg-surface"
+              className="w-full sm:w-auto px-3 py-1.5 text-sm border border-border rounded-2xl bg-surface truncate"
             >
               {Object.entries(logitsData.scenarios).map(([key, scenario]) => (
                 <option key={key} value={key}>
@@ -233,12 +233,12 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
             </select>
           </div>
           
-      <div className="flex items-center gap-2 text-[11px] sm:text-xs flex-wrap">
+          <div className="flex items-center gap-2 text-[11px] sm:text-xs flex-wrap">
             <Badge variant={dataSource === 'real' ? "default" : "secondary"}>
               {dataSource === 'real' ? `Real ${logitsData.model} Data` : 'Simulated Data'}
             </Badge>
             {dataSource === 'real' && (
-            <span className="text-fg-muted">
+              <span className="text-fg-muted">
                 Generated from llama.cpp
               </span>
             )}
@@ -247,7 +247,7 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
       )}
 
       {/* Stats */}
-      <div className="flex flex-wrap gap-2 text-xs sm:text-sm">
+      <div className="flex flex-wrap gap-2 text-xs sm:text-sm mb-2">
         <Badge variant="outline">
           Selected: {processedData.selectedCount} / {processedData.totalTokens} tokens
         </Badge>
@@ -262,11 +262,11 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
       </div>
 
       {/* Chart */}
-      <div className="h-64 sm:h-80">
+      <div className="h-80 sm:h-96">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={processedData.data}
-            margin={{ top: 5, right: 30, left: 20, bottom: 100 }}
+            margin={{ top: 5, right: 20, left: 10, bottom: 60 }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" opacity={0.5} />
             <XAxis 
@@ -274,7 +274,7 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
               tick={{ fontSize: 10, fill: 'var(--color-fg)' }}
               angle={-45}
               textAnchor="end"
-              height={100}
+              height={60}
               interval={0}
             />
             <YAxis 
@@ -308,7 +308,7 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm flex-wrap">
+      <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm flex-wrap mt-2">
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 bg-accent rounded"></div>
           <span>Selected tokens</span>
@@ -320,7 +320,7 @@ export function ProbabilityDistributionChart({ sampler, parameters }: Probabilit
       </div>
 
       {/* Explanation */}
-    <div className="text-xs sm:text-sm text-fg-muted bg-muted p-3 rounded-2xl">
+    <div className="text-xs sm:text-sm text-fg-muted bg-muted p-3 rounded-2xl mt-2">
         <p>
           <strong>Visualization:</strong> This chart shows how the sampling strategy affects token selection. 
           The height of each bar represents the probability of that token being selected. 

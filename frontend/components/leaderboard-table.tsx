@@ -4,15 +4,18 @@ import { useState, useMemo } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { useBenchmarkContext } from "@/contexts/benchmark-context"
+import { Medal, ChevronDown, ChevronUp, Users, Gauge } from "lucide-react"
 
 export function LeaderboardTable() {
-  const { 
-    data, 
-    loading, 
-    error, 
-    refetch, 
+  const {
+    data,
+    loading,
+    error,
+    refetch,
     hasActiveFilters
   } = useBenchmarkContext()
+
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null)
 
   // Get unique models for the toggle
   const availableModels = useMemo(() => {
@@ -38,20 +41,27 @@ export function LeaderboardTable() {
   }, [data, selectedModels])
 
   const handleModelToggle = (modelName: string) => {
-    setSelectedModels(prev => 
-      prev.includes(modelName) 
+    setSelectedModels(prev =>
+      prev.includes(modelName)
         ? prev.filter(m => m !== modelName)
         : [...prev, modelName]
     )
   }
 
+  const getRankStyle = (index: number) => {
+    if (index === 0) return 'bg-gradient-to-br from-[var(--color-accent)] to-[#D4AF37] text-black shadow-lg'
+    if (index === 1) return 'bg-gradient-to-br from-gray-300 to-gray-400 text-gray-800'
+    if (index === 2) return 'bg-gradient-to-br from-amber-600 to-amber-700 text-white'
+    return 'bg-muted text-fg-muted'
+  }
+
   if (loading) {
     return (
-      <div className="space-y-4">
-        <div className="text-center text-fg-muted">Loading benchmark results...</div>
+      <div className="space-y-3">
+        <div className="text-center text-fg-muted text-sm py-4">Loading benchmark results...</div>
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="animate-pulse">
-            <div className="h-16 bg-muted rounded transition-colors duration-300"></div>
+            <div className="h-20 bg-muted rounded-xl" />
           </div>
         ))}
       </div>
@@ -60,12 +70,12 @@ export function LeaderboardTable() {
 
   if (error) {
     return (
-      <div className="text-center py-8">
-        <div className="text-red-600 dark:text-red-400 font-medium">Error loading results</div>
-        <div className="text-fg-muted mt-2">{error}</div>
-        <button 
-          onClick={refetch} 
-          className="mt-4 px-4 py-2 bg-accent text-black rounded-2xl hover:brightness-110 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[var(--ring-focus)]"
+      <div className="text-center py-10">
+        <div className="text-red-600 dark:text-red-400 font-medium mb-2">Error loading results</div>
+        <div className="text-fg-muted text-sm mb-4">{error}</div>
+        <button
+          onClick={refetch}
+          className="px-5 py-2.5 bg-[var(--color-accent)] text-black rounded-lg font-medium hover:brightness-110 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[var(--ring-focus)] focus:ring-offset-2"
         >
           Retry
         </button>
@@ -75,8 +85,8 @@ export function LeaderboardTable() {
 
   if (data.length === 0) {
     return (
-      <div className="text-center py-8">
-        <div className="text-fg-muted transition-colors duration-300">
+      <div className="text-center py-10">
+        <div className="text-fg-muted">
           {hasActiveFilters ? 'No results match the current filters' : 'No benchmark data available'}
         </div>
       </div>
@@ -84,173 +94,163 @@ export function LeaderboardTable() {
   }
 
   return (
-    <div className="space-y-4">
-      {/* Simple Model Toggle */}
+    <div className="space-y-3">
+      {/* Model Filter Pills */}
       {availableModels.length > 1 && (
-        <div className="flex items-center gap-4 p-4 bg-muted rounded-lg">
-          <span className="text-sm font-medium text-fg">
-            Models:
+        <div className="flex flex-wrap items-center gap-2 p-3 bg-muted/50 rounded-lg mb-4">
+          <span className="text-xs font-medium text-fg-muted uppercase tracking-wide">
+            Filter by Model:
           </span>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5">
             {availableModels.map(model => (
-              <Badge
+              <button
                 key={model}
-                variant={selectedModels.includes(model) ? "default" : "outline"}
-                className="cursor-pointer transition-all duration-200 hover:scale-105"
                 onClick={() => handleModelToggle(model)}
+                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 ${
+                  selectedModels.includes(model)
+                    ? 'bg-[var(--color-accent)] text-black'
+                    : 'bg-surface text-fg-muted hover:text-fg border border-border'
+                }`}
               >
                 {model}
-              </Badge>
+              </button>
             ))}
           </div>
         </div>
       )}
 
-      {filteredData.map((entry, index) => (
-        <div
-          key={`${entry.sampler_name}-${entry.model_name || 'unknown'}-${index}`}
-          className="border border-border rounded-2xl p-4 sm:p-6 hover:shadow-md transition-all duration-300 bg-surface"
-        >
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-0 mb-4">
-            <div className="flex items-start sm:items-center gap-3 sm:gap-4">
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-accent text-black font-bold text-sm transition-colors duration-300">
-                {index + 1}
+      {/* Leaderboard Entries */}
+      {filteredData.map((entry, index) => {
+        const isExpanded = expandedIndex === index
+
+        return (
+          <div
+            key={`${entry.sampler_name}-${entry.model_name || 'unknown'}-${index}`}
+            className="group border border-border rounded-xl overflow-hidden bg-surface hover:border-[var(--color-accent)]/30 transition-all duration-300"
+          >
+            {/* Main Row - Always Visible */}
+            <div
+              className="flex items-center gap-4 p-4 cursor-pointer"
+              onClick={() => setExpandedIndex(isExpanded ? null : index)}
+            >
+              {/* Rank Badge */}
+              <div className={`flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center font-display font-bold text-sm ${getRankStyle(index)}`}>
+                {index < 3 ? <Medal className="w-4 h-4" /> : index + 1}
               </div>
-              <div>
-                <h3 className="text-base sm:text-lg font-semibold text-fg transition-colors duration-300 break-words">{entry.sampler_name}</h3>
-                <p className="text-sm text-fg-muted transition-colors duration-300 break-words">{entry.description}</p>
-                {entry.model_name && (
-                  <p className="text-xs text-fg-muted font-medium transition-colors duration-300">
-                    Model: {entry.model_name}
-                  </p>
-                )}
+
+              {/* Main Info */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <h3 className="font-semibold text-fg truncate">{entry.sampler_name}</h3>
+                  {entry.model_name && (
+                    <span className="text-xs text-fg-muted bg-muted px-2 py-0.5 rounded">
+                      {entry.model_name}
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-fg-muted truncate">{entry.description}</p>
               </div>
-            </div>
-            <div className="text-left sm:text-right">
-              <div className="text-xl sm:text-2xl font-bold text-fg transition-colors duration-300">
-                {entry.average_score.toFixed(2)}
-                {entry.overall_std && (
-                  <span className="text-xs text-fg-muted ml-1">
-                    ±{entry.overall_std.toFixed(2)}
-                  </span>
-                )}
-              </div>
-              <div className="flex items-center justify-start sm:justify-end gap-2 flex-wrap">
-                <div className="text-sm text-fg-muted transition-colors duration-300">
+
+              {/* Score */}
+              <div className="flex-shrink-0 text-right">
+                <div className="text-2xl font-display font-semibold text-fg">
+                  {entry.average_score.toFixed(2)}
+                </div>
+                <div className="text-xs text-fg-muted">
                   {entry.total_samples} samples
                 </div>
-                {entry.avg_consensus_strength && (
-                  <Badge 
-                    variant={entry.avg_consensus_strength > 0.8 ? "default" : entry.avg_consensus_strength > 0.6 ? "secondary" : "outline"}
-                    className="text-xs"
-                    title={`Average consensus strength: ${(entry.avg_consensus_strength * 100).toFixed(0)}%`}
-                  >
-                    {entry.avg_consensus_strength > 0.8 ? "High" : entry.avg_consensus_strength > 0.6 ? "Medium" : "Low"} Agreement
-                  </Badge>
-                )}
+              </div>
+
+              {/* Expand Icon */}
+              <div className="flex-shrink-0 text-fg-muted">
+                {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
               </div>
             </div>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-            {/* Quality Criteria Breakdown */}
-            <div>
-              <h4 className="font-medium mb-2 sm:mb-3 text-fg transition-colors duration-300">Quality Criteria</h4>
-              <div className="space-y-2">
-                {Object.entries(entry.criteria_breakdown).map(([criterion, score]) => {
-                  const std = entry.criteria_std?.[criterion];
-                  return (
-                    <div key={criterion} className="flex items-center justify-between gap-2 group hover:bg-muted p-2 rounded-2xl transition-all duration-200">
-                      <span className="text-sm capitalize text-fg transition-colors duration-300 break-words" title={`${criterion.replace(/_/g, ' ')}: ${score.toFixed(2)}${std ? ` (±${std.toFixed(1)})` : ''}`}>
-                        {criterion.replace(/_/g, ' ')}
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <Progress value={score * 10} className="w-20 sm:w-24 h-2 transition-all duration-300" />
-                        <span className="text-sm font-medium text-fg transition-colors duration-300 whitespace-nowrap">
-                          {score.toFixed(1)}
-                          {std && (
-                            <span className="text-xs text-fg-muted ml-1">
-                              ±{std.toFixed(1)}
+            {/* Expanded Details */}
+            {isExpanded && (
+              <div className="px-4 pb-4 pt-2 border-t border-border bg-muted/30">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Quality Criteria */}
+                  <div>
+                    <h4 className="text-sm font-medium text-fg mb-3 flex items-center gap-2">
+                      <Gauge className="w-4 h-4 text-[var(--color-accent)]" />
+                      Quality Criteria
+                    </h4>
+                    <div className="space-y-2.5">
+                      {Object.entries(entry.criteria_breakdown).map(([criterion, score]) => {
+                        const std = entry.criteria_std?.[criterion]
+                        return (
+                          <div key={criterion} className="flex items-center justify-between gap-3">
+                            <span className="text-sm text-fg-muted capitalize flex-shrink-0">
+                              {criterion.replace(/_/g, ' ')}
                             </span>
-                          )}
-                        </span>
-                      </div>
+                            <div className="flex items-center gap-2 flex-1 justify-end">
+                              <Progress value={score * 10} className="w-24 h-1.5" />
+                              <span className="text-sm font-medium text-fg w-12 text-right">
+                                {score.toFixed(1)}
+                                {std && <span className="text-[10px] text-fg-muted ml-0.5">±{std.toFixed(1)}</span>}
+                              </span>
+                            </div>
+                          </div>
+                        )
+                      })}
                     </div>
-                  );
-                })}
-              </div>
-            </div>
+                  </div>
 
-            {/* Parameters & Word Count */}
-            <div className="space-y-4">
-              <div>
-              <h4 className="font-medium mb-2 sm:mb-3 text-fg transition-colors duration-300">Output Quality</h4>
-                <div className="text-center p-3 bg-muted rounded-2xl transition-all duration-300">
-                  <div className="text-base sm:text-lg font-medium text-fg transition-colors duration-300">{entry.avg_word_count}</div>
-                  <div className="text-sm text-fg-muted transition-colors duration-300">avg words per sample</div>
-                </div>
-              </div>
+                  {/* Meta Info */}
+                  <div className="space-y-4">
+                    {/* Word Count */}
+                    <div className="p-3 bg-surface rounded-lg border border-border-subtle">
+                      <div className="text-xs text-fg-muted uppercase tracking-wide mb-1">Avg Word Count</div>
+                      <div className="text-xl font-display font-semibold text-fg">{entry.avg_word_count}</div>
+                    </div>
 
-              {/* Consistency Metrics */}
-              {(entry.judge_count || entry.overall_std || entry.judge_models) && (
-                <div>
-              <h4 className="font-medium mb-3 text-fg transition-colors duration-300">
-                    Evaluation Consistency
-                  </h4>
-                  <div className="space-y-2">
-                    {entry.judge_count && (
-                      <div className="flex justify-between items-center p-2 bg-muted rounded-2xl">
-                        <span className="text-sm text-fg">Judges</span>
-                        <span className="text-sm font-medium text-fg">
-                          {entry.judge_count}
-                        </span>
-                      </div>
-                    )}
-                    {entry.overall_std && (
-                      <div className="flex justify-between items-center p-2 bg-muted rounded-2xl">
-                        <span className="text-sm text-fg">Score Variance</span>
-                        <Badge 
-                          variant={entry.overall_std < 0.5 ? "default" : entry.overall_std < 1.0 ? "secondary" : "outline"}
-                          className="text-xs"
-                        >
-                          {entry.overall_std < 0.5 ? "Low" : entry.overall_std < 1.0 ? "Medium" : "High"} (±{entry.overall_std.toFixed(2)})
-                        </Badge>
-                      </div>
-                    )}
-                    {entry.judge_models && entry.judge_models.length > 0 && (
-                      <div className="p-2 bg-muted rounded-2xl">
-                        <div className="text-sm text-fg mb-1">Judge Models</div>
-                        <div className="flex flex-wrap gap-1">
-                          {entry.judge_models.map((model, idx) => (
-                            <Badge key={idx} variant="outline" className="text-xs">
-                              {model.split('/').pop() || model}
+                    {/* Consensus & Judges */}
+                    {(entry.avg_consensus_strength || entry.judge_count) && (
+                      <div className="p-3 bg-surface rounded-lg border border-border-subtle">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Users className="w-4 h-4 text-[var(--color-accent-2)]" />
+                          <span className="text-xs text-fg-muted uppercase tracking-wide">Evaluation</span>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {entry.judge_count && (
+                            <Badge variant="outline" className="text-xs">
+                              {entry.judge_count} judges
                             </Badge>
+                          )}
+                          {entry.avg_consensus_strength && (
+                            <Badge
+                              variant={entry.avg_consensus_strength > 0.8 ? "default" : "secondary"}
+                              className="text-xs"
+                            >
+                              {(entry.avg_consensus_strength * 100).toFixed(0)}% consensus
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Parameters */}
+                    {Object.keys(entry.parameters || {}).length > 0 && (
+                      <div>
+                        <div className="text-xs text-fg-muted uppercase tracking-wide mb-2">Parameters</div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {Object.entries(entry.parameters).map(([key, value]) => (
+                            <span key={key} className="text-xs px-2 py-1 bg-muted rounded text-fg-muted">
+                              {key}: {String(value)}
+                            </span>
                           ))}
                         </div>
                       </div>
                     )}
                   </div>
                 </div>
-              )}
-
-              <div>
-                <h4 className="font-medium mb-2 sm:mb-3 text-fg transition-colors duration-300">Sampling Parameters</h4>
-                {Object.keys(entry.parameters || {}).length > 0 ? (
-                  <div className="flex flex-wrap gap-2">
-                    {Object.entries(entry.parameters).map(([key, value]) => (
-                      <Badge key={key} variant="secondary" className="text-xs transition-all duration-300 hover:scale-105">
-                        {key}: {String(value)}
-                      </Badge>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-xs text-fg-muted">Parameters: Not specified in file; inferred from samples not available.</div>
-                )}
               </div>
-            </div>
+            )}
           </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 } 

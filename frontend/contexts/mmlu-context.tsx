@@ -28,6 +28,9 @@ interface MmluContextType {
   resetFilters: () => void
   hasActiveFilters: boolean
   rawData: BenchmarkResults[]
+  // Aggregation controls
+  aggregateAcrossModels: boolean
+  setAggregateAcrossModels: (aggregate: boolean) => void
 }
 
 const MmluContext = createContext<MmluContextType | undefined>(undefined)

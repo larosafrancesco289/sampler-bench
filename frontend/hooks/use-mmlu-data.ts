@@ -37,6 +37,7 @@ export function useMmluData() {
   // Filter states
   const [selectedModels, setSelectedModels] = useState<string[]>([])
   const [selectedSamplers, setSelectedSamplers] = useState<string[]>([])
+  const [aggregateAcrossModels, setAggregateAcrossModels] = useState<boolean>(false)
 
   // Generate filter options from raw data
   const filterOptions = useMemo(() => {
@@ -134,13 +135,80 @@ export function useMmluData() {
     return data
   }, [rawData, selectedModels, selectedSamplers])
 
+  // Aggregate data across models when toggle is enabled
+  const processedData = useMemo(() => {
+    if (!aggregateAcrossModels) {
+      return filteredData
+    }
+
+    // Group by actual sampler name and aggregate scores
+    const samplerGroups = new Map<string, {
+      entries: typeof filteredData,
+      totalSamples: number,
+      totalScore: number,
+      criteriaBreakdowns: Record<string, number[]>
+    }>()
+
+    filteredData.forEach(entry => {
+      // Parse actual sampler name
+      let actualSamplerName = entry.sampler_name
+      const match = entry.sampler_name.match(/^([^(]+)(?:\s*\([^)]+\))?/)
+      if (match) {
+        actualSamplerName = match[1].trim()
+      }
+
+      if (!samplerGroups.has(actualSamplerName)) {
+        samplerGroups.set(actualSamplerName, {
+          entries: [],
+          totalSamples: 0,
+          totalScore: 0,
+          criteriaBreakdowns: {}
+        })
+      }
+
+      const group = samplerGroups.get(actualSamplerName)!
+      group.entries.push(entry)
+      group.totalSamples += entry.total_samples
+      group.totalScore += entry.average_score * entry.total_samples
+
+      // Aggregate criteria breakdowns
+      Object.entries(entry.criteria_breakdown).forEach(([criterion, score]) => {
+        if (!group.criteriaBreakdowns[criterion]) {
+          group.criteriaBreakdowns[criterion] = []
+        }
+        group.criteriaBreakdowns[criterion].push(score as number)
+      })
+    })
+
+    // Convert back to LeaderboardEntry format
+    return Array.from(samplerGroups.entries()).map(([samplerName, group]) => {
+      const avgScore = group.totalScore / group.totalSamples
+      const avgCriteriaBreakdown: Record<string, number> = {}
+      
+      Object.entries(group.criteriaBreakdowns).forEach(([criterion, scores]) => {
+        avgCriteriaBreakdown[criterion] = scores.reduce((sum, score) => sum + score, 0) / scores.length
+      })
+
+      // Use the first entry as template and override aggregated values
+      const templateEntry = group.entries[0]
+      return {
+        ...templateEntry,
+        sampler_name: samplerName,
+        model_name: `${group.entries.length} models`,
+        average_score: avgScore,
+        total_samples: group.totalSamples,
+        criteria_breakdown: avgCriteriaBreakdown,
+      }
+    }).sort((a, b) => b.average_score - a.average_score) // Sort by score descending
+  }, [filteredData, aggregateAcrossModels])
+
   const resetFilters = useCallback(() => {
     setSelectedModels([])
     setSelectedSamplers([])
   }, [])
 
   return {
-    data: filteredData,
+    data: processedData,
     summary,
     loading,
     error: errorMessage,
@@ -154,6 +222,9 @@ export function useMmluData() {
     resetFilters,
     hasActiveFilters: selectedModels.length > 0 || selectedSamplers.length > 0,
     rawData: rawResults,
+    // Aggregation controls
+    aggregateAcrossModels,
+    setAggregateAcrossModels,
   }
 }
 
