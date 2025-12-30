@@ -7,6 +7,14 @@ import { BenchmarkProvider } from '@/contexts/benchmark-context'
 export const metadata: Metadata = {
   title: 'SamplerBench - The Sampling Observatory',
   description: 'Explore how sampling strategies shape language model output quality through interactive visualizations and benchmarks',
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    apple: [
+      { url: '/apple-icon.svg', type: 'image/svg+xml' },
+    ],
+  },
 }
 
 export const viewport: Viewport = {
